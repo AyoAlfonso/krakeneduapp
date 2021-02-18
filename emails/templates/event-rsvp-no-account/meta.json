@@ -1,0 +1,12 @@
+{
+  "Name": "Event RSVP no account",
+  "Alias": "event-rsvp-no-account",
+  "Subject": "You've RSVP'd to {{event_name}}",
+  "TemplateType": "Standard",
+  "LayoutTemplate": "Hyperlink",
+  "TestRenderModel": {
+    "name": "name_Value",
+    "event_name": "event_name_Value",
+    "event_page_url": "cohort_page_url_Value"
+  }
+}

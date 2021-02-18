@@ -1,0 +1,9 @@
+Hi {{name}}
+
+You've RSVP'd to {{event_name}}! 
+
+View details here: {{event_page_url}}
+
+Add this event to your calendar: https://hyperlink.academy/calendar"
+
+If you have questions just hit reply on this email.

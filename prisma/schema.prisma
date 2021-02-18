@@ -1,0 +1,297 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("POSTGRES_URI")
+}
+
+model activation_keys {
+  key_hash      String  @id
+  created_time  String
+  password_hash String
+  email         String
+  username      String
+  newsletter    Boolean @default(false)
+}
+
+model admins {
+  person String @id
+  people people @relation(fields: [person], references: [id])
+}
+
+model course_cohorts {
+  id                  Int                   @id @default(autoincrement())
+  start_date          String
+  facilitator         String
+  live                Boolean               @default(false)
+  completed           String?
+  category_id         Int                   @unique
+  name                String
+  cohort_group        Int
+  paid_out            Boolean               @default(false)
+  description         String
+  course              Int
+  discourse_groups    discourse_groups      @relation(fields: [cohort_group], references: [id])
+  courses             courses               @relation(fields: [course], references: [id])
+  people              people                @relation(fields: [facilitator], references: [id])
+  cohort_events       cohort_events[]
+  cohort_facilitators cohort_facilitators[]
+  cohort_refunds      cohort_refunds[]
+  people_in_cohorts   people_in_cohorts[]
+}
+
+model course_discounts {
+  name              String
+  type              discount_types
+  code              String              @unique
+  max_redeems       Int                 @default(0)
+  redeems           Int                 @default(0)
+  amount            Int
+  deleted           Boolean             @default(false)
+  course            Int
+  courses           courses             @relation(fields: [course], references: [id])
+  people_in_cohorts people_in_cohorts[]
+
+  @@id([course, code])
+}
+
+model course_invites {
+  email   String
+  course  Int
+  courses courses @relation(fields: [course], references: [id])
+
+  @@id([course, email])
+}
+
+model course_maintainers {
+  maintainer String
+  course     Int
+  courses    courses @relation(fields: [course], references: [id])
+  people     people  @relation(fields: [maintainer], references: [id])
+
+  @@id([course, maintainer])
+}
+
+model courses {
+  id                                 Int                            @id @default(autoincrement())
+  name                               String
+  type                               course_types                   @default(course)
+  status                             course_status                  @default(draft)
+  category_id                        Int
+  duration                           String
+  invite_only                        Boolean                        @default(false)
+  description                        String
+  cost                               Float
+  prerequisites                      String
+  slug                               String                         @unique
+  cohort_max_size                    Int                            @default(0)
+  card_image                         String                         @default("/img/new_course.png")
+  course_group                       Int
+  maintainer_group                   Int
+  small_image                        String                         @default("https://hyperlink-data.nyc3.cdn.digitaloceanspaces.com/course-illustrations/new-course-small.png")
+  course_groupTodiscourse_groups     discourse_groups               @relation("courses_course_groupTodiscourse_groups", fields: [course_group], references: [id])
+  maintainer_groupTodiscourse_groups discourse_groups               @relation("courses_maintainer_groupTodiscourse_groups", fields: [maintainer_group], references: [id])
+  course_cohorts                     course_cohorts[]
+  course_discounts                   course_discounts[]
+  course_invites                     course_invites[]
+  course_maintainers                 course_maintainers[]
+  course_templates                   course_templates[]
+  people_watching_courses            people_watching_courses[]
+  standalone_events_in_courses       standalone_events_in_courses[]
+  watching_courses                   watching_courses[]
+}
+
+model course_templates {
+  course   Int
+  content  String
+  name     String
+  type     template_types @default(prepopulated)
+  title    String
+  required Boolean?       @default(false)
+  courses  courses        @relation(fields: [course], references: [id])
+
+  @@id([name, course])
+}
+
+model password_reset_keys {
+  key_hash     String @id
+  created_time String
+  email        String
+}
+
+model people {
+  id                        String                     @id
+  username                  String                     @unique
+  email                     String                     @unique
+  password_hash             String                     @unique
+  display_name              String                     @default("")
+  bio                       String                     @default("")
+  link                      String                     @default("")
+  calendar_id               String                     @unique @default(dbgenerated("uuid_generate_v4()"))
+  pronouns                  String                     @default("")
+  stripe_customer_id        String?
+  admins                    admins?
+  cohort_facilitators       cohort_facilitators[]
+  cohort_refunds            cohort_refunds[]
+  course_cohorts            course_cohorts[]
+  course_maintainers        course_maintainers[]
+  events                    events[]
+  people_in_cohorts         people_in_cohorts[]
+  people_in_events          people_in_events[]
+  people_watching_courses   people_watching_courses[]
+  stripe_connected_accounts stripe_connected_accounts?
+}
+
+model people_in_cohorts {
+  person           String
+  cohort           Int
+  discount_used    String?
+  amount_paid      Int
+  payment_intent   String?
+  course_cohorts   course_cohorts    @relation(fields: [cohort], references: [id])
+  course_discounts course_discounts? @relation(fields: [discount_used], references: [code])
+  people           people            @relation(fields: [person], references: [id])
+
+  @@id([person, cohort])
+}
+
+model cohort_events {
+  cohort         Int
+  event          Int
+  everyone       Boolean        @default(true)
+  course_cohorts course_cohorts @relation(fields: [cohort], references: [id])
+  events         events         @relation(fields: [event], references: [id])
+
+  @@id([cohort, event])
+}
+
+model events {
+  id                Int                @unique @default(autoincrement())
+  start_date        String
+  end_date          String
+  name              String
+  location          String
+  description       String
+  created_by        String
+  people            people             @relation(fields: [created_by], references: [id])
+  cohort_events     cohort_events[]
+  no_account_rsvps  no_account_rsvps[]
+  people_in_events  people_in_events[]
+  standalone_events standalone_events?
+}
+
+model discourse_groups {
+  name                               String
+  id                                 Int              @id
+  course_cohorts                     course_cohorts[]
+  course_groupTodiscourse_groups     courses[]        @relation("courses_course_groupTodiscourse_groups")
+  maintainer_groupTodiscourse_groups courses[]        @relation("courses_maintainer_groupTodiscourse_groups")
+}
+
+model watching_courses {
+  email   String
+  course  Int
+  courses courses @relation(fields: [course], references: [id])
+
+  @@id([email, course])
+}
+
+model people_watching_courses {
+  person  String
+  course  Int
+  courses courses @relation(fields: [course], references: [id])
+  people  people  @relation(fields: [person], references: [id])
+
+  @@id([course, person])
+}
+
+model stripe_connected_accounts {
+  person          String  @unique
+  stripe_account  String  @id
+  connected       Boolean @default(false)
+  payouts_enabled Boolean @default(false)
+  country         String
+  people          people  @relation(fields: [person], references: [id])
+}
+
+model people_in_events {
+  person String
+  event  Int
+  events events @relation(fields: [event], references: [id])
+  people people @relation(fields: [person], references: [id])
+
+  @@id([person, event])
+}
+
+model standalone_events {
+  event                        Int                            @id
+  cost                         Int
+  max_attendees                Int?
+  events                       events                         @relation(fields: [event], references: [id])
+  standalone_events_in_courses standalone_events_in_courses[]
+}
+
+model standalone_events_in_courses {
+  course            Int
+  standalone_event  Int
+  courses           courses           @relation(fields: [course], references: [id])
+  standalone_events standalone_events @relation(fields: [standalone_event], references: [event])
+
+  @@id([course, standalone_event])
+}
+
+model no_account_rsvps {
+  email  String
+  name   String
+  event  Int
+  events events @relation(fields: [event], references: [id])
+
+  @@id([email, event])
+}
+
+model cohort_refunds {
+  refund         String          @id
+  person         String?
+  cohort         Int?
+  course_cohorts course_cohorts? @relation(fields: [cohort], references: [id])
+  people         people?         @relation(fields: [person], references: [id])
+  refunds        refunds         @relation(fields: [refund], references: [payment_intent])
+}
+
+model refunds {
+  payment_intent String          @id
+  amount         Int
+  cohort_refunds cohort_refunds?
+}
+
+model cohort_facilitators {
+  cohort         Int
+  facilitator    String
+  course_cohorts course_cohorts @relation(fields: [cohort], references: [id])
+  people         people         @relation(fields: [facilitator], references: [id])
+
+  @@id([cohort, facilitator])
+}
+
+enum course_status {
+  draft
+  live
+  archived
+}
+
+enum discount_types {
+  percentage
+  absolute
+}
+
+enum template_types {
+  prepopulated
+  triggered
+}
+
+enum course_types {
+  course
+  club
+}

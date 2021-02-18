@@ -1,0 +1,13 @@
+This is a template for details / discussion related to a specific event in your cohort.
+
+Please edit this topic to include most or all of the elements listed below!
+
+❗️**Important:** Please schedule each event from the main cohort page. This template is not the main way to create an event, but may be useful as a reminder, a way to share related details, or collaborate on event notes.
+
+## [Event Title]
+
+Replace with: short description of the event; any additional info beyond what you included in the event description on the cohort page.
+
+## Details / Instructions
+
+Replace with: further details about the event, if needed. How to join, anything participants need to do to prepare; etc.

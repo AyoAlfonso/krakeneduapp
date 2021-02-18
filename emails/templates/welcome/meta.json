@@ -1,0 +1,12 @@
+{
+  "Name": "Welcome",
+  "Alias": "welcome",
+  "Subject": "Welcome to Hyperlink - confirm your account and get started!",
+  "TemplateType": "Standard",
+  "LayoutTemplate": "Hyperlink",
+  "TestRenderModel": {
+    "name": "name_Value",
+    "activation_code": "activation_code_Value",
+    "activation_url": "activation_url_Value"
+  }
+}
