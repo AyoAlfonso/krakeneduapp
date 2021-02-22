@@ -91,7 +91,7 @@ const Dashboard = () => {
               h('h3', COPY.courseListHeader),
               h(MoreLearningBannerButtons, [
                 h(Link, {href: '/courses'}, h('a', {}, h(Secondary, "Courses"))),
-                h(Link, {href: '/clubs'}, h('a', {}, h(Secondary, "Clubs"))),
+                // h(Link, {href: '/clubs'}, h('a', {}, h(Secondary, "Clubs"))),
                 h(Link, {href: '/events'}, h('a', {}, h(Secondary, "Events")))
               ])
             ])

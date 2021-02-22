@@ -1,7 +1,6 @@
 import { APIHandler, Request, ResultType } from "../../../src/apiHelpers";
 import {setTokenHeader, getToken} from '../../../src/token'
 import {syncSSO} from '../../../src/discourse'
-import { PrismaClient } from '@prisma/client'
 import bcrypt from 'bcryptjs'
 
 export type UpdatePersonMsg = {

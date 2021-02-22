@@ -1,7 +1,6 @@
 import { ResultType, APIHandler, Request} from 'src/apiHelpers'
 import * as rt from 'runtypes'
 import { getToken } from 'src/token'
-import { PrismaClient } from '@prisma/client'
 import { v4 as uuidv4 } from 'uuid';
 import prisma from "src/lib/prisma";
 

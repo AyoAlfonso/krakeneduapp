@@ -49,22 +49,32 @@ function CourseSettings(props:Extract<Props, {notFound:false}>){
   }, [user, course])
   if(!course || !user) return h(PageLoader)
 
-  return h(Box, {gap:64, width: 640}, [
-    h(Box, {gap: 16}, [
-      h(BackButton, {href: "/courses/[slug]/[id]", as: `/courses/${router.query.slug}/${router.query.id}`}, course.type === 'club' ? "Club" : "Course"),
-      h('h1', "Settings"),
-      h('p.big', [
-        `Hyperlink is new and some things can only be done manually for now! To add a new maintainer, remove a cohort, or anything else you don't see here, please email `,
-        h('a', {href: 'mailto:contact@hyperlink.academy'}, 'contact@hyperlink.academy')]),
+  return h(Box, { gap: 64, width: 640 }, [
+    h(Box, { gap: 16 }, [
+      h(
+        BackButton,
+        {
+          href: "/courses/[slug]/[id]",
+          as: `/courses/${router.query.slug}/${router.query.id}`,
+        },
+        course.type === "club" ? "Club" : "Course"
+      ),
+      h("h1", "Settings"),
+      h("p.big", [
+        `KrakenEdu is new and some things can only be done manually for now! To add a new maintainer, remove a cohort, or anything else you don't see here, please email `,
+        h("a", { href: "mailto:help@krakenedu.com" }, "help@krakenedu.com"),
+      ]),
     ]),
-    h(Tabs, { tabs: {
-      Cohorts: h(CohortSettings, {course, mutate}),
-      Details: h(EditDetails, {course, mutate}),
-      Invites: h(Invites, {course, mutate}),
-      Templates: h(CourseTemplates, {course, mutate}),
-      Discounts: h(Discounts, {course:course.id})
-    } })
-  ])
+    h(Tabs, {
+      tabs: {
+        Cohorts: h(CohortSettings, { course, mutate }),
+        Details: h(EditDetails, { course, mutate }),
+        Invites: h(Invites, { course, mutate }),
+        Templates: h(CourseTemplates, { course, mutate }),
+        Discounts: h(Discounts, { course: course.id }),
+      },
+    }),
+  ]);
 }
 
 export default WrappedCourseSettingsPage

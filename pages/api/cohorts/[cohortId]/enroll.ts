@@ -1,4 +1,3 @@
-import { PrismaClient } from "@prisma/client"
 import * as rt from 'runtypes'
 import { ResultType, APIHandler, Request } from "src/apiHelpers"
 import {StripePaymentMetaData, stripe} from 'src/stripe'
@@ -7,8 +6,9 @@ import { getToken } from "src/token";
 import { addMember, getTaggedPost } from "src/discourse";
 import {DISCOURSE_URL} from 'src/constants'
 import { prettyDate } from "src/utils"
-
 import prisma from "src/lib/prisma";
+
+
 export type EnrollResponse= ResultType<typeof enroll>
 export type EnrollMsg  = rt.Static<typeof EnrollMsgValidator>
 export type UnEnrollMsg = rt.Static<typeof UnEnrollMsgValidator>

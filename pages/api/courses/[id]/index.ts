@@ -1,11 +1,9 @@
 import { ResultType, APIHandler, Request} from '../../../../src/apiHelpers'
 import { getToken } from '../../../../src/token'
-import { PrismaClient } from '@prisma/client'
 import { updateCategory, updateGroup } from '../../../../src/discourse'
 import { slugify } from 'src/utils'
 import * as t from 'runtypes'
-
-const prisma = new PrismaClient()
+import prisma from "src/lib/prisma";
 
 export type UpdateCourseMsg = t.Static<typeof UpdateCourseMsgValidator>
 

@@ -1,12 +1,12 @@
 import { APIHandler, Request, ResultType } from "src/apiHelpers";
-import { PrismaClient } from "@prisma/client";
+import prisma from "src/lib/prisma";
 import { getToken } from "src/token";
 import * as t from 'runtypes'
 import produce from "immer";
 import { sendEventUpdateNoAccountEmail } from "emails";
 import { createEventInvite } from "src/calendar";
 
-import prisma from "src/lib/prisma";
+
 export default APIHandler({
   POST: updateEvent,
   DELETE: deleteEvent,

@@ -3,7 +3,7 @@ import { useState, ReactElement } from 'react'
 import Link from 'next/link'
 import { InferGetStaticPropsType } from 'next'
 import styled from '@emotion/styled'
-
+import prisma from "src/lib/prisma";
 import { Box, Seperator, TwoColumn, Sidebar } from 'components/Layout'
 import {Tabs, StickyWrapper} from 'components/Tabs'
 import { colors } from 'components/Tokens'
@@ -27,7 +27,6 @@ import { cohortPrettyDate } from 'components/Cards/CohortCard'
 import ErrorPage from 'pages/404'
 import { courseDataQuery } from 'pages/api/courses/[id]'
 import Head from 'next/head'
-import { PrismaClient } from '@prisma/client'
 import { useRouter } from 'next/router'
 import { AccentImg } from 'components/Images'
 import { TodoList } from 'components/TodoList'
@@ -395,7 +394,7 @@ export const getStaticProps = async (ctx:any) => {
 }
 
 export const getStaticPaths = async () => {
-  import prisma from "src/lib/prisma";
+
   let courses = await prisma.courses.findMany({select:{id: true, slug: true}})
   return {paths:courses.map(course=>{
     return {params: {id: course.id.toString(), slug: course.slug}}

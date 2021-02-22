@@ -1,15 +1,12 @@
-import {PrismaClient} from '@prisma/client'
 import bcrypt from 'bcryptjs'
 import { v4 as uuidv4 } from 'uuid';
-
 import hmac from '../../../src/hmac'
 import {setTokenHeader} from '../../../src/token'
 import {multiRouteHandler, ResultType, Request} from '../../../src/apiHelpers'
-import {syncSSO} from '../../../src/discourse'
+// import {syncSSO} from '../../../src/discourse'
 import {sendVerificationEmail} from '../../../emails'
 import { usernameValidate } from 'src/utils';
-
-const prisma = new PrismaClient()
+import prisma from "src/lib/prisma";
 
 export type SignupMsg = {
   email: string
@@ -90,13 +87,15 @@ async function VerifyEmail (req: Request) {
     })
   }
 
+  console.log(id, "id")
+
   if(!id) return {status: 403, result: "Error: Couldn't create user. May already exist"}
 
-  await syncSSO({
-    external_id: id,
-    username: token.username,
-    email: token.email
-  })
+  // await syncSSO({
+  //   external_id: id,
+  //   username: token.username,
+  //   email: token.email
+  // })
 
   return {
     status: 200,

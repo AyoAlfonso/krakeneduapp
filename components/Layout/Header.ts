@@ -16,6 +16,7 @@ import { useApi } from '../../src/apiHelpers'
 import { FeedbackMsg, FeedbackResult } from '../../pages/api/feedback'
 
 import {DISCOURSE_URL} from 'src/constants'
+let TWITTER_URL = 'https://twitter.com/BojaleLabs'
 
 const COPY = {
   feedbackTitle: "Tell us what's on your mind!",
@@ -31,8 +32,8 @@ export default function Header() {
       h(LoginButtons, {user, mutateUser}),
       !user ? null : h(FeedbackModal),
       h(Seperator, {style:{height:"100%"}}),
-      !user ? null : h(NavLink, {href:DISCOURSE_URL}, 'forum'),
-      h(Link, {href: "/library", passHref: true}, h(NavLink, 'library')),
+      !user ? null : h(NavLink, {href:TWITTER_URL}, 'twitter'),
+      h(Link, {href: "/courses", passHref: true}, h(NavLink, 'Courses')),
       h(LearnMenu)
     ]),
   ])
@@ -63,10 +64,10 @@ let LearnMenuItems = ()=> h('div', {style:{textAlign:'right', display:"grid"}}, 
     h('b.mono', 'courses'),
     h('p', "structured deep learning")
   ])),
-  h(Link, {href:"/clubs"}, h(LearnMenuItem, [
-    h('b.mono', 'clubs'),
-    h('p', "social peer learning")
-  ])),
+  // h(Link, {href:"/clubs"}, h(LearnMenuItem, [
+  //   h('b.mono', 'clubs'),
+  //   h('p', "social peer learning")
+  // ])),
   h(Link, {href:"/events"}, h(LearnMenuItem, [
     h('b.mono', 'events'),
     h('p', "single sessions")
@@ -125,7 +126,7 @@ const MobileMenu = (props:{user:any, mutateUser: any}) => {
         h('b', 'events'),
         h('p', "single sessions")
       ])),
-      !props.user ? null : h(NavLink, {href:DISCOURSE_URL}, h('b', 'forum')),
+      !props.user ? null : h(NavLink, {href:TWITTER_URL}, h('b', 'twitter')),
       h(Link, {href: "/library", passHref:true}, h(NavLink, {}, h('b', 'library'))),
       h(Seperator),
       h(Box, {gap: 16, style: {textAlign: 'right'}}, [
@@ -200,7 +201,7 @@ const Feedback = ()=> {
 const FeedbackModal = ()=>{
   let [display, setDisplay] = useState(false)
   return h(Fragment, [
-    h(NavLink, {onClick: ()=>setDisplay(true)},'feedback'),
+    h(NavLink, {onClick: ()=>setDisplay(true)},''),
     h(Modal, {display, onExit: ()=>setDisplay(false)}, h(Feedback))
   ])
 }

@@ -163,7 +163,6 @@ model cohort_events {
   everyone       Boolean        @default(true)
   course_cohorts course_cohorts @relation(fields: [cohort], references: [id])
   events         events         @relation(fields: [event], references: [id])
-
   @@id([cohort, event])
 }
 

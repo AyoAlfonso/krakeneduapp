@@ -57,7 +57,7 @@ export const getStaticProps = async (ctx:any) =>{
     let {data} = matter(content)
     return {...data, path: '/library/'+file.slice(0, -4)} as Library
   }).filter(p=>{
-    return p?.tags.includes(name)
+    return p?.tags?.includes(name)
   })
 
   return {props: {collection, posts:posts as Library[], notFound: false}} as const

@@ -1,8 +1,6 @@
 import {APIHandler, Request, ResultType} from 'src/apiHelpers'
-import { PrismaClient } from '@prisma/client'
 import { getToken } from 'src/token'
 import { createGroup, createCategory, updateTopic, createTopic, updateCategory } from 'src/discourse'
-
 import prisma from "src/lib/prisma";
 
 export type CreateCohortMsg = {

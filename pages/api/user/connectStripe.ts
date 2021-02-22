@@ -1,4 +1,3 @@
-import { PrismaClient } from '@prisma/client'
 import Stripe from 'stripe'
 import {APIHandler, ResultType, Request} from 'src/apiHelpers'
 import { getToken } from 'src/token'

@@ -10,32 +10,32 @@ export default function Footer(){
     h(Body, [
       h(Columns, [
         h(Box, {gap: 4}, [
-          h('h4', "More Info"),
-          h(Link, {href: '/team', passHref: true}, h(FooterLink, 'About the Team')),
-          h(Link, {href: '/manual', passHref: true}, h(FooterLink, 'Hyperlink Manual')),
-          h(Link, {href: '/library', passHref: true}, h(FooterLink, 'Hyperlink Library')),
+          // h('h4', "More Info"),
+          // h(Link, {href: '/team', passHref: true}, h(FooterLink, 'About the Team')),
+          // h(Link, {href: '/manual', passHref: true}, h(FooterLink, 'KrakenEdu Manual')),
+          // h(Link, {href: '/library', passHref: true}, h(FooterLink, 'KrakenEdu Library')),
           // h(Link, {href: '/faq', passHref: true}, h(FooterLink, 'FAQ')),
         ]),
         h(Box, {gap: 4}, [
           h('h4', "Contact Us"),
-          h(FooterLink, {href: 'https://twitter.com/hyperlink_a'}, 'Twitter'),
-          h(FooterLink, {href: 'mailto:contact@hyperlink.academy'}, 'Email')
+          h(FooterLink, {href: 'https://twitter.com/BojaleLabs'}, 'Twitter'),
+          h(FooterLink, {href: 'mailto:contact@reftify.com'}, 'Email')
         ]),
         h(Box, {gap: 4}, [
-          h('h4', "Technical"),
-          h(FooterLink, {href: 'https://gitlab.com/jaredpereira/hyperlink-academy'}, "Source Code"),
-          h(FooterLink, {href: 'https://gitlab.com/jaredpereira/hyperlink-academy/-/issues/new?'}, "Report a Bug"),
+          // h('h4', "Technical"),
+          // h(FooterLink, {href: 'https://gitlab.com/jaredpereira/hyperlink-academy'}, "Source Code"),
+          // h(FooterLink, {href: 'https://gitlab.com/jaredpereira/hyperlink-academy/-/issues/new?'}, "Report a Bug"),
         ]),
         h(Box, {gap: 4}, [
-          h('h4', "Policies"),
-          h(FooterLink, {href: '/terms'}, "Terms and Conditions"),
-          h(FooterLink, {href: '/privacy'}, "Privacy Policy"),
+          // h('h4', "Policies"),
+          // h(FooterLink, {href: '/terms'}, "Terms and Conditions"),
+          // h(FooterLink, {href: '/privacy'}, "Privacy Policy"),
         ]),
       ]),
       h('br'),
       h(Seperator),
       h('br'),
-      h('p', `© Learning Futures Inc`)
+      h('p', `© BojaleLabs Inc`)
     ])
   ])
 }

@@ -54,7 +54,7 @@ const CohortPage = (props: Extract<Props, {notFound:false}>) => {
 
   let invited = !!userCohorts?.invited_courses.find(course=>course.id === props.course.id )
   let inCohort = cohort.people_in_cohorts.find(p => p.person === (user ? user.id : undefined))
-  let isFacilitator  = !!user && !!cohort.cohort_facilitators.find(f=>user &&f.people.username === user.username)
+  let isFacilitator = !!user && !!cohort.cohort_facilitators.find(f=>user &&f.people.username === user.username)
   let isStarted = cohort && new Date() > new Date(cohort.start_date)
 
   let Tabs = {

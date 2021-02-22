@@ -49,25 +49,26 @@ export const collections = {
   // },
 }
 
-//the Hyperlink Library layout is defined here
+//the KrakenEdu Library layout is defined here
 
 type Props = InferGetStaticPropsType<typeof getStaticProps>
 const Library = (props:Props) => {
   return h(Box, {gap: 32}, [
     h(Box, {gap: 32, h: true, style:{display:"flex", flexWrap:"wrap"}}, [
-      h('h1', 'Hyperlink Library'),
+      h('h1', 'KrakenEdu Library'),
       h('a', {href:'/rss.xml', style:{alignSelf: 'center'}}, RSS),
       h('a', {href:'/library/latest', style:{alignSelf: 'center', float: 'right'}}, 'chronological feed'),
     ]),
     h('p.big', `Welcome to our internet center for teaching and learning — enjoy browsing the collections!`),
     h(Info, [
-      `📓 For a general introduction to Hyperlink and overview of how the platform works, please read the `,
-      h('a', {href: `/manual`}, `Hyperlink Manual`),
+      `📓 For a general introduction to KrakenEdu and overview of how the platform works, please read the `,
+      h('a', {href: `/manual`}, `KrakenEdu Manual`),
       `.`
     ]),
     ...Object.keys(collections).flatMap(slug=>{
+      console.log(props.posts)
       let collection = collections[slug as keyof typeof collections]
-      let posts = props.posts.filter(p=>p.tags.includes(slug)).sort((a, b)=>{
+      let posts = props.posts.filter(p=>p.tags && p.tags.includes(slug)).sort((a, b)=>{
         return new Date(a.date) < new Date(b.date) ? 1 : -1
       })
       return [

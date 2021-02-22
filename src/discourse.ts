@@ -1,6 +1,5 @@
 import crypto from 'crypto'
 import querystring from 'querystring'
-import {PrismaClient} from '@prisma/client'
 import {DISCOURSE_URL} from 'src/constants'
 import prisma from "src/lib/prisma";
 let headers = {
@@ -39,6 +38,7 @@ export async function createGroup(group:{
   mentionable_level?: number,
   messageable_level?: number
 }) {
+  console.log(group, "grouphere")
   if(typeof group.owner_usernames !== 'string') group.owner_usernames = group.owner_usernames.join(',')
   let result = await fetchWithBackoff(`${DISCOURSE_URL}/admin/groups`, {
     method: 'POST',
@@ -48,6 +48,8 @@ export async function createGroup(group:{
     },
     body: JSON.stringify({group})
   })
+
+   console.log(result, "grouphereafter")
 
   if(result.status !== 200) {
     console.log(await result.text())
@@ -98,12 +100,13 @@ export async function updateTopic(topic:string, input: {category_id: number, tit
 }
 
 export async function createTopic(input:{title: string, category: number | string, raw: string, tags?: string[]}, asUser?: string) {
+  console.log(asUser, "asUser")
   let result = await fetchWithBackoff(`${DISCOURSE_URL}/posts.json`, {
     method: "POST",
     headers: {
       "Content-Type": 'application/json; charset=utf-8',
       ...headers,
-      "Api-Username": asUser || headers["Api-Username"]
+      "Api-Username": headers["Api-Username"]
     },
     body: JSON.stringify(input)
   })
@@ -224,7 +227,7 @@ export const getTaggedPost = async (c: string | number, tag: string) => {
 
   if(res.status !== 200) console.log(await res.text())
   let category = await res.json() as Category
-  let topicID = category.topic_list.topics.find((topic) => topic.tags.includes(tag))?.id
+  let topicID = category.topic_list.topics.find((topic) => topic.tags && topic.tags.includes(tag))?.id
   if(!topicID) return {text: '', id: ''}
   let topicRequest = await fetchWithBackoff(`${DISCOURSE_URL}/raw/${topicID}`, {headers})
   return {text: await topicRequest.text(), id: topicID}

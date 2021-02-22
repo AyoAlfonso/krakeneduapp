@@ -13,8 +13,9 @@ import { sortByDateAndName } from 'src/utils'
 export function CourseAndClubList(props:{initialData:Courses, type: "club" | "course"}) {
   let {data: allCourses} = useCourses({initialData:props.initialData, type: props.type})
 
-  let upcoming = allCourses?.courses
-  .flatMap(course=>course.course_cohorts
+console.log(allCourses, "allCourses")
+  let upcoming = allCourses && allCourses.courses
+  .flatMap(course => course.course_cohorts
     .filter(c=> course.cohort_max_size === 0 || course.cohort_max_size !==c.people_in_cohorts.length)
     .map(cohort=>{
       return {cohort, course}
@@ -22,6 +23,7 @@ export function CourseAndClubList(props:{initialData:Courses, type: "club" | "co
     .sort(({cohort:a}, {cohort:b})=>sortByDateAndName(a, b))
 
   let [min, mobileMin] = props.type === 'club' ? [290, 290] : [400, 320]
+  //Club cohort card will soon change to job cohort card
   let CohortCardComponent = props.type === 'club' ? ClubCohortCard : CourseCohortCard
 
   return h(Box, {gap: 64} ,[
@@ -32,7 +34,7 @@ export function CourseAndClubList(props:{initialData:Courses, type: "club" | "co
           h('h1', "Clubs"),
           h('p.big', `Clubs are a lightweight way to convene people with shared interests to explore new things together.`),
         ]),
-        h(Link, {href: "/forms/propose-club"}, h('a', {}, h(Primary, 'Propose a new Club!')))
+        // h(Link, {href: "/forms/propose-club"}, h('a', {}, h(Primary, 'Propose a new Club!')))
       ]),
     ])
     // END Header for Clubs
@@ -44,7 +46,7 @@ export function CourseAndClubList(props:{initialData:Courses, type: "club" | "co
             h('h1', "Courses"),
             h('p.big', `Courses are deep dives into a subject, led by a facilitator experienced in the field.`),
           ]),
-          h(Link, {href: "/forms/propose-course"}, h('a', {}, h(Primary, 'Propose a new Course!')))
+          // h(Link, {href: "/forms/propose-course"}, h('a', {}, h(Primary, 'Propose a new Course!')))
         ]), 
       ]),
     // END Header for Courses 

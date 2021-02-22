@@ -33,7 +33,7 @@ const Library = (props:Props) => {
       if (new Date(a.date) < new Date(b.date)) return 1
       return -1
     }).map(post=>{
-      return h(LibraryPost, post)
+      return props && h(LibraryPost, post)
     })
   ])
 }
@@ -53,11 +53,12 @@ export default Library
 
 // This defines the layout for a single library post (tags, title, author, publish date, description)
 const LibraryPost = (props:Library) => {
+  console.log(props, "propss")
   return h(Box, {gap: 16, style: {maxWidth: 640}} , [
-    h(Box, {h:true}, props.tags.map(tag => h(Tag, {tagType: tag}))),
+    h(Box, {h:true}, props.tags && props.tags.map(tag => h(Tag, {tagType: tag}))),
     h(Box, {gap:8}, [
       h(Link, {href: props.path}, h('a.notBlue', {style: {textDecoration:'none'}},h('h2', props.title))),
-      h('p.textSecondary', `by ${props.author}  |  ${props.date}`),
+      h('p.textSecondary', `by ${props?.author} | ${ props?.date}`),
     ]),
     h('div', [
       h('p.big', props.description)
@@ -70,6 +71,8 @@ const tagColors:{[key: string]:string | undefined} = {
     'announcement': '#cc2288',
     'book-review': '#cc3322',
     'learning-design': '#11aacc',
+    'learning-writing': '#6B8648',
+    'learning-programming': '#cc2288',
     'hyperlink-meta': '#1d44d6',
     'stargazing': '#6B8648'
 }

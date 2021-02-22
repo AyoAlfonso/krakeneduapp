@@ -1,12 +1,11 @@
-import { PrismaClient } from "@prisma/client"
 import { ResultType, APIHandler, Request } from "src/apiHelpers"
 import { getToken } from "src/token"
 import { sendWatchingNotificationEmail } from "emails"
 import { prettyDate } from "src/utils"
 import produce from "immer"
 import { updateCategory, updateGroup } from "src/discourse"
-
 import prisma from "src/lib/prisma";
+
 export type UpdateCohortMsg = {
   data: Partial<{
     completed: true

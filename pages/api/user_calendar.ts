@@ -1,7 +1,6 @@
-import { events, PrismaClient } from "@prisma/client";
+import { events } from "@prisma/client";
 import ICAL from 'ical.js'
 import { NextApiRequest, NextApiResponse } from "next";
-
 import prisma from "src/lib/prisma";
 
 export default async function getUserEvents(req: NextApiRequest, res: NextApiResponse) {

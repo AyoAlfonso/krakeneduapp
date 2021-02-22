@@ -1,6 +1,5 @@
 import { NextApiRequest, NextApiResponse} from 'next'
 import Stripe from 'stripe'
-import {PrismaClient} from '@prisma/client'
 import { getUsername, addMember, getTaggedPost, } from 'src/discourse'
 import {DISCOURSE_URL} from 'src/constants'
 import { sendCohortEnrollmentEmail, sendEnrollNotificationEmaill, sendEventRSVPEmail } from 'emails';
@@ -8,7 +7,7 @@ import { prettyDate } from '../../src/utils';
 import { StripePaymentMetaData } from 'src/stripe';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET || '', {apiVersion:'2020-08-27'});
-const prisma = new PrismaClient()
+import prisma from "src/lib/prisma";
 
 export const config = {
   api: {

@@ -1,10 +1,9 @@
 import { Request, ResultType, APIHandler} from "../../../../src/apiHelpers"
-import { PrismaClient } from "@prisma/client"
+import prisma from "src/lib/prisma";
 import { sendInviteToCourseEmail } from "../../../../emails"
 
 export type InviteToCourseMsg = ({ email: string, username: undefined} | {username: string, email: undefined})
 export type InviteToCourseResponse = ResultType<typeof inviteToCourse>
-import prisma from "src/lib/prisma";
 
 export default APIHandler(inviteToCourse)
 async function inviteToCourse(req:Request) {

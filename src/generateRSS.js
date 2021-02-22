@@ -5,11 +5,11 @@ let path  = require("path")
 
 function generate () {
   let feed = new Feed({
-    title: 'Hyperlink Library',
-    link: 'https://hyperlink.academy',
-    id: 'https://hyperlink.academy',
+    title: 'KrakenEdu Library',
+    link: 'https://KrakenEdu.academy',
+    id: 'https://KrakenEdu.academy',
     feedLinks: {
-      rss: 'https://hyperlink.academy/rss.xml'
+      rss: 'https://KrakenEdu.academy/rss.xml'
     },
     copyright: 'CC0'
   })
@@ -22,15 +22,16 @@ function generate () {
     let {data} = matter(content)
     feed.addItem({
       title: data.title,
-      link: 'https://hyperlink.academy/library/' + file.slice(0, -4),
+      link: 'https://KrakenEdu.academy/library/' + file.slice(0, -4),
       author: data.author,
       date: new Date(data.date),
       description: data.description
     })
   })
 
-  fs.writeFileSync(path.join(__dirname, '../public', 'atom.xml'), feed.atom1())
-  fs.writeFileSync(path.join(__dirname, '../public', 'rss.xml'), feed.rss2())
+  // fs.writeFileSync(path.join(__dirname, '../public', 'atom.xml'), feed.atom1())
+  // fs.writeFileSync(path.join(__dirname, '../public', 'rss.xml'), feed.rss2())
 }
 
-generate()
+//TO DO: work on rss 
+// generate()

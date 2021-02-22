@@ -1,5 +1,4 @@
 import { Request, ResultType, APIHandler} from "../../../../src/apiHelpers"
-import { PrismaClient } from "@prisma/client"
 import { getToken } from "src/token"
 import prisma from "src/lib/prisma";
 
