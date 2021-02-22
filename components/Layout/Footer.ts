@@ -9,13 +9,13 @@ export default function Footer(){
   return h(FooterContainer, [
     h(Body, [
       h(Columns, [
-        h(Box, {gap: 4}, [
+        // h(Box, {gap: 4}, [
           // h('h4', "More Info"),
           // h(Link, {href: '/team', passHref: true}, h(FooterLink, 'About the Team')),
           // h(Link, {href: '/manual', passHref: true}, h(FooterLink, 'KrakenEdu Manual')),
           // h(Link, {href: '/library', passHref: true}, h(FooterLink, 'KrakenEdu Library')),
           // h(Link, {href: '/faq', passHref: true}, h(FooterLink, 'FAQ')),
-        ]),
+        // ]),
         h(Box, {gap: 4}, [
           h('h4', "Contact Us"),
           h(FooterLink, {href: 'https://twitter.com/BojaleLabs'}, 'Twitter'),

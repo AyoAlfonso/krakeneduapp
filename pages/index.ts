@@ -1,7 +1,7 @@
 import h from 'react-hyperscript'
 import styled from '@emotion/styled'
 import { InferGetServerSidePropsType, GetServerSidePropsContext } from 'next'
-
+// import LandingPage2 from 'components/LandingPage2'
 import Intro from 'writing/Intro.mdx'
 import { Mobile, Tablet} from 'components/Tokens'
 import { Box, Body, FlexGrid} from 'components/Layout'
@@ -17,11 +17,11 @@ import { EventCard } from 'components/Cards/EventCard'
 import {CourseCohortCard, ClubCohortCard} from 'components/Cards/CohortCard'
 
 let COPY = {
-  hyperlinkTagline: "Hyperlink is a course platform and online school built for seriously effective learning.",
-  registerHeader: "Calling all superlearners! Join the Hyperlink Alpha to propose a course idea, and (very soon!) enroll one of our first courses.",
+  hyperlinkTagline: "Kraken.Edu is the future of work and upskilling in Nigeria.",
+  // registerHeader: "Calling all professionals! Join the Hyperlink Alpha to propose a course idea, and (very soon!) enroll one of our first courses.",
   registerButton: "Browse the Courses",
   emailHeader: "Get updates about new courses and more!",
-  emailDescription: "We'll never spam or share your email. You can unsubscribe at any time.",
+  // emailDescription: "We'll never spam or share your email. You can unsubscribe at any time.",
   emailButton: "Get Updates",
   coursesHeader: "All Courses",
 }
@@ -50,7 +50,7 @@ const Landing = (props:Props) => {
   console.log(props.events)
   return h(Box, {gap:48}, [
     h(Welcome),
-    h(WhyHyperlink, {}, h(Body, {}, h(Intro))),
+    // h(WhyHyperlink, {}, h(Body, {}, h(Intro))),
     !courses || courses.length === 0 ? null : h(Box, {gap: 48}, [
       h('h1', {id: 'courses'}, "Upcoming Courses"),
       h(FlexGrid, {min: 400, mobileMin: 320}, 
@@ -87,12 +87,12 @@ const Welcome = () =>{
   return h(LandingContainer, [
     h(Box, {gap:16}, [
       h(Box, {gap:32}, [
-      h(Title, ['hyperlink.', h('wbr'), 'academy']),
+      h(Title, ['Kraken.', h('wbr'), 'Edu']),
       h(Tagline, COPY.hyperlinkTagline),
       ]),
       h(CTAGrid, [
         h('a', {href:'#courses'}, h(Primary, {}, COPY.registerButton)),
-        h(NewsletterSignup)
+        // h(NewsletterSignup)
       ]),
     ]),
   ])
