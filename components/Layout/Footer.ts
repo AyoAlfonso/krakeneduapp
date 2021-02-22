@@ -1,7 +1,5 @@
 import h from 'react-hyperscript'
 import styled from '@emotion/styled'
-import Link from 'next/link'
-
 import { colors } from '../Tokens'
 import { Body, Box, Seperator} from './index'
 
