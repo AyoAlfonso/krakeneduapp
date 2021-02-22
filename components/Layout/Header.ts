@@ -15,7 +15,7 @@ import { Modal } from '../Modal'
 import { useApi } from '../../src/apiHelpers'
 import { FeedbackMsg, FeedbackResult } from '../../pages/api/feedback'
 
-import {DISCOURSE_URL} from 'src/constants'
+// import {DISCOURSE_URL} from 'src/constants'
 let TWITTER_URL = 'https://twitter.com/BojaleLabs'
 
 const COPY = {
