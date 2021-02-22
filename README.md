@@ -48,3 +48,4 @@ bump
 ## Staging
 
 TBD
+# krakenedu-app
