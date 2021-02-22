@@ -2,14 +2,16 @@ import h from 'react-hyperscript'
 import styled from '@emotion/styled'
 import { InferGetServerSidePropsType, GetServerSidePropsContext } from 'next'
 // import LandingPage2 from 'components/LandingPage2'
-import Intro from 'writing/Intro.mdx'
+// import Intro from 'writing/Intro.mdx'
 import { Mobile, Tablet} from 'components/Tokens'
-import { Box, Body, FlexGrid} from 'components/Layout'
+import { Box, 
+// Body, 
+FlexGrid} from 'components/Layout'
 import { Primary, Secondary } from 'components/Button'
 // import {TitleImg} from '../components/Images'
 import { Courses, useCourses } from 'src/data'
 import {getToken} from 'src/token'
-import NewsletterSignup from 'components/NewsletterSignup'
+// import NewsletterSignup from 'components/NewsletterSignup'
 import { coursesQuery } from 'pages/api/courses'
 import { getPublicEventsQuery } from './api/events'
 import Link from 'next/link'
@@ -98,16 +100,16 @@ const Welcome = () =>{
   ])
 }
 
-let WhyHyperlink = styled('div')`
-background-color: #F0F7FA;
-width: 100vw;
-position: relative;
-left: 50%;
-right: 50%;
-margin-left: -50vw;
-margin-right: -50vw;
-text-align: center;
-`
+// let WhyHyperlink = styled('div')`
+// background-color: #F0F7FA;
+// width: 100vw;
+// position: relative;
+// left: 50%;
+// right: 50%;
+// margin-left: -50vw;
+// margin-right: -50vw;
+// text-align: center;
+// `
 
 export const getServerSideProps = async ({req,res}:GetServerSidePropsContext) => {
   let token = getToken(req)

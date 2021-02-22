@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import bcrypt from 'bcryptjs
+import bcrypt from "bcryptjs";
 import prisma from "src/lib/prisma";
 
 let username = process.env.POSTMARK_WEBHOOK_USERNAME
