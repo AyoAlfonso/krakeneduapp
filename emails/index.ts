@@ -34,7 +34,7 @@ export function sendEmail<T extends EmailMetadata>(meta:T) {
     email: string,
     vars?: T["TestRenderModel"], data?: Partial<{Metadata?:Hash<string>, Attachments: Array<{Name: string, Content: string, ContentType: string, ContentID: string | null}>}>) {
     if(process.env.NODE_ENV === 'production') return client.sendEmailWithTemplate({
-      From: 'Hyperlink accounts@hyperlink.academy',
+      From: `ayo@${window.location.origin}`,
       To: email,
       TemplateAlias: meta.Alias,
       TemplateModel: vars,
@@ -47,7 +47,7 @@ export function sendBatchEmail<T extends EmailMetadata>(meta:T) {
   return (msgs:Array<{email: string, vars: T["TestRenderModel"],data?: Partial<{Metadata?:Hash<string>, Attachments: Array<{Name: string, Content: string, ContentType: string, ContentID: string | null}>}>} | undefined>) => {
     if(process.env.NODE_ENV === 'production') return client.sendEmailBatchWithTemplates(msgs.filter(x=>x!== undefined).map(msg=>{
       return {
-        From: 'Hyperlink accounts@hyperlink.academy',
+        From: `ayo@${window.location.origin}`,
         To: msg?.email || '',
         TemplateAlias: meta.Alias,
         TemplateModel: msg?.vars || {},

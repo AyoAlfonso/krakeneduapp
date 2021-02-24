@@ -7,10 +7,10 @@ export default async function getUserEvents(req: NextApiRequest, res: NextApiRes
   let calendar_ID = req.query.id as string
   let calendar = new ICAL.Component(['vcalendar',[],[]])
   calendar.updatePropertyWithValue('version', '2.0');
-  calendar.updatePropertyWithValue('prodid', 'hyperlink.academy');
+  calendar.updatePropertyWithValue('prodid', `${window.location.origin}`);
   calendar.updatePropertyWithValue('method', "PUBLISH")
-  calendar.updatePropertyWithValue('name', 'Hyperlink Calendar')
-  calendar.updatePropertyWithValue('x-wr-calname', 'Hyperlink Calendar')
+  calendar.updatePropertyWithValue('name', 'KrakenEdu Calendar')
+  calendar.updatePropertyWithValue('x-wr-calname', 'KrakenEdu Calendar')
 
   let [user_cohorts, facilitator_cohorts, standalone] = await Promise.all([
     prisma.people_in_cohorts.findMany({
@@ -101,7 +101,7 @@ export default async function getUserEvents(req: NextApiRequest, res: NextApiRes
   for(let event of events) {
     let vevent = new ICAL.Component('vevent')
     let calEvent = new ICAL.Event(vevent)
-    calEvent.uid = 'hyperlink-'+event.id
+    calEvent.uid = 'krakenedu-'+event.id
     calEvent.description = event.description
     calEvent.summary = event.course ? (event.course + ' - ' + event.name) : event.name
     calEvent.location = event.location

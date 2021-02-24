@@ -60,7 +60,7 @@ async function POSTEventRSVP(req:Request){
     await Promise.all([
       sendEventRSVPNoAccountEmail(msg.email, {
         name: msg.name,
-        event_page_url: `https://hyperlink.academy/events/${event.events.id}`,
+        event_page_url: `https://${window.location.origin}/events/${event.events.id}`,
         event_name: event.events.name
       }, {Attachments: [
         {Name: "event.ics", ContentType: "text/calender", ContentID: null, Content}
@@ -85,7 +85,7 @@ async function POSTEventRSVP(req:Request){
     await Promise.all([
       sendEventRSVPEmail(user.email, {
         name: user.display_name || user.username,
-        event_page_url: `https://hyperlink.academy/events/${event.events.id}`,
+        event_page_url: `https://${window.location.origin}/events/${event.events.id}`,
         event_name: event.events.name
       }),
       prisma.people_in_events.create({

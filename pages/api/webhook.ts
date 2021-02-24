@@ -102,14 +102,14 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
               name: person.display_name || person.username,
               course_start_date: prettyDate(cohort.start_date),
               course_name: cohort.courses.name,
-              cohort_page_url: `https://hyperlink.academy/courses/${cohort.courses.slug}/${cohort.course}/cohorts/${cohort.id}`,
+              cohort_page_url: `https://${window.location.origin}/courses/${cohort.courses.slug}/${cohort.course}/cohorts/${cohort.id}`,
               cohort_forum_url: `${DISCOURSE_URL}/session/sso?return_path=/c/${cohort.category_id}`,
               get_started_topic_url: `${DISCOURSE_URL}/t/${gettingStarted.id}`
             }),
             Promise.all([cohort.cohort_facilitators.map(async (f) => person && cohort && sendEnrollNotificationEmaill(f.people.email, {
               learner: person.display_name || person.username,
               course: cohort.courses.name,
-              cohort_page_url: `https://hyperlink.academy/courses/${cohort.courses.slug}/${cohort.course}/cohorts/${cohort.id}`,
+              cohort_page_url: `https://${window.location.origin}/courses/${cohort.courses.slug}/${cohort.course}/cohorts/${cohort.id}`,
               cohort_forum_url: `${DISCOURSE_URL}/session/sso?return_path=/c/${cohort.category_id}`,
             }))])
           ])
@@ -127,7 +127,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
           await Promise.all([
             sendEventRSVPEmail(person.email, {
               name: person.display_name || person.username,
-              event_page_url: `https://hyperlink.academy/events/${event.events.id}`,
+              event_page_url: `https://${window.location.origin}/events/${event.events.id}`,
               event_name: event.events.name
             }),
             prisma.people_in_events.create({data:{

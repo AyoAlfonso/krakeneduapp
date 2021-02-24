@@ -13,10 +13,10 @@ export default function Calender(){
   if(!user || !profile) return null
 
   return h(Box, {gap:32, width: 640, ma: true}, [
-    h('h2', "Subscribe to Your Hypercalendar!"),
+    h('h2', "Subscribe to Your Calendar!"),
     h(Box, [
-      h('b', `Copy this URL to subscribe to all your Hyperlink events in your favorite calendar app.`),
-      h('p',`❗ We made this calendar just for you, and you only need to add it once! We'll automatically sync events for all your Hyperlink courses, now and in the future.`)
+      h('b', `Copy this URL to subscribe to all your KrakenEdu events in your favorite calendar app.`),
+      h('p',`❗ We made this calendar just for you, and you only need to add it once! We'll automatically sync events for all your krakenEdu courses, now and in the future.`)
     ]),
     h(Box, {style:{justifyItems: 'center'}}, [
       h(Input, {
