@@ -170,11 +170,20 @@ async function updateEvent(req:Request) {
               email: rsvp.email,
               vars: {
                 name: rsvp.name,
-                event_name: event?.name || '',
-                event_page_url: `https://hyperlink.academy/events/${event?.id}`,
+                event_name: event?.name || "",
+                event_page_url: `https://krakenedu.com/events/${event?.id}`,
               },
-              data: {Attachments: [
-                {Name: "event.ics", ContentType: "text/calender", ContentID: null, Content}]}}
+              data: {
+                Attachments: [
+                  {
+                    Name: "event.ics",
+                    ContentType: "text/calender",
+                    ContentID: null,
+                    Content,
+                  },
+                ],
+              },
+            };
           }))
         }
 

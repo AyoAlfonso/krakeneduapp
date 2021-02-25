@@ -1,6 +1,6 @@
 Hi, {{name}},
 
-You've been invited to join a course on Hyperlink! (https://hyperlink.academy)
+You've been invited to join a course on Krakenedu! (https://krakenedu.com)
 
 Head here to learn more and consider joining:
 
@@ -9,17 +9,9 @@ Head here to learn more and consider joining:
 
 Please note that you need an account to join — log in, or sign up if you don't yet have an account and you'll be able to register.
 
-https://hyperlink.academy/login
-https://hyperlink.academy/signup
+https://krakenedu.com/login
+https://krakenedu.com/signup
 
 We hope to see you in this course soon!
-
----
-
-First time hearing about Hyperlink?
-
-It's a course platform and online school built for seriously effective learning — and we'd love to have you join the community! You can learn more here in the Hyperlink Manual:
-
-https://hyperlink.academy/manual
 
 Any questions, just hit reply and let us know.

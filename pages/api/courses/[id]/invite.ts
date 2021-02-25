@@ -35,10 +35,10 @@ async function inviteToCourse(req:Request) {
   }})
 
   await sendInviteToCourseEmail(email, {
-    course_url: `https://hyperlink.academy/courses/${courseData.slug}/${courseID}`,
+    course_url: `https://krakenedu.com/courses/${courseData.slug}/${courseID}`,
     course_name: courseData.name,
-    name
-  })
+    name,
+  });
 
   return {status: 200, result: {email}} as const
 }

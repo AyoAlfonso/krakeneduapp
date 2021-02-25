@@ -19,14 +19,15 @@ import { EventCard } from 'components/Cards/EventCard'
 import {CourseCohortCard, ClubCohortCard} from 'components/Cards/CohortCard'
 
 let COPY = {
-  hyperlinkTagline: "Kraken.Edu is the future of work and upskilling in Nigeria.",
-  // registerHeader: "Calling all professionals! Join the Hyperlink Alpha to propose a course idea, and (very soon!) enroll one of our first courses.",
+  hyperlinkTagline:
+    "Kraken.Edu is the future of work and upskilling in Nigeria.",
+  // registerHeader: "Calling all professionals! Join the KrakenEdu Alpha to propose a course idea, and (very soon!) enroll one of our first courses.",
   registerButton: "Browse the Courses",
   emailHeader: "Get updates about new courses and more!",
   // emailDescription: "We'll never spam or share your email. You can unsubscribe at any time.",
   emailButton: "Get Updates",
   coursesHeader: "All Courses",
-}
+};
 
 type Props = InferGetServerSidePropsType<typeof getServerSideProps>
 const Landing = (props:Props) => {
@@ -100,7 +101,7 @@ const Welcome = () =>{
   ])
 }
 
-// let WhyHyperlink = styled('div')`
+// let WhyKrakenEdu = styled('div')`
 // background-color: #F0F7FA;
 // width: 100vw;
 // position: relative;

@@ -10,14 +10,14 @@ export const createEventInvite = (props:{
 
   let calendar = new ICAL.Component(['vcalendar',[],[]])
   calendar.updatePropertyWithValue('version', '2.0');
-  calendar.updatePropertyWithValue('prodid', 'hyperlink.academy');
+  calendar.updatePropertyWithValue('prodid', `${window.location.origin}`);
   calendar.updatePropertyWithValue('method', "REQUEST")
-  calendar.updatePropertyWithValue('name', 'Hyperlink Calendar')
-  calendar.updatePropertyWithValue('x-wr-calname', 'Hyperlink Calendar')
+  calendar.updatePropertyWithValue('name', 'KrakenEdu Calendar')
+  calendar.updatePropertyWithValue('x-wr-calname', 'KrakenEdu Calendar')
 
   let vevent = new ICAL.Component('vevent')
   let calEvent = new ICAL.Event(vevent)
-  calEvent.uid = 'hyperlink-'+props.id
+  calEvent.uid = 'krakenedu-'+props.id
   calEvent.description = props.description
   calEvent.summary = props.summary
   calEvent.location = props.location

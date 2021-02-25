@@ -96,23 +96,43 @@ const EditableEvent = (props: Extract<Props, {notFound: false}>) => {
       ])
     ])
   ])
-  return h('div', [
-    user&&props.people.id === user.id ? h(Banner, {start_date: props.start_date, setEditting}) : null,
-    h(Head, {children: [
-      h('title', {key: "title"}, event.name),
-      h('meta', {property:"og:title", content:event.name, key:"og:title"}),
-      h('meta', {property: "og:description", content: event.description.slice(0, 140)+'...', key: "og:description"}),
-      h('meta', {property: "og:image", content: 'https://hyperlink.academy/img/social-logo.png', key: "og:image"}),
-      h('meta', {property: "twitter:card", content: "summary", key:"twitter:card"})
-    ]}),
+  return h("div", [
+    user && props.people.id === user.id
+      ? h(Banner, { start_date: props.start_date, setEditting })
+      : null,
+    h(Head, {
+      children: [
+        h("title", { key: "title" }, event.name),
+        h("meta", {
+          property: "og:title",
+          content: event.name,
+          key: "og:title",
+        }),
+        h("meta", {
+          property: "og:description",
+          content: event.description.slice(0, 140) + "...",
+          key: "og:description",
+        }),
+        h("meta", {
+          property: "og:image",
+          content: "https://krakenedu.com/img/social-logo.png",
+          key: "og:image",
+        }),
+        h("meta", {
+          property: "twitter:card",
+          content: "summary",
+          key: "twitter:card",
+        }),
+      ],
+    }),
     h(Event, {
       notFound: false as false,
       ...event,
       facilitating: !!user && props.people.id === user.id,
-      rsvpd: !!event.people_in_events.find(p=>user && p.person === user.id),
-      mutate
-    })
-  ])
+      rsvpd: !!event.people_in_events.find((p) => user && p.person === user.id),
+      mutate,
+    }),
+  ]);
 }
 
 

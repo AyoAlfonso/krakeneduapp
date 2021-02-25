@@ -87,30 +87,49 @@ async function enroll (req: Request) {
   if(price === 0) {
     let gettingStarted = await getTaggedPost(cohort.category_id, 'getting-started')
     await Promise.all([
-      discount ? prisma.course_discounts.update({where:{code: discount.code}, data:{redeems:{increment: 1}}}) : null,
-      prisma.people_in_cohorts.create({data: {
-        amount_paid: 0,
-        people: {connect: {id: user.id}},
-        course_cohorts: {connect: {id: cohortId}},
-        course_discounts: discount ? {connect:{code: discount.code}} : undefined
-      }}),
+      discount
+        ? prisma.course_discounts.update({
+            where: { code: discount.code },
+            data: { redeems: { increment: 1 } },
+          })
+        : null,
+      prisma.people_in_cohorts.create({
+        data: {
+          amount_paid: 0,
+          people: { connect: { id: user.id } },
+          course_cohorts: { connect: { id: cohortId } },
+          course_discounts: discount
+            ? { connect: { code: discount.code } }
+            : undefined,
+        },
+      }),
       addMember(cohort.discourse_groups.id, user.username),
-      addMember(cohort.courses.course_groupTodiscourse_groups.id, user.username),
+      addMember(
+        cohort.courses.course_groupTodiscourse_groups.id,
+        user.username
+      ),
       sendCohortEnrollmentEmail(user.email, {
         name: user.display_name || user.username,
         course_start_date: prettyDate(cohort.start_date),
         course_name: cohort.courses.name,
         cohort_page_url: `${origin}/courses/${cohort.courses.slug}/${cohort.course}/cohorts/${cohort.id}`,
         cohort_forum_url: `${DISCOURSE_URL}/session/sso?return_path=/c/${cohort.category_id}`,
-        get_started_topic_url: `${DISCOURSE_URL}/t/${gettingStarted.id}`
+        get_started_topic_url: `${DISCOURSE_URL}/t/${gettingStarted.id}`,
       }),
-      Promise.all([cohort.cohort_facilitators.map(async (f) => person && cohort && sendEnrollNotificationEmaill(f.people.email, {
-        learner: person.display_name || person.username,
-        course: cohort.courses.name,
-        cohort_page_url: `https://hyperlink.academy/courses/${cohort.courses.slug}/${cohort.course}/cohorts/${cohort.id}`,
-        cohort_forum_url: `${DISCOURSE_URL}/session/sso?return_path=/c/${cohort.category_id}`,
-      }))])
-    ])
+      Promise.all([
+        cohort.cohort_facilitators.map(
+          async (f) =>
+            person &&
+            cohort &&
+            sendEnrollNotificationEmaill(f.people.email, {
+              learner: person.display_name || person.username,
+              course: cohort.courses.name,
+              cohort_page_url: `${origin}/courses/${cohort.courses.slug}/${cohort.course}/cohorts/${cohort.id}`,
+              cohort_forum_url: `${DISCOURSE_URL}/session/sso?return_path=/c/${cohort.category_id}`,
+            })
+        ),
+      ]),
+    ]);
     return {
       status: 200,
       result: {zeroCost: true} as const

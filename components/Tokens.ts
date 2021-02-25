@@ -23,3 +23,4 @@ export type Widths = 400 | 640 | 1024
 
 export const Mobile = '@media(max-width:420px)'
 export const Tablet = '@media(max-width:768px)'
+export const ProgressBarZindex = 'z-index: 50'

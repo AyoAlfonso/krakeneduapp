@@ -199,7 +199,7 @@ export const CohortMembers = (props:{cohort:Cohort, isFacilitator: boolean, user
         `Questions about this `,
         props.cohort.courses.type === 'club' ? `club` : `course`,
         `? `,
-        h('a', {href: `https://forum.hyperlink.academy/new-message?groupname=${props.cohort.courses.slug}-m`, target: `_blank`}, `Message the facilitator`),
+        h('a', {href: `https://forum.krakenedu.academy/new-message?groupname=${props.cohort.courses.slug}-m`, target: `_blank`}, `Message the facilitator`),
         ` on the forum.`
       ]),
       ...props.cohort.cohort_facilitators.map(f=>h(Box, [
@@ -336,7 +336,7 @@ const MarkCohortComplete = (props:{cohort:Cohort, mutate:(c:Cohort)=>void})=> {
               type: 'checkbox',
             }),
             h("span", [
-            "Use the ", h(Link, {href: `http://hyperlink.academy/courses/${props.cohort.courses.slug}/${props.cohort.courses.id}/cohorts/${props.cohort.id}/templates?template=Artifact`}, "Artifact template"), " to publicly share any artifacts or final projects produced in the cohort"
+            "Use the ", h(Link, {href: `http://krakenedu.com/courses/${props.cohort.courses.slug}/${props.cohort.courses.id}/cohorts/${props.cohort.id}/templates?template=Artifact`}, "Artifact template"), " to publicly share any artifacts or final projects produced in the cohort"
             ]), 
           ]),
             h(CheckBox, [
@@ -344,12 +344,12 @@ const MarkCohortComplete = (props:{cohort:Cohort, mutate:(c:Cohort)=>void})=> {
                 type: 'checkbox'
               }),
               h("span", [
-              "Use the ", h(Link, {href: `http://hyperlink.academy/courses/${props.cohort.courses.slug}/${props.cohort.courses.id}/cohorts/${props.cohort.id}/templates?template=Retro`}, "Retrospective template"), " to post a cohort retro in the forum." 
+              "Use the ", h(Link, {href: `http://krakenedu.com/courses/${props.cohort.courses.slug}/${props.cohort.courses.id}/cohorts/${props.cohort.id}/templates?template=Retro`}, "Retrospective template"), " to post a cohort retro in the forum." 
               ]),
             ]),
           h(Seperator), 
           h('span', [
-            "You can find more information about artifacts and retros in our ", h(Link, {href: `https://hyperlink.academy/manual/facilitators#facilitating-a-cohort`}, "facilitator guide"), "." 
+            "You can find more information about artifacts and retros in our ", h(Link, {href: `https://krakenedu.com/manual/facilitators#facilitating-a-cohort`}, "facilitator guide"), "." 
           ]),
         ]),
       ]),
@@ -398,7 +398,7 @@ const Banners = (props:{
             h('p', [
               `Check out the `,
               h('a', {href: forum}, 'forum'),
-              ` and meet the learners. You can also read our `, h('a', {href: "/manual/facilitators"}, 'facilitator guide'), ` in the Hyperlink Manual`
+              ` and meet the learners. You can also read our `, h('a', {href: "/manual/facilitators"}, 'facilitator guide'), ` in the Krakenedu Manual`
             ])
           ])
       ])
@@ -440,7 +440,7 @@ const TODOBanner = (props:{
             items: [
               "Add events to your cohort schedule for any live calls or important dates people need to remember.",
               h("span", [
-                "Fill out ", h(Link, {href: `https://hyperlink.academy/dashboard?tab=Profile`}, "your bio"), " and tell people more about you."
+                "Fill out ", h(Link, {href: `https://krakenedu.com/dashboard?tab=Profile`}, "your bio"), " and tell people more about you."
               ]),
               h("span", [
                 "Fill out the ", h("a", {href: `${DISCOURSE_URL}/session/sso?return_path=/c/${props.cohort.category_id}`}, "Getting Started topic"), " in the forum with any first steps learners should take. This will be linked in the welcome email sent to everyone who enrolls."

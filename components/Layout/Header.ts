@@ -32,7 +32,7 @@ export default function Header() {
       h(LoginButtons, {user, mutateUser}),
       !user ? null : h(FeedbackModal),
       h(Seperator, {style:{height:"100%"}}),
-      !user ? null : h(NavLink, {href:TWITTER_URL}, 'twitter'),
+      !user ? null : h(NavLink, {href:TWITTER_URL}, 'Twitter'),
       h(Link, {href: "/courses", passHref: true}, h(NavLink, 'Courses')),
       h(LearnMenu)
     ]),
@@ -52,7 +52,7 @@ const LearnMenu = ()=>{
 
   }, [open])
   return h('div', [
-    h(CoursesButton, {onClick:()=>setOpen(!open)}, 'learn'),
+    h(CoursesButton, {onClick:()=>setOpen(!open)}, 'Learn'),
     !open ? null : h(Dropdown, {ref: menuRef, onClick:()=>setOpen(false)}, [
       h(LearnMenuItems)
     ])
@@ -118,17 +118,17 @@ const MobileMenu = (props:{user:any, mutateUser: any}) => {
         h('b', 'courses'),
         h('p', "structured deep learning")
       ])),
-      h(Link, {href:"/clubs"}, h(NavLink, [
-        h('b', 'clubs'),
-        h('p', "social peer learning")
-      ])),
+      // h(Link, {href:"/clubs"}, h(NavLink, [
+      //   h('b', 'clubs'),
+      //   h('p', "social peer learning")
+      // ])),
       h(Link, {href:"/events"}, h(NavLink, [
         h('b', 'events'),
         h('p', "single sessions")
       ])),
       !props.user ? null : h(NavLink, {href:TWITTER_URL}, h('b', 'twitter')),
-      h(Link, {href: "/library", passHref:true}, h(NavLink, {}, h('b', 'library'))),
-      h(Seperator),
+      // h(Link, {href: "/library", passHref:true}, h(NavLink, {}, h('b', 'library'))),
+      // h(Seperator),
       h(Box, {gap: 16, style: {textAlign: 'right'}}, [
         h(LoginButtons, props),
       ]),
@@ -155,7 +155,7 @@ const LoginButtons = (props:{user:any, mutateUser:any}) => {
       if(res.status === 200) {
         props.mutateUser(false)
       }
-    }}, 'logout')
+    }}, 'Logout')
   }
 }
 
@@ -207,9 +207,9 @@ const FeedbackModal = ()=>{
 }
 
 const CoursesButton = styled(Primary)`
-color: blue;
+color: green;
 background-color: white;
-border-color: blue;
+border-color: #19ef7d;
 padding: 7px 16px;
 `
 

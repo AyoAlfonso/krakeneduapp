@@ -1,7 +1,7 @@
 {
   "Name": "Cohort Cancellation",
   "Alias": "cohort-cancellation",
-  "Subject": "Sorry, your cohort for {{course}} on Hyperlink has been cancelled",
+  "Subject": "Sorry, your cohort for {{course}} on KrakenEdu has been cancelled",
   "TemplateType": "Standard",
   "LayoutTemplate": "Hyperlink",
   "TestRenderModel": {

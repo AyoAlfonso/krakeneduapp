@@ -290,23 +290,47 @@ function MarkCourseLive(props: {id:number, slug: string}) {
     }
   }
 
-  if(state === 'confirm' || state === 'loading') return h(Modal, {display: true, closeText:"nevermind", onExit: ()=>setState('normal')},[
-    h(Box, {gap: 32}, [
-      h('h2', {style:{textAlign:'center'}}, "Are you sure?"),
-      h(Box, {gap: 16}, [
-        "Before going live please check that you've done these things",
-        h(Box.withComponent('ul'), {gap:16}, [
-          h('li', [
-            "Edit important details in ", h('a', {href: `https://hyperlink.academy/courses/${props.slug}/${props.id}/settings?tab=Details`}, "course settings"), "."
+  if(state === 'confirm' || state === 'loading') return h(
+    Modal,
+    { display: true, closeText: "nevermind", onExit: () => setState("normal") },
+    [
+      h(Box, { gap: 32 }, [
+        h("h2", { style: { textAlign: "center" } }, "Are you sure?"),
+        h(Box, { gap: 16 }, [
+          "Before going live please check that you've done these things",
+          h(Box.withComponent("ul"), { gap: 16 }, [
+            h("li", [
+              "Edit important details in ",
+              h(
+                "a",
+                {
+                  href: `https://krakenedu.com/courses/${props.slug}/${props.id}/settings?tab=Details`,
+                },
+                "course settings"
+              ),
+              ".",
+            ]),
+            h("li", [
+              "Written a ",
+              h(
+                "a",
+                {
+                  href: `${DISCOURSE_URL}/session/sso?return_path=/t/${props.id}`,
+                },
+                "curriculum"
+              ),
+              ".",
+            ]),
           ]),
-          h('li', [
-            "Written a ", h('a', {href: `${DISCOURSE_URL}/session/sso?return_path=/t/${props.id}`}, "curriculum"), "."
-          ]),
+          h(
+            Primary,
+            { style: { justifySelf: "center" }, onClick },
+            state === "loading" ? h(Loader) : "Go Live!"
+          ),
         ]),
-          h(Primary, {style:{justifySelf:'center'}, onClick}, state === 'loading' ? h(Loader) : 'Go Live!')        
-      ])
-    ])
-  ])
+      ]),
+    ]
+  );
 
   return h(Primary, {onClick: async e => {
     e.preventDefault()
@@ -357,16 +381,16 @@ const TODOBanner = (props:{
             persistKey: "course-creation-todo",
             items: [
               h("span", [
-                "Edit important details, like description and price, in ", h('a', {href: `https://hyperlink.academy/courses/${props.slug}/${props.id}/settings?tab=Details`}, "course settings"), "."
+                "Edit important details, like description and price, in ", h('a', {href: `https://krakenedu.com/courses/${props.slug}/${props.id}/settings?tab=Details`}, "course settings"), "."
               ]),
               h("span", [
                 "Write a comprehensive curriculum for your course, by editing the ", h('a', {href: `${DISCOURSE_URL}/session/sso?return_path=/t/${props.id}`}, "Curriculum topic"), " in the forum."
               ]),
               h("span", [
-                "Create or edit ", h('a', {href: `https://hyperlink.academy/courses/${props.slug}/${props.id}/settings?tab=Templates`}, "templates"), " for reusable forum topics so you don't need to rewrite them for every cohort you run (or you can add these later)."
+                "Create or edit ", h('a', {href: `https://krakenedu.com/courses/${props.slug}/${props.id}/settings?tab=Templates`}, "templates"), " for reusable forum topics so you don't need to rewrite them for every cohort you run (or you can add these later)."
               ]),
               h("span", [
-                "Create your first cohort, in ", h('a', {href: `https://hyperlink.academy/courses/${props.slug}/${props.id}/settings?tab=Cohorts`}, "course settings"), ". It will also be a draft that you need to edit before publishing. We'll guide you through it!"
+                "Create your first cohort, in ", h('a', {href: `https://krakenedu.com/courses/${props.slug}/${props.id}/settings?tab=Cohorts`}, "course settings"), ". It will also be a draft that you need to edit before publishing. We'll guide you through it!"
               ])
             ]
           })

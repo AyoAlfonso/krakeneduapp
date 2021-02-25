@@ -111,40 +111,64 @@ export function Discounts(props: {course:number}) {
 function DiscountItem(props: {discount: course_discounts, delete: ()=>void}) {
   let ref = useRef<HTMLInputElement | null>(null)
   let [status, callDelete] = useApi<null, DeleteDiscountResult>([props], props.delete)
-  return h(Box, {gap: 8}, [
-    h('h3', props.discount.name),
-    h('div', [
-      h('span.textSecondary', `${props.discount.type === 'absolute' ? "$"+props.discount.amount : props.discount.amount+'%'} off`),
-      h('span.textSecondary', ` | Redeemed ${props.discount.max_redeems===0 ? props.discount.redeems : `${props.discount.redeems}/${props.discount.max_redeems}`} times`)
+  return h(Box, { gap: 8 }, [
+    h("h3", props.discount.name),
+    h("div", [
+      h(
+        "span.textSecondary",
+        `${
+          props.discount.type === "absolute"
+            ? "$" + props.discount.amount
+            : props.discount.amount + "%"
+        } off`
+      ),
+      h(
+        "span.textSecondary",
+        ` | Redeemed ${
+          props.discount.max_redeems === 0
+            ? props.discount.redeems
+            : `${props.discount.redeems}/${props.discount.max_redeems}`
+        } times`
+      ),
     ]),
-    h(Box, {h: true, style: {alignItems: 'center'}}, [
+    h(Box, { h: true, style: { alignItems: "center" } }, [
       h(Input, {
-        onFocus: e =>{
-          e.currentTarget.selectionEnd = e.currentTarget.value.length
+        onFocus: (e) => {
+          e.currentTarget.selectionEnd = e.currentTarget.value.length;
         },
-        style: {width: '360px', textDecoration: 'underline', color: 'blue'},
+        style: { width: "360px", textDecoration: "underline", color: "blue" },
         readOnly: true,
-        value: `https://hyperlink.academy/discount?discount=${props.discount.code}`,
-        ref: ref
+        value: `https://krakenedu.com/discount?discount=${props.discount.code}`,
+        ref: ref,
       }),
-      h(Secondary, {
-        disabled: props.discount.max_redeems !== 0 && props.discount.max_redeems <= props.discount.redeems,
-        onClick: e =>{
-          e.preventDefault()
-          if(!ref.current) return
-          ref.current.select()
-          document.execCommand('copy')
-          ref.current.selectionEnd  = ref.current.selectionStart
-          ref.current.blur()
-        }
-      }, 'Copy' ),
-      h(Destructive, {
-        status,
-        onClick: e =>{
-          e.preventDefault()
-          callDelete('/api/discounts/'+props.discount.code, null, "DELETE")
-        }
-      }, "Delete")
-    ])
-  ])
+      h(
+        Secondary,
+        {
+          disabled:
+            props.discount.max_redeems !== 0 &&
+            props.discount.max_redeems <= props.discount.redeems,
+          onClick: (e) => {
+            e.preventDefault();
+            if (!ref.current) return;
+            ref.current.select();
+            document.execCommand("copy");
+            ref.current.selectionEnd = ref.current.selectionStart;
+            ref.current.blur();
+          },
+        },
+        "Copy"
+      ),
+      h(
+        Destructive,
+        {
+          status,
+          onClick: (e) => {
+            e.preventDefault();
+            callDelete("/api/discounts/" + props.discount.code, null, "DELETE");
+          },
+        },
+        "Delete"
+      ),
+    ]),
+  ]);
 }

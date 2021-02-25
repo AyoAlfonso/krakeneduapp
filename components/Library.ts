@@ -36,40 +36,67 @@ export const LibraryLayout:React.FC<Props> = (props) =>{
     ])
   })
 
-  return h('div', [
-    h(Head,{children:[
-      h('meta', {key:"titile", property:"og:title", content:props.title}),
-      h('meta', {key: "og:description", property: "og:description", content: props.description}),
-      h('meta', {key: "og:author", property: "og:author", content: props.author}),
-    ]}),
-    h(BackButton, {href:'/library'}, "Library"),
+  return h("div", [
+    h(Head, {
+      children: [
+        h("meta", {
+          key: "titile",
+          property: "og:title",
+          content: props.title,
+        }),
+        h("meta", {
+          key: "og:description",
+          property: "og:description",
+          content: props.description,
+        }),
+        h("meta", {
+          key: "og:author",
+          property: "og:author",
+          content: props.author,
+        }),
+      ],
+    }),
+    h(BackButton, { href: "/library" }, "Library"),
     h(Container, [
-      h(Box, {gap: 32, width:640}, [
+      h(Box, { gap: 32, width: 640 }, [
         h(Box, [
-          h(Box, {gap:8},[
-            h('h1', props.title),
-            h('b.textSecondary', `By ${props.author} | ${props.date}`)
+          h(Box, { gap: 8 }, [
+            h("h1", props.title),
+            h("b.textSecondary", `By ${props.author} | ${props.date}`),
           ]),
-          props.living ?
-            h(Info, [
-              `🌱 This is a `, h('b', `living document`), `. We're still learning, and may revisit this piece over time. Suggestions for how we can make it better? Please comment below or `,
-              h('a', {href: "mailto:contact@hyperlink.academy"}, `send us a note`),
-              `.`
-            ]) : null,
-          h(ContentTextStyles, [
-            props.children as React.ReactElement
-          ]),
+          props.living
+            ? h(Info, [
+                `🌱 This is a `,
+                h("b", `living document`),
+                `. We're still learning, and may revisit this piece over time. Suggestions for how we can make it better? Please comment below or `,
+                h(
+                  "a",
+                  { href: "mailto:contact@krakenedu.com" },
+                  `send us a note`
+                ),
+                `.`,
+              ])
+            : null,
+          h(ContentTextStyles, [props.children as React.ReactElement]),
         ]),
-        h(Box, {gap: 32, style:{justifySelf: 'center', textAlign: 'center'}}, [
-          props.topic ?  h('a', {href:props.topic, target:"_blank"}, h(Primary, "Discuss this on the forum")) : null,
-          h(Newsletter)
-        ])
+        h(
+          Box,
+          { gap: 32, style: { justifySelf: "center", textAlign: "center" } },
+          [
+            props.topic
+              ? h(
+                  "a",
+                  { href: props.topic, target: "_blank" },
+                  h(Primary, "Discuss this on the forum")
+                )
+              : null,
+            h(Newsletter),
+          ]
+        ),
       ]),
-      !props.toc ? null : h('div', [
-        h(TOCContainer, {}, TOC)
-      ]),
-    ])
-  ])
+      !props.toc ? null : h("div", [h(TOCContainer, {}, TOC)]),
+    ]),
+  ]);
 }
 
 function Newsletter() {

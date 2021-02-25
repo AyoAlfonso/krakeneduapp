@@ -1,7 +1,7 @@
 {
   "Name": "Welcome",
   "Alias": "welcome",
-  "Subject": "Welcome to Hyperlink - confirm your account and get started!",
+  "Subject": "Welcome to KrakenEdu - confirm your account and get started!",
   "TemplateType": "Standard",
   "LayoutTemplate": "Hyperlink",
   "TestRenderModel": {

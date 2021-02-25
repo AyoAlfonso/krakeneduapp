@@ -1,6 +1,6 @@
-# hyperlink.academy
+# krakenedu.com
 
-[hyperlink.academy](https://hyperlink.academy) is a web-app built on NextJS. It's
+[krakenedu.com](https://krakenedu.com) is a web-app built on NextJS. It's
 primarily written in Typescript. 
 
 Important libraries we use are: 

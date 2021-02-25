@@ -28,10 +28,12 @@ import { Cross } from 'components/Icons'
 import { Pill } from 'components/Pill'
 
 const COPY = {
-  cancelCohort: h('p.textSecondary', [
-    `Contact us at `, h('a', {href:'mailto:contact@hyperlink.academy'}, `contact@hyperlink.academy`), ` to cancel a cohort. Optionally,  let us know the reason you’re cancelling (we’re curious 🤓)`,
-  ])
-}
+  cancelCohort: h("p.textSecondary", [
+    `Contact us at `,
+    h("a", { href: "mailto:contact@krakenedu.com" }, `contact@krakenedu.com`),
+    ` to cancel a cohort. Optionally,  let us know the reason you’re cancelling (we’re curious 🤓)`,
+  ]),
+};
 
 type Props = InferGetStaticPropsType<typeof getStaticProps>
 const WrappedCourseSettingsPage = (props: Props)=>props.notFound ? h(ErrorPage) : h(CourseSettings, props)
@@ -213,53 +215,75 @@ const Invites = (props:{course:Course, mutate: (c:Course) => void})=> {
     if(res.status === 200) props.mutate({...props.course, ...res.result})
   }
 
-  return h(Box, {gap: 16, width: 400}, [
-    h('h2', "Invites"),
-    h(Box, {gap:32}, [
-      h(FormBox, {onSubmit: onSubmitToggleInviteOnly}, [
-        h(LabelBox, { gap:8, width: 400}, [
-          h('div', [
-            h('h4', "Invite Only"),
-            h('small.textSecondary', `Learners cannot enroll in an invite only course unless you have sent them an
-invite. The invite allows them enroll in any cohort and does not expire.`)
+  return h(Box, { gap: 16, width: 400 }, [
+    h("h2", "Invites"),
+    h(Box, { gap: 32 }, [
+      h(FormBox, { onSubmit: onSubmitToggleInviteOnly }, [
+        h(LabelBox, { gap: 8, width: 400 }, [
+          h("div", [
+            h("h4", "Invite Only"),
+            h(
+              "small.textSecondary",
+              `Learners cannot enroll in an invite only course unless you have sent them an
+invite. The invite allows them enroll in any cohort and does not expire.`
+            ),
           ]),
           h(CheckBox, [
             h(Input, {
-              type: 'checkbox',
+              type: "checkbox",
               checked: invite_only,
-              onChange: e => setInviteOnly(e.currentTarget.checked)
+              onChange: (e) => setInviteOnly(e.currentTarget.checked),
             }),
-            "Make this course invite only"
-          ])
+            "Make this course invite only",
+          ]),
         ]),
-        h(Primary, {
-          style: {justifySelf: 'right'},
-          status: updateStatus,
-          type: 'submit',
-          disabled: props.course.invite_only === invite_only
-        }, "Change"),
+        h(
+          Primary,
+          {
+            style: { justifySelf: "right" },
+            status: updateStatus,
+            type: "submit",
+            disabled: props.course.invite_only === invite_only,
+          },
+          "Change"
+        ),
       ]),
-      !props.course.invite_only ? null : h(FormBox, {onSubmit: onSubmitInvite, gap:32, width: 400}, [
-        h(LabelBox, {gap:8}, [
-          h('h4', "Invite someone to enroll"),
-          h('small.textSecondary', `Invite someone with their username or email. Invitee does not need a Hyperlink account to be invited, but they will need an account to enroll.`),
-          h(Input, {
-            type: emailOrUsername.includes('@') ? 'email' : 'text',
-            value: emailOrUsername,
-            onChange: e=> setEmailOrUsername(e.currentTarget.value)
-          }),
-          valid === null ? null :
-            valid ? h('span.accentSuccess', "Great, found @"+emailOrUsername): h('span.accentRed', "We can't find a user with that username")
-        ]),
-        h(Primary, {
-          style: {justifySelf: 'right'},
-          status,
-          type: 'submit',
-          disabled: (!emailOrUsername.includes('@') && valid !== true)
-        }, "Invite"),
-      ])
-    ])
-  ])
+      !props.course.invite_only
+        ? null
+        : h(FormBox, { onSubmit: onSubmitInvite, gap: 32, width: 400 }, [
+            h(LabelBox, { gap: 8 }, [
+              h("h4", "Invite someone to enroll"),
+              h(
+                "small.textSecondary",
+                `Invite someone with their username or email. Invitee does not need a KrakenEdu account to be invited, but they will need an account to enroll.`
+              ),
+              h(Input, {
+                type: emailOrUsername.includes("@") ? "email" : "text",
+                value: emailOrUsername,
+                onChange: (e) => setEmailOrUsername(e.currentTarget.value),
+              }),
+              valid === null
+                ? null
+                : valid
+                ? h("span.accentSuccess", "Great, found @" + emailOrUsername)
+                : h(
+                    "span.accentRed",
+                    "We can't find a user with that username"
+                  ),
+            ]),
+            h(
+              Primary,
+              {
+                style: { justifySelf: "right" },
+                status,
+                type: "submit",
+                disabled: !emailOrUsername.includes("@") && valid !== true,
+              },
+              "Invite"
+            ),
+          ]),
+    ]),
+  ]);
 }
 
 const EditDetails = (props: {course: Course, mutate:(course:Course)=>void}) => {

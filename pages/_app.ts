@@ -3,6 +3,9 @@ import Head from 'next/head'
 import Layout from '../components/Layout';
 import * as Sentry from '@sentry/node'
 import { Fragment } from 'react';
+import ProgressBar from "@badrap/bar-of-progress";
+import Router from "next/router";
+import {ProgressBarZindex} from  '../components/Tokens'
 
 if (process.env.NEXT_PUBLIC_SENTRY_DSN) {
   Sentry.init({
@@ -16,16 +19,41 @@ type Props = {
   pageProps: any
 }
 
+const progress = new ProgressBar({
+  size: 2,
+  color: "#38a169",
+  className: `${ProgressBarZindex}`,
+  delay: 100,
+});
+
+Router.events.on("routeChangeStart", progress.start);
+Router.events.on("routeChangeComplete", progress.finish);
+Router.events.on("routeChangeError", progress.finish);
+
+
 const App = ({ Component, pageProps}:Props) => {
   return h(Fragment, [
     h(Head as React.StatelessComponent, [
-      h('title', 'hyperlink.academy'),
-      h('meta', {property:"og:title", content:'hyperlink.academy', key:"og:title"}),
-      h('meta', {property:"og:description", content:'a course platform and online school built for seriously effective learning', key:"og:description"}),
-      h('meta', {property: "og:image", content: 'https://hyperlink.academy/img/social-logo.png', key: "og:image"}),
+      h("title", "krakenedu.com"),
+      h("meta", {
+        property: "og:title",
+        content: "krakenedu.com",
+        key: "og:title",
+      }),
+      h("meta", {
+        property: "og:description",
+        content:
+          " A platform for cohort-based virtual experience programs by established experts for professionals",
+        key: "og:description",
+      }),
+      h("meta", {
+        property: "og:image",
+        content: "https://krakenedu.com/img/social-logo.png",
+        key: "og:image",
+      }),
     ]),
-    h(Layout, {}, [h(Component, {...pageProps})])
-  ])
+    h(Layout, {}, [h(Component, { ...pageProps })]),
+  ]);
 }
 
 export default App

@@ -23,23 +23,26 @@ export type  Library = {
 }
 
 export const collections = {
-  "announcement": {
+  announcement: {
     title: "Announcements",
-    description: "New courses, feature notes, upcoming events, and other Hyperlink news.",
+    description:
+      "New courses, feature notes, upcoming events, and other KrakenEdu news.",
   },
   "learning-design": {
     title: "Learning Design",
-    description: "Essays and guides about aspects of creating great learning experiences."
+    description:
+      "Essays and guides about aspects of creating great learning experiences.",
   },
-  "bookshelf": {
+  bookshelf: {
     title: "Bookshelf",
-    description: "Highlighting and reviewing our favorite books on learning and pedagogy.",
+    description:
+      "Highlighting and reviewing our favorite books on learning and pedagogy.",
   },
   // "changelog": {
   //   title: "Changelog",
-  //   description: "Behind the scenes on Hyperlink development.",
+  //   description: "Behind the scenes on KrakenEdu development.",
   // },
-  "interviews": {
+  interviews: {
     title: "Interviews",
     description: "Conversations with amazing teachers and learners.",
   },
@@ -47,7 +50,7 @@ export const collections = {
   //   title: "Resources",
   //   description: "Our favorite projects, websites, syllabi, and other learning resources.",
   // },
-}
+};
 
 //the KrakenEdu Library layout is defined here
 

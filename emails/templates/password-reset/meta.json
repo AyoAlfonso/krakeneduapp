@@ -1,7 +1,7 @@
 {
   "Name": "Password Reset",
   "Alias": "password-reset",
-  "Subject": "Set up a new password for your Hyperlink account",
+  "Subject": "Set up a new password for your KrakenEdu account",
   "TemplateType": "Standard",
   "LayoutTemplate": "Hyperlink",
   "TestRenderModel": {

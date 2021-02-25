@@ -16,9 +16,10 @@ import styled from '@emotion/styled'
 import { usernameValidate } from 'src/utils'
 
 const COPY = {
-   submitButton: "Create your account",
-   headerDescription: "We're hyped for you to join the Hyperlink community! Let's learn together."
-}
+  submitButton: "Create your account",
+  headerDescription:
+    "We're hyped for you to join the KrakenEdu community! Let's learn together.",
+};
 
 const Signup = () => {
   let [formData, setFormData] = useState({
@@ -157,11 +158,18 @@ const VerifyEmail = (props: {email?:string, resendEmail: any}) =>  {
 
   if(router.query.verifyEmail && status === null) return null
 
-  if(status === 'success') return h(Box, {width: 400, ma:true, gap: 16}, [
-    h('h1', "All Done!"),
-    h('p.big', "Click the button below if you're not redirected in a couple seconds"),
-    h(Link, {href:'/dashboard'}, h('a', {}, h(Primary, 'Back to Hyperlink')))
-  ])
+  if(status === 'success') return h(Box, { width: 400, ma: true, gap: 16 }, [
+    h("h1", "All Done!"),
+    h(
+      "p.big",
+      "Click the button below if you're not redirected in a couple seconds"
+    ),
+    h(
+      Link,
+      { href: "/dashboard" },
+      h("a", {}, h(Primary, "Back to Krakenedu"))
+    ),
+  ]);
 
   return h(FormBox, {onSubmit, width: 400, ma: true, gap: 32}, [
     h(AccentImg, {src: '/img/plane.gif', alt: "an animated gif of a paper airplane taking off" }),

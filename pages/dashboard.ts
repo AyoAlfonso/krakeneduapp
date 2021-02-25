@@ -23,10 +23,10 @@ const COPY = {
   courseListHeader: "There’s always something new to learn!",
   courseListButton: "Find New Courses!",
   courseGardenHeader: "Have an idea for a course?",
-  courseGardenDescription: `Hyperlink courses are created by our community. We seed and grow them in the Course
+  courseGardenDescription: `KrakenEdu courses are created by our community. We seed and grow them in the Course
 Garden. Check out some in development, or propose your own!`,
-  courseGardenLink: "Check out the Course Garden"
-}
+  courseGardenLink: "Check out the Course Garden",
+};
 
 const Dashboard = () => {
   let {data: user, mutate} = useUserData()
