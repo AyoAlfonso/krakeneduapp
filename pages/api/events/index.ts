@@ -1,7 +1,7 @@
 import { ResultType, APIHandler, Request} from 'src/apiHelpers'
 import * as t from 'runtypes'
 import { getToken } from 'src/token'
-import prisma from "src/lib/prisma";
+import prisma from "lib/prisma";
 
 export default APIHandler({POST: createEvent, GET: getPublicEvents})
 export type CreateEventMsg = t.Static<typeof CreateEventValidator>

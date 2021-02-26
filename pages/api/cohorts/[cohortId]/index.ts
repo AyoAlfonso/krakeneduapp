@@ -4,7 +4,7 @@ import { sendWatchingNotificationEmail } from "emails"
 import { prettyDate } from "src/utils"
 import produce from "immer"
 import { updateCategory, updateGroup } from "src/discourse"
-import prisma from "src/lib/prisma";
+import prisma from "lib/prisma";
 
 export type UpdateCohortMsg = {
   data: Partial<{

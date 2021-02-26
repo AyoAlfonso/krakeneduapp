@@ -2,7 +2,7 @@ import Stripe from 'stripe'
 import {APIHandler, ResultType, Request} from 'src/apiHelpers'
 import { getToken } from 'src/token'
 
-import prisma from "src/lib/prisma";
+import prisma from "lib/prisma";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET || '', {apiVersion:'2020-08-27'});
 

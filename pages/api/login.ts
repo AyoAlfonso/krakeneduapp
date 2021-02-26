@@ -1,7 +1,7 @@
 import {APIHandler, ResultType, Request} from '../../src/apiHelpers'
 import {setTokenHeader} from '../../src/token'
 import bcrypt from 'bcryptjs'
-import prisma from "src/lib/prisma";
+import prisma from "lib/prisma";
 
 export type Msg = {
   emailOrUsername: string

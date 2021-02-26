@@ -1,5 +1,5 @@
 import { Request, ResultType, APIHandler} from "../../../../src/apiHelpers"
-import prisma from "src/lib/prisma";
+import prisma from "lib/prisma";
 import { sendInviteToCourseEmail } from "../../../../emails"
 
 export type InviteToCourseMsg = ({ email: string, username: undefined} | {username: string, email: undefined})

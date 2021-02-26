@@ -3,7 +3,7 @@ import { getToken } from '../../../../src/token'
 import { updateCategory, updateGroup } from '../../../../src/discourse'
 import { slugify } from 'src/utils'
 import * as t from 'runtypes'
-import prisma from "src/lib/prisma";
+import prisma from "lib/prisma";
 
 export type UpdateCourseMsg = t.Static<typeof UpdateCourseMsgValidator>
 

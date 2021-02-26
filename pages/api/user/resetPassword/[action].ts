@@ -3,7 +3,7 @@ import hmac from 'src/hmac'
 import { v4 as uuidv4 } from 'uuid';
 import bcrypt from 'bcryptjs'
 import {sendResetPasswordEmail} from 'emails'
-import prisma from "src/lib/prisma";
+import prisma from "lib/prisma";
 
 export type RequestMsg = {
   email: string

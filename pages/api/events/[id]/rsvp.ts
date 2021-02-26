@@ -3,7 +3,7 @@ import { APIHandler, Request, ResultType } from "src/apiHelpers"
 import { stripe, StripePaymentMetaData } from 'src/stripe'
 import { getToken } from "src/token"
 import { createEventInvite } from 'src/calendar'
-import prisma from "src/lib/prisma";
+import prisma from "lib/prisma";
 
 export default APIHandler(POSTEventRSVP)
 

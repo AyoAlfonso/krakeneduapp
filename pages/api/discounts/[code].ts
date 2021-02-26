@@ -1,6 +1,6 @@
 import { ResultType, APIHandler, Request} from 'src/apiHelpers'
 import { getToken } from 'src/token'
-import prisma from "src/lib/prisma";
+import prisma from "lib/prisma";
 export default APIHandler({GET: getDiscount, DELETE: deleteDiscount})
 export type GetDiscountResult = ResultType<typeof getDiscount>
 export type DeleteDiscountResult = ResultType<typeof deleteDiscount>

@@ -1,7 +1,7 @@
 import { ResultType, APIHandler, Request } from "src/apiHelpers"
 import { getToken } from "src/token";
 import { createTopic } from "src/discourse";
-import prisma from "src/lib/prisma";
+import prisma from "lib/prisma";
 export type PostTopicMsg = {
   title: string,
   body: string,

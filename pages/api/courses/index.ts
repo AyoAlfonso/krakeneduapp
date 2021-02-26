@@ -13,7 +13,7 @@ import TemplateCohortPrompt from 'writing/TemplateCohortPrompt.txt'
 import TemplateCohortRetrospective from 'writing/TemplateCohortRetrospective.txt'
 import {slugify} from 'src/utils'
 
-import prisma from "src/lib/prisma";
+import prisma from "lib/prisma";
 
 export type CourseResult = ResultType<typeof getCourses>
 export type CreateCourseMsg = t.Static<typeof CreateCourseMsgValidator>

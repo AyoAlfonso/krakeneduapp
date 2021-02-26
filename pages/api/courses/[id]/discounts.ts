@@ -2,7 +2,7 @@ import { ResultType, APIHandler, Request} from 'src/apiHelpers'
 import * as rt from 'runtypes'
 import { getToken } from 'src/token'
 import { v4 as uuidv4 } from 'uuid';
-import prisma from "src/lib/prisma";
+import prisma from "lib/prisma";
 
 export default APIHandler({GET: getDiscounts, POST: createDiscount})
 export type GetDiscountsResult = ResultType<typeof getDiscounts>

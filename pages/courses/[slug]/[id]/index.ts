@@ -3,7 +3,7 @@ import { useState, ReactElement } from 'react'
 import Link from 'next/link'
 import { InferGetStaticPropsType } from 'next'
 import styled from '@emotion/styled'
-import prisma from "src/lib/prisma";
+import prisma from "lib/prisma";
 import { Box, Seperator, TwoColumn, Sidebar } from 'components/Layout'
 import {Tabs, StickyWrapper} from 'components/Tabs'
 import { colors } from 'components/Tokens'

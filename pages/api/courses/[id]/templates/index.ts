@@ -1,6 +1,6 @@
 import { ResultType, APIHandler, Request} from 'src/apiHelpers'
 import { getToken } from 'src/token'
-import prisma from "src/lib/prisma";
+import prisma from "lib/prisma";
 
 export type CreateTemplateMsg = {
   name: string,

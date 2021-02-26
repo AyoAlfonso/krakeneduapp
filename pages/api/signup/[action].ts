@@ -6,7 +6,7 @@ import {multiRouteHandler, ResultType, Request} from '../../../src/apiHelpers'
 // import {syncSSO} from '../../../src/discourse'
 import {sendVerificationEmail} from '../../../emails'
 import { usernameValidate } from 'src/utils';
-import prisma from "src/lib/prisma";
+import prisma from "lib/prisma";
 
 export type SignupMsg = {
   email: string

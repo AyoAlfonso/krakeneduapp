@@ -7,7 +7,7 @@ import { prettyDate } from '../../src/utils';
 import { StripePaymentMetaData } from 'src/stripe';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET || '', {apiVersion:'2020-08-27'});
-import prisma from "src/lib/prisma";
+import prisma from "lib/prisma";
 
 export const config = {
   api: {

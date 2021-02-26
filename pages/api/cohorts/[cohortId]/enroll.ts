@@ -6,7 +6,7 @@ import { getToken } from "src/token";
 import { addMember, getTaggedPost } from "src/discourse";
 import {DISCOURSE_URL} from 'src/constants'
 import { prettyDate } from "src/utils"
-import prisma from "src/lib/prisma";
+import prisma from "lib/prisma";
 
 
 export type EnrollResponse= ResultType<typeof enroll>

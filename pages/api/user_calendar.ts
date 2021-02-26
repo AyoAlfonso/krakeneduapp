@@ -1,7 +1,7 @@
 import { events } from "@prisma/client";
 import ICAL from 'ical.js'
 import { NextApiRequest, NextApiResponse } from "next";
-import prisma from "src/lib/prisma";
+import prisma from "lib/prisma";
 
 export default async function getUserEvents(req: NextApiRequest, res: NextApiResponse) {
   let calendar_ID = req.query.id as string
