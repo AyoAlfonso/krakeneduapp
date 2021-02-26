@@ -48,7 +48,6 @@ const Landing = (props:Props) => {
         return acc
       }, [[],[]] as Array<Courses["courses"]>)
 
-  console.log(allCourses)
 
   console.log(props.events)
   return h(Box, {gap:48}, [
@@ -172,6 +171,7 @@ ${Tablet} {
 const Tagline = styled('h3')`
 z-index: 2;
 width: 33%;
+color:19ef7d;
 
   ${Mobile} {
     padding-top: 176px;
