@@ -43,12 +43,12 @@ const App = ({ Component, pageProps}:Props) => {
       h("meta", {
         property: "og:description",
         content:
-          " A platform for cohort-based virtual experience programs by established experts for professionals",
+          " A platform for cohort-based virtual experience programs by established industry experts",
         key: "og:description",
       }),
       h("meta", {
         property: "og:image",
-        content: "https://app.krakenedu.com/img/social-logo.png",
+        content: "https://app.krakenedu.com/img/favicon.png",
         key: "og:image",
       }),
     ]),
