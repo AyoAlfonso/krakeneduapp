@@ -9,7 +9,7 @@ import {ProgressBarZindex} from  '../components/Tokens'
 
 if (process.env.NEXT_PUBLIC_SENTRY_DSN) {
   Sentry.init({
-    enabled: process.env.NODE_ENV === 'production',
+    enabled: process.env.NODE_ENVIRONMENT === 'production',
     dsn: process.env.NEXT_PUBLIC_SENTRY_DSN,
   })
 }
@@ -48,7 +48,7 @@ const App = ({ Component, pageProps}:Props) => {
       }),
       h("meta", {
         property: "og:image",
-        content: "https://krakenedu.com/img/social-logo.png",
+        content: "https://app.krakenedu.com/img/social-logo.png",
         key: "og:image",
       }),
     ]),

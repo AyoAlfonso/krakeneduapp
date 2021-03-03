@@ -64,6 +64,8 @@ async function createCourse(req: Request) {
     return { status: 403, result: "ERROR: no user logged in" } as const;
 
   let isAdmin = await prisma.admins.findUnique({ where: { person: user.id } });
+
+  console.log(user, isAdmin)
   if (!isAdmin)
     return { status: 403, result: "ERROR: user is not an admin" } as const;
 

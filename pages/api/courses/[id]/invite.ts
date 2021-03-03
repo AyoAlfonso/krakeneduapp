@@ -35,7 +35,7 @@ async function inviteToCourse(req:Request) {
   }})
 
   await sendInviteToCourseEmail(email, {
-    course_url: `https://krakenedu.com/courses/${courseData.slug}/${courseID}`,
+    course_url: `ttps://app.krakenedu.com/courses/${courseData.slug}/${courseID}`,
     course_name: courseData.name,
     name,
   });

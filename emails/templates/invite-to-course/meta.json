@@ -1,9 +1,9 @@
 {
   "Name": "Invite to Course",
   "Alias": "invite-to-course",
-  "Subject": "You've been invited to join {{course_name}} on Hyperlink!",
+  "Subject": "You've been invited to join {{course_name}} on KrakenEdu!",
   "TemplateType": "Standard",
-  "LayoutTemplate": "Hyperlink",
+  "LayoutTemplate": "KrakenEdu",
   "TestRenderModel": {
     "name": "name_Value",
     "course_url": "course_url_Value",

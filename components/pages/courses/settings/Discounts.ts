@@ -138,7 +138,7 @@ function DiscountItem(props: {discount: course_discounts, delete: ()=>void}) {
         },
         style: { width: "360px", textDecoration: "underline", color: "blue" },
         readOnly: true,
-        value: `https://krakenedu.com/discount?discount=${props.discount.code}`,
+        value: `https://app.krakenedu.com/discount?discount=${props.discount.code}`,
         ref: ref,
       }),
       h(

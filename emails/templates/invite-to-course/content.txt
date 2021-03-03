@@ -9,8 +9,8 @@ Head here to learn more and consider joining:
 
 Please note that you need an account to join — log in, or sign up if you don't yet have an account and you'll be able to register.
 
-https://krakenedu.com/login
-https://krakenedu.com/signup
+https://app.krakenedu.com/login
+https://app.krakenedu.com/signup
 
 We hope to see you in this course soon!
 

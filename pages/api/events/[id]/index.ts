@@ -171,7 +171,7 @@ async function updateEvent(req:Request) {
               vars: {
                 name: rsvp.name,
                 event_name: event?.name || "",
-                event_page_url: `https://krakenedu.com/events/${event?.id}`,
+                event_page_url: `https://app.krakenedu.com/events/${event?.id}`,
               },
               data: {
                 Attachments: [

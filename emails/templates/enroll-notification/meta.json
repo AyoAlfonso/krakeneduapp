@@ -3,7 +3,7 @@
   "Alias": "enroll-notification",
   "Subject": "{{learner}} enrolled in {{course}}",
   "TemplateType": "Standard",
-  "LayoutTemplate": "Hyperlink",
+  "LayoutTemplate": "KrakenEdu",
   "TestRenderModel": {
     "learner": "learner_Value",
     "course": "course_Value",

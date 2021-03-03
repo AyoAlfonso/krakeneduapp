@@ -189,71 +189,152 @@ width: 200px;
 export const CohortMembers = (props:{cohort:Cohort, isFacilitator: boolean, user?: string, mutate: (c:Cohort)=>void}) => {
   let [unenrollState, setUnenrollState] = useState<{personID:string, username: string, cohortID:number, display_name?:string, removeMember:()=>void}>()
   return h(Fragment, [
-    !unenrollState ? null : h(UnenrollModal, {
-      display: !!unenrollState, onExit:()=>setUnenrollState(undefined),
-      ...unenrollState
-    }),
-    h(Box, {gap:16}, [
-      h('h3', "Facilitators"),
-      props.isFacilitator ? null : h(Info, [
-        `Questions about this `,
-        props.cohort.courses.type === 'club' ? `club` : `course`,
-        `? `,
-        h('a', {href: `https://forum.krakenedu.academy/new-message?groupname=${props.cohort.courses.slug}-m`, target: `_blank`}, `Message the facilitator`),
-        ` on the forum.`
-      ]),
-      ...props.cohort.cohort_facilitators.map(f=>h(Box, [
-        props.user === f.facilitator ? h(Info, [`💡 You can edit your bio in the profile tab on your `, h(Link, {href: '/dashboard'}, h('a', 'dashboard'))]) : null,
-        h('h3', [
-          ``, h(Link, {
-            href: '/people/[id]',
-            as: `/people/${f.people.username}`
-          }, h('a', {className: 'notBlue'}, f.people.display_name || f.people.username)),
-          f.people.pronouns ? h('span.textSecondary', {}, ` (${f.people.pronouns})`) : null
-        ]),
-        h(Text, {source: f.people.bio || ''}),
-      ])),
-
-    // message facilitator - shows for logged in and anon users; hidden on things you're facilitating
-
-
-    props.cohort.people_in_cohorts.length === 0 ? null : h(Box, {h: true}, [
-      h('h4', ["Members ", h('span.textSecondary', `(${props.cohort.people_in_cohorts.length}${props.cohort.courses.cohort_max_size !== 0 ? `/${props.cohort.courses.cohort_max_size}` :''})`)]),
-      !props.isFacilitator ? null : h('a', {
-        href:`mailto:?bcc=${props.cohort.people_in_cohorts.map(p=>p.people.email).join(',')}`
-      }, 'email everyone')
-    ]),
-    ...props.cohort.people_in_cohorts
-      .map((person)=>{
-        return h('div', {style:{display: 'grid', gridTemplateColumns: "auto auto"}}, [
-          h(Box, {h: true}, [
-            h(Link, {
-              href: '/people/[id]',
-              as: `/people/${person.people.username}`
-            }, [
-              h('a', {className: 'notBlue'}, person.people.display_name || person.people.username),
-            ]),
-            person.people.pronouns ? h('span.textSecondary', {}, ` (${person.people.pronouns})`) : null,
+    !unenrollState
+      ? null
+      : h(UnenrollModal, {
+          display: !!unenrollState,
+          onExit: () => setUnenrollState(undefined),
+          ...unenrollState,
+        }),
+    h(Box, { gap: 16 }, [
+      h("h3", "Facilitators"),
+      props.isFacilitator
+        ? null
+        : h(Info, [
+            `Questions about this `,
+            props.cohort.courses.type === "club" ? `club` : `course`,
+            `? `,
+            h(
+              "a",
+              {
+                href: `https://forum.krakenedu.com/new-message?groupname=${props.cohort.courses.slug}-m`,
+                target: `_blank`,
+              },
+              `Message the facilitator`
+            ),
+            ` on the forum.`,
           ]),
-          !props.isFacilitator ? null : 
-          h('div', {style:{justifySelf:"right"}}, [
-            h('a', {style:{marginRight:"10px"}, href:`mailto:${person.people.email}`}, "email"),
-            h(DestructiveSmallButton, {onClick:()=>{
-              setUnenrollState({
-                personID: person.person,
-                cohortID: props.cohort.id,
-                username: person.people.username,
-                display_name: person.people.display_name,
-                removeMember: ()=>{
-                  props.mutate({...props.cohort, people_in_cohorts: props.cohort.people_in_cohorts.filter(p=>p.person!== person.person)})
-                }
-              })
-            }}, "unenroll")
-          ])
+      ...props.cohort.cohort_facilitators.map((f) =>
+        h(Box, [
+          props.user === f.facilitator
+            ? h(Info, [
+                `💡 You can edit your bio in the profile tab on your `,
+                h(Link, { href: "/dashboard" }, h("a", "dashboard")),
+              ])
+            : null,
+          h("h3", [
+            ``,
+            h(
+              Link,
+              {
+                href: "/people/[id]",
+                as: `/people/${f.people.username}`,
+              },
+              h(
+                "a",
+                { className: "notBlue" },
+                f.people.display_name || f.people.username
+              )
+            ),
+            f.people.pronouns
+              ? h("span.textSecondary", {}, ` (${f.people.pronouns})`)
+              : null,
+          ]),
+          h(Text, { source: f.people.bio || "" }),
         ])
+      ),
+
+      // message facilitator - shows for logged in and anon users; hidden on things you're facilitating
+
+      props.cohort.people_in_cohorts.length === 0
+        ? null
+        : h(Box, { h: true }, [
+            h("h4", [
+              "Members ",
+              h(
+                "span.textSecondary",
+                `(${props.cohort.people_in_cohorts.length}${
+                  props.cohort.courses.cohort_max_size !== 0
+                    ? `/${props.cohort.courses.cohort_max_size}`
+                    : ""
+                })`
+              ),
+            ]),
+            !props.isFacilitator
+              ? null
+              : h(
+                  "a",
+                  {
+                    href: `mailto:?bcc=${props.cohort.people_in_cohorts
+                      .map((p) => p.people.email)
+                      .join(",")}`,
+                  },
+                  "email everyone"
+                ),
+          ]),
+      ...props.cohort.people_in_cohorts.map((person) => {
+        return h(
+          "div",
+          { style: { display: "grid", gridTemplateColumns: "auto auto" } },
+          [
+            h(Box, { h: true }, [
+              h(
+                Link,
+                {
+                  href: "/people/[id]",
+                  as: `/people/${person.people.username}`,
+                },
+                [
+                  h(
+                    "a",
+                    { className: "notBlue" },
+                    person.people.display_name || person.people.username
+                  ),
+                ]
+              ),
+              person.people.pronouns
+                ? h("span.textSecondary", {}, ` (${person.people.pronouns})`)
+                : null,
+            ]),
+            !props.isFacilitator
+              ? null
+              : h("div", { style: { justifySelf: "right" } }, [
+                  h(
+                    "a",
+                    {
+                      style: { marginRight: "10px" },
+                      href: `mailto:${person.people.email}`,
+                    },
+                    "email"
+                  ),
+                  h(
+                    DestructiveSmallButton,
+                    {
+                      onClick: () => {
+                        setUnenrollState({
+                          personID: person.person,
+                          cohortID: props.cohort.id,
+                          username: person.people.username,
+                          display_name: person.people.display_name,
+                          removeMember: () => {
+                            props.mutate({
+                              ...props.cohort,
+                              people_in_cohorts: props.cohort.people_in_cohorts.filter(
+                                (p) => p.person !== person.person
+                              ),
+                            });
+                          },
+                        });
+                      },
+                    },
+                    "unenroll"
+                  ),
+                ]),
+          ]
+        );
       }),
-    ])
-  ])
+    ]),
+  ]);
 }
 
 const UnenrollModal = (props:{
@@ -325,43 +406,90 @@ const MarkCohortLive = (props:{cohort:Cohort, mutate:(c:Cohort)=>void})=> {
 const MarkCohortComplete = (props:{cohort:Cohort, mutate:(c:Cohort)=>void})=> {
   let [state, setState] = useState<'normal' | 'confirm' | 'loading'| 'complete' >('normal')
 
-  if(state === 'confirm' || state === 'loading') return h(Modal, {display: true, closeText: "nevermind", onExit: ()=> setState('normal')}, [
-    h(Box, {gap: 32}, [
-      h('h2', {style:{textAlign:'center'}}, "Are you sure?"),
-      h(Box, {gap: 16}, [
-        'Before closing this course, please...',
-        h(Box, {gap: 16}, [
-          h(CheckBox, [
-            h(Input, {
-              type: 'checkbox',
-            }),
-            h("span", [
-            "Use the ", h(Link, {href: `http://krakenedu.com/courses/${props.cohort.courses.slug}/${props.cohort.courses.id}/cohorts/${props.cohort.id}/templates?template=Artifact`}, "Artifact template"), " to publicly share any artifacts or final projects produced in the cohort"
-            ]), 
-          ]),
-            h(CheckBox, [
-              h(Input, {
-                type: 'checkbox'
-              }),
+  if (state === "confirm" || state === "loading")
+    return h(
+      Modal,
+      {
+        display: true,
+        closeText: "nevermind",
+        onExit: () => setState("normal"),
+      },
+      [
+        h(Box, { gap: 32 }, [
+          h("h2", { style: { textAlign: "center" } }, "Are you sure?"),
+          h(Box, { gap: 16 }, [
+            "Before closing this course, please...",
+            h(Box, { gap: 16 }, [
+              h(CheckBox, [
+                h(Input, {
+                  type: "checkbox",
+                }),
+                h("span", [
+                  "Use the ",
+                  h(
+                    Link,
+                    {
+                      href: `http://krakenedu.com/courses/${props.cohort.courses.slug}/${props.cohort.courses.id}/cohorts/${props.cohort.id}/templates?template=Artifact`,
+                    },
+                    "Artifact template"
+                  ),
+                  " to publicly share any artifacts or final projects produced in the cohort",
+                ]),
+              ]),
+              h(CheckBox, [
+                h(Input, {
+                  type: "checkbox",
+                }),
+                h("span", [
+                  "Use the ",
+                  h(
+                    Link,
+                    {
+                      href: `http://krakenedu.com/courses/${props.cohort.courses.slug}/${props.cohort.courses.id}/cohorts/${props.cohort.id}/templates?template=Retro`,
+                    },
+                    "Retrospective template"
+                  ),
+                  " to post a cohort retro in the forum.",
+                ]),
+              ]),
+              h(Seperator),
               h("span", [
-              "Use the ", h(Link, {href: `http://krakenedu.com/courses/${props.cohort.courses.slug}/${props.cohort.courses.id}/cohorts/${props.cohort.id}/templates?template=Retro`}, "Retrospective template"), " to post a cohort retro in the forum." 
+                "You can find more information about artifacts and retros in our ",
+                h(
+                  Link,
+                  {
+                    href: `https://app.krakenedu.com/manual/facilitators#facilitating-a-cohort`,
+                  },
+                  "facilitator guide"
+                ),
+                ".",
               ]),
             ]),
-          h(Seperator), 
-          h('span', [
-            "You can find more information about artifacts and retros in our ", h(Link, {href: `https://krakenedu.com/manual/facilitators#facilitating-a-cohort`}, "facilitator guide"), "." 
           ]),
+          h(
+            Primary,
+            {
+              style: { justifySelf: "center" },
+              onClick: async (e) => {
+                e.preventDefault();
+                setState("loading");
+                let res = await callApi<UpdateCohortMsg, UpdateCohortResponse>(
+                  `/api/cohorts/${props.cohort.id}`,
+                  { data: { completed: true } }
+                );
+                if (res.status === 200)
+                  props.mutate({
+                    ...props.cohort,
+                    completed: res.result.completed,
+                  });
+                setState("complete");
+              },
+            },
+            state === "loading" ? h(Loader) : "Mark this cohort complete"
+          ),
         ]),
-      ]),
-      h(Primary, {style: {justifySelf:'center'}, onClick: async e => {
-        e.preventDefault()
-        setState('loading')
-        let res = await callApi<UpdateCohortMsg, UpdateCohortResponse>(`/api/cohorts/${props.cohort.id}`, {data:{completed:true}})
-        if(res.status === 200) props.mutate({...props.cohort, completed: res.result.completed})
-        setState('complete')
-      }}, state === 'loading' ? h(Loader) : 'Mark this cohort complete'),
-    ])
-  ])
+      ]
+    );
 
   return h(Destructive, {onClick: async e => {
     e.preventDefault()
@@ -423,42 +551,91 @@ const TODOBanner = (props:{
 }) => {
   let [expanded, setExpanded] = useState(false)
 
-  return h(TwoColumnBanner, {red: true}, [
+  return h(TwoColumnBanner, { red: true }, [
     h(BannerContent, [
-      h(AccentImg, {height:32, width:36, src:"https://hyperlink-data.nyc3.cdn.digitaloceanspaces.com/icons/Seedling.png"}),
-      h(Box, {gap:8}, [
-        h('h4', "This cohort is still a draft"),
-        h('p', 'It’s hidden from public view. People can’t join until you publish it.')
+      h(AccentImg, {
+        height: 32,
+        width: 36,
+        src:
+          "https://hyperlink-data.nyc3.cdn.digitaloceanspaces.com/icons/Seedling.png",
+      }),
+      h(Box, { gap: 8 }, [
+        h("h4", "This cohort is still a draft"),
+        h(
+          "p",
+          "It’s hidden from public view. People can’t join until you publish it."
+        ),
       ]),
 
-      ... !expanded ? [] : [
-        h(AccentImg, {height:32, width:36, src:"https://hyperlink-data.nyc3.cdn.digitaloceanspaces.com/icons/Bud.png"}),
-        h(Box, {gap:16}, [
-          h('h4', "Before you publish this cohort make sure that you ...  "),
-          h(TodoList, {
-            persistKey: "cohort-publish-todo-"+props.cohort.id,
-            items: [
-              "Add events to your cohort schedule for any live calls or important dates people need to remember.",
-              h("span", [
-                "Fill out ", h(Link, {href: `https://krakenedu.com/dashboard?tab=Profile`}, "your bio"), " and tell people more about you."
-              ]),
-              h("span", [
-                "Fill out the ", h("a", {href: `${DISCOURSE_URL}/session/sso?return_path=/c/${props.cohort.category_id}`}, "Getting Started topic"), " in the forum with any first steps learners should take. This will be linked in the welcome email sent to everyone who enrolls."
-              ])
-            ]
-          })
-        ]),
+      ...(!expanded
+        ? []
+        : [
+            h(AccentImg, {
+              height: 32,
+              width: 36,
+              src:
+                "https://hyperlink-data.nyc3.cdn.digitaloceanspaces.com/icons/Bud.png",
+            }),
+            h(Box, { gap: 16 }, [
+              h(
+                "h4",
+                "Before you publish this cohort make sure that you ...  "
+              ),
+              h(TodoList, {
+                persistKey: "cohort-publish-todo-" + props.cohort.id,
+                items: [
+                  "Add events to your cohort schedule for any live calls or important dates people need to remember.",
+                  h("span", [
+                    "Fill out ",
+                    h(
+                      Link,
+                      {
+                        href: `https://app.krakenedu.com/dashboard?tab=Profile`,
+                      },
+                      "your bio"
+                    ),
+                    " and tell people more about you.",
+                  ]),
+                  h("span", [
+                    "Fill out the ",
+                    h(
+                      "a",
+                      {
+                        href: `${DISCOURSE_URL}/session/sso?return_path=/c/${props.cohort.category_id}`,
+                      },
+                      "Getting Started topic"
+                    ),
+                    " in the forum with any first steps learners should take. This will be linked in the welcome email sent to everyone who enrolls.",
+                  ]),
+                ],
+              }),
+            ]),
 
-        h(AccentImg, {height:32, width:36, src:"https://hyperlink-data.nyc3.cdn.digitaloceanspaces.com/icons/Flower.png"}),
-        h(Box, {gap:16}, [
-          h('h4', "Once you're ready, hit publish and start spreading the word!"),
-          h(MarkCohortLive, {cohort:props.cohort, mutate: props.mutate})
-        ])
-      ]
+            h(AccentImg, {
+              height: 32,
+              width: 36,
+              src:
+                "https://hyperlink-data.nyc3.cdn.digitaloceanspaces.com/icons/Flower.png",
+            }),
+            h(Box, { gap: 16 }, [
+              h(
+                "h4",
+                "Once you're ready, hit publish and start spreading the word!"
+              ),
+              h(MarkCohortLive, { cohort: props.cohort, mutate: props.mutate }),
+            ]),
+          ]),
     ]),
 
-    h(LinkButton, {style:{justifySelf: 'right', textDecoration: 'none'}, onClick: ()=>setExpanded(!expanded)}, expanded ? "hide checklist" : "show checklist") 
-  ])
+    h(
+      LinkButton,
+      {
+        style: { justifySelf: "right", textDecoration: "none" },
+        onClick: () => setExpanded(!expanded),
+      },
+      expanded ? "hide checklist" : "show checklist"
+    ),
+  ]);
 }
 
 
@@ -473,31 +650,37 @@ grid-row-gap: 32px;
 //End Bannera
 
 export const getStaticProps = async (ctx:any)=>{
-  let courseId = parseInt(ctx.params?.id as string || '' )
-  if(Number.isNaN(courseId)) return {props: {notFound: true}} as const
+  let courseId = parseInt((ctx.params?.id as string) || "");
+  if (Number.isNaN(courseId)) return { props: { notFound: true } } as const;
 
-  let course = await courseDataQuery(courseId)
-  if(!course) return {props: {notFound: true}} as const
+  let course = await courseDataQuery(courseId);
+  if (!course) return { props: { notFound: true } } as const;
 
-  let cohortId = parseInt(ctx.params?.cohortId as string || '')
-  if(Number.isNaN(cohortId)) return {props:{notFound: true}} as const
-  let cohort = await cohortDataQuery(cohortId)
+  let cohortId = parseInt((ctx.params?.cohortId as string) || "");
+  if (Number.isNaN(cohortId)) return { props: { notFound: true } } as const;
+  let cohort = await cohortDataQuery(cohortId);
 
-  if(!cohort) return {props: {notFound: true}} as const
+  if (!cohort) return { props: { notFound: true } } as const;
 
   let [artifacts, curriculum] = await Promise.all([
-    getTaggedPost(cohort.category_id, 'artifact'),
-    getTaggedPost(cohort.courses.category_id, 'curriculum')
-  ])
-  return {props: {
-    notFound: false,
-    courseId,
-    cohortId,
-    cohort,
-    course,
-    curriculum,
-    artifacts},
-          revalidate: 1} as const
+    getTaggedPost(cohort.category_id, "artifact"),
+    getTaggedPost(cohort.courses.category_id, "curriculum"),
+  ]);
+  //TO DO:  This is
+  console.log(curriculum, "artifacts--");
+
+  return {
+    props: {
+      notFound: false,
+      courseId,
+      cohortId,
+      cohort,
+      course,
+      curriculum,
+      artifacts,
+    },
+    revalidate: 1,
+  } as const;
 }
 
 export const getStaticPaths = () => {

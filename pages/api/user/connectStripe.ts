@@ -51,8 +51,10 @@ async function GETConnectStripe(req:Request){
     type: user_data.stripe_connected_accounts?.payouts_enabled
       ? "account_update"
       : "account_onboarding",
-    return_url: "https://krakenedu.com/dashboard?tab=Profile#connect-stripe",
-    refresh_url: "https://krakenedu.com/dashboard?tab=Profile#connect-stripe",
+    return_url:
+      "https://app.krakenedu.com/dashboard?tab=Profile#connect-stripe",
+    refresh_url:
+      "https://app.krakenedu.com/dashboard?tab=Profile#connect-stripe",
   });
   console.log(link)
   return {status: 200, result: {url: link.url}} as const

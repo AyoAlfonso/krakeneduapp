@@ -51,7 +51,7 @@ export default ()=>{
             `Courses on KrakenEdu are developed in the `,
             h(
               "a",
-              { href: "https://krakenedu.com/courses/the-meta-course/1" },
+              { href: "https://app.krakenedu.com/courses/the-meta-course/1" },
               `Meta Course`
             ),
             `.`,

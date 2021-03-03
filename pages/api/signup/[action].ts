@@ -3,7 +3,7 @@ import { v4 as uuidv4 } from 'uuid';
 import hmac from '../../../src/hmac'
 import {setTokenHeader} from '../../../src/token'
 import {multiRouteHandler, ResultType, Request} from '../../../src/apiHelpers'
-// import {syncSSO} from '../../../src/discourse'
+import {syncSSO} from '../../../src/discourse'
 import {sendVerificationEmail} from '../../../emails'
 import { usernameValidate } from 'src/utils';
 import prisma from "lib/prisma";
@@ -87,15 +87,13 @@ async function VerifyEmail (req: Request) {
     })
   }
 
-  console.log(id, "id")
-
   if(!id) return {status: 403, result: "Error: Couldn't create user. May already exist"}
 
-  // await syncSSO({
-  //   external_id: id,
-  //   username: token.username,
-  //   email: token.email
-  // })
+  await syncSSO({
+    external_id: "7abd6904-73ed-4f33-b9b7-864a3e574c6a",
+    username: "pudakas",
+    email: "faryk@mailinator.com"
+  })
 
   return {
     status: 200,

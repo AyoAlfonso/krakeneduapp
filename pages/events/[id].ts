@@ -115,7 +115,7 @@ const EditableEvent = (props: Extract<Props, {notFound: false}>) => {
         }),
         h("meta", {
           property: "og:image",
-          content: "https://krakenedu.com/img/social-logo.png",
+          content: "https://app.krakenedu.com/img/social-logo.png",
           key: "og:image",
         }),
         h("meta", {
