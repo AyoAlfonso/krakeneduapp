@@ -30,11 +30,7 @@ export default class MyDocument extends Document {
         `,
             }}
           ></script>
-          <script
-            data-goatcounter="https://hyperlink.goatcounter.com/count"
-            async
-            src="//gc.zgo.at/count.js"
-          ></script>
+        
         </body>
       </Html>
     );
