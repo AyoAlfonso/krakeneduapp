@@ -10,4 +10,5 @@ export type StripePaymentMetaData = {
   userId: string
 }
 
+console.log(process.env.STRIPE_SECRET, "STRIPE_SECRET")
 export const stripe = new Stripe(process.env.STRIPE_SECRET || '', {apiVersion:'2020-08-27'});
