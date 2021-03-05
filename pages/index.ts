@@ -49,7 +49,7 @@ const Landing = (props:Props) => {
       }, [[],[]] as Array<Courses["courses"]>)
 
 
-  console.log(props.events)
+  
   return h(Box, {gap:48}, [
     h(Welcome),
     // h(WhyHyperlink, {}, h(Body, {}, h(Intro))),

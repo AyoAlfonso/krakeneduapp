@@ -666,8 +666,6 @@ export const getStaticProps = async (ctx:any)=>{
     getTaggedPost(cohort.category_id, "artifact"),
     getTaggedPost(cohort.courses.category_id, "curriculum"),
   ]);
-  //TO DO:  This is
-  console.log(curriculum, "artifacts--");
 
   return {
     props: {
