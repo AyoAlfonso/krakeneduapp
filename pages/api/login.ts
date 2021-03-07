@@ -48,7 +48,6 @@ export default APIHandler(handler)
 
 async function validateLogin(emailOrUsername: string, password: string){
   try {
-    console.log(emailOrUsername, "dykujy@mailinator.com")
     let person = await prisma.people.findFirst({
       where:{OR: [
         {email: {equals: emailOrUsername, mode: 'insensitive'}},

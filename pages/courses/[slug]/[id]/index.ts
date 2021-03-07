@@ -71,7 +71,7 @@ const CoursePage = (props:Extract<Props, {notFound: false}>) => {
 
   let isMaintainer = !!(course?.course_maintainers.find(maintainer => user && maintainer.maintainer === user.id))
   let invited = !!userCohorts?.invited_courses.find(course=>course.id === props.course.id )
-  console.log(props)
+
   //Setting up the layout for the course page
   return h('div', [
     h(Head, {children: [

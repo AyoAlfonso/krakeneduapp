@@ -43,7 +43,6 @@ export const coursesQuery = (options?:Partial<{type:'course' | 'club'}>) => pris
 })
 
 async function getCourses(req:Request) {
-  console.log(req.query)
   let courses = await coursesQuery(req.query)
   return {status: 200, result: {courses}} as const
 }
@@ -51,7 +50,6 @@ async function getCourses(req:Request) {
 
 async function createCourse(req: Request) {
   let msg;
-  console.log(req.body, "reqcreateCourse")
   try {
     msg = CreateCourseMsgValidator.check(req.body);
   } catch (e) {
@@ -64,8 +62,6 @@ async function createCourse(req: Request) {
     return { status: 403, result: "ERROR: no user logged in" } as const;
 
   let isAdmin = await prisma.admins.findUnique({ where: { person: user.id } });
-
-  console.log(user, isAdmin)
   if (!isAdmin)
     return { status: 403, result: "ERROR: user is not an admin" } as const;
 
@@ -82,9 +78,6 @@ async function createCourse(req: Request) {
       result:
         "ERROR: No maintainers provided, or found with the emails provided",
     };
-
- console.log(slug, "slug")
- 
 
   let maintainerGroupName = slug + "-m";
   let [maintainerGroup, courseGroup] = await Promise.all([
@@ -103,7 +96,6 @@ async function createCourse(req: Request) {
       mentionable_level: 3,
     }),
   ]);
-    console.log(maintainerGroup, "maintainerGroup")
   if (!maintainerGroup || !courseGroup)
     return {
       status: 500,

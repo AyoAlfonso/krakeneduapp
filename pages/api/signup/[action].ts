@@ -104,14 +104,13 @@ async function VerifyEmail (req: Request) {
 
 const createActivationKey = async (person:{email: string, password_hash: string, username: string, newsletter:boolean}) => {
   let key = uuidv4()
-  let newActivationkey = await prisma.activation_keys.create({
+  await prisma.activation_keys.create({
     data: {
       ...person,
       created_time: new Date(Date.now()).toISOString(),
       key_hash: hmac(key)
     }
   })
-  console.log(newActivationkey, "new act")
   return key
 }
 

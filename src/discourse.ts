@@ -252,7 +252,6 @@ export const syncSSO = async (params: {[key:string]: string})=>{
   const sig = crypto.createHmac('sha256', process.env.DISCOURSE_SECRET || '');
 
   sig.update(payload)
-  console.log(payload, "payload")
   return fetchWithBackoff(`${DISCOURSE_URL}/admin/users/sync_sso`, {
     method: "POST",
     headers: {

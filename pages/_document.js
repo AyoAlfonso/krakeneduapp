@@ -1,5 +1,6 @@
 import Document, {Html, Head, Main, NextScript } from 'next/document'
 
+
 export default class MyDocument extends Document {
   render () {
     return (
@@ -24,7 +25,8 @@ export default class MyDocument extends Document {
         >
           <Main />
           <NextScript />
-          <script
+           <script type="text/javascript" src="/paystack/index.js"></script>
+           <script
             dangerouslySetInnerHTML={{
               __html: `if (window.location.host !== 'krakenedu.com') window.goatcounter = {no_onload: true}
         `,

@@ -60,6 +60,5 @@ export function sendBatchEmail<T extends EmailMetadata>(meta:T) {
         ...msg?.data
       }
     }))
-    console.log(msgs)
   }
 }

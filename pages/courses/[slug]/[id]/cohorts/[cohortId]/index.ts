@@ -8,7 +8,9 @@ import { InferGetStaticPropsType } from 'next'
 
 import CourseDetails from 'components/Course/Enroll'
 import { EnrollButton } from 'components/Course/EnrollButton';
-import { TwoColumn, Box, Seperator, Sidebar, WhiteContainer} from 'components/Layout'
+import { SubEnrollButton } from 'components/Course/SubEnrollButton';
+
+import { TwoColumn, Box, LabelBox, Seperator, Sidebar, WhiteContainer} from 'components/Layout'
 import { VerticalTabs, StickyWrapper } from 'components/Tabs'
 import { Primary, Destructive, DestructiveSmallButton, Secondary, LinkButton } from 'components/Button'
 import Loader, { PageLoader } from 'components/Loader'
@@ -111,67 +113,151 @@ const CohortPage = (props: Extract<Props, {notFound:false}>) => {
       } as {[k:string]:React.ReactElement}
   let tabKeys = Object.keys(Tabs).filter(t=>!!Tabs[t])
 
-  return h('div', {}, [
-    h(Head, {children: [
-      h('meta', {property:"og:title", content:course.name, key:"og:title"}),
-      h('meta', {property: "og:description", content: "Starting " + prettyDate(cohort.start_date), key: "og:description"}),
-      h('meta', {property: "og:image", content: course.card_image.split(',')[0], key: "og:image"}),
-      h('meta', {property: "twitter:card", content: "summary", key:"twitter:card"})
-    ]}),
-    h(WelcomeModal, {display:router.query.welcome !== undefined, cohort, user_calendar: profile ? profile.calendar_id : ''}),
-    h(Banners, {cohort, mutate, enrolled: !!inCohort, facilitating: isFacilitator}),
-      h(Box, {gap: 32}, [
+  return h("div", {}, [
+    h(Head, {
+      children: [
+        h("meta", {
+          property: "og:title",
+          content: course.name,
+          key: "og:title",
+        }),
+        h("meta", {
+          property: "og:description",
+          content: "Starting " + prettyDate(cohort.start_date),
+          key: "og:description",
+        }),
+        h("meta", {
+          property: "og:image",
+          content: course.card_image.split(",")[0],
+          key: "og:image",
+        }),
+        h("meta", {
+          property: "twitter:card",
+          content: "summary",
+          key: "twitter:card",
+        }),
+      ],
+    }),
+    h(WelcomeModal, {
+      display: router.query.welcome !== undefined,
+      cohort,
+      user_calendar: profile ? profile.calendar_id : "",
+    }),
+    h(Banners, {
+      cohort,
+      mutate,
+      enrolled: !!inCohort,
+      facilitating: isFacilitator,
+    }),
+    h(Box, { gap: 32 }, [
       h(TwoColumn, [
-        h(Box, {gap: 8, style:{gridColumn: 1}}, [
-          course.type === 'course' ? null :h(Box, {h: true}, props.course.card_image.split(',').map(src=>h('img', {src, style:{imageRendering: 'pixelated'}}))),
-          h('h1', cohortName(cohort.name)),
-          h(Link,{
-            href:`/courses/${cohort.courses.slug}/${cohort.courses.id}`
-          } ,h('a.notBlue', {}, h('h3.textSecondary', cohort?.courses.name))),
-          h('p.big', cohort.description)
+        h(Box, { gap: 8, style: { gridColumn: 1 } }, [
+          course.type === "course"
+            ? null
+            : h(
+                Box,
+                { h: true },
+                props.course.card_image
+                  .split(",")
+                  .map((src) =>
+                    h("img", { src, style: { imageRendering: "pixelated" } })
+                  )
+              ),
+          h("h1", cohortName(cohort.name)),
+          h(
+            Link,
+            {
+              href: `/courses/${cohort.courses.slug}/${cohort.courses.id}`,
+            },
+            h("a.notBlue", {}, h("h3.textSecondary", cohort?.courses.name))
+          ),
+          h("p.big", cohort.description),
         ]),
         Tabs[selectedTab ? selectedTab : tabKeys[0]],
-        h(Sidebar, {} , [
+        h(Sidebar, {}, [
           h(StickyWrapper, [
-            h(Box, {gap: 32}, [
-              inCohort || isStarted || isFacilitator ? null : h(CourseDetails, {course}),
-              inCohort || isStarted || isFacilitator ? null
-                : h(EnrollButton, {
-                  id: cohort.id,
-                  course: course.id,
-                  max_size: course.cohort_max_size,
-                  learners: cohort.people_in_cohorts.length,
-                  invited: !course.invite_only || invited}, "Join this cohort"),
+            h(Box, { gap: 16 }, [
+              inCohort || isStarted || isFacilitator
+                ? null
+                : h(CourseDetails, { course }),
+              inCohort || isStarted || isFacilitator
+                ? null
+                : 
+            h(Box, [
+               h(LabelBox,{style:{fontSize: '2rem'}} ,"Join this cohort"),
+                h(SubEnrollButton, {
+                      id: cohort.id,
+                      course: course.id,
+                      max_size: course.cohort_max_size,
+                      learners: cohort.people_in_cohorts.length,
+                      invited: !course.invite_only || invited,
+                    },  "via Paystack"),
+                h(EnrollButton,
+                    {
+                      id: cohort.id,
+                      course: course.id,
+                      max_size: course.cohort_max_size,
+                      learners: cohort.people_in_cohorts.length,
+                      invited: !course.invite_only || invited,
+                    },
+                    "via Stripe"
+                  ),
+                   ]),
               h(Box, [
-                h('h3', "Information"),
+                h("h3", "Information"),
                 h(VerticalTabs, {
-                  selected: selectedTab && Tabs[selectedTab] ? selectedTab : tabKeys[0],
+                  selected:
+                    selectedTab && Tabs[selectedTab] ? selectedTab : tabKeys[0],
                   tabs: tabKeys,
-                  onChange: (tab)=>{
-                    let route = new URL(window.location.href)
-                    route.searchParams.set('tab', tab)
-                    router.replace(route, undefined, {shallow: true})
-                  }
-                })
+                  onChange: (tab) => {
+                    let route = new URL(window.location.href);
+                    route.searchParams.set("tab", tab);
+                    router.replace(route, undefined, { shallow: true });
+                  },
+                }),
               ]),
-              inCohort || isFacilitator || cohort.completed ? h(Box, {}, [
-                !isFacilitator ? null : h(Link, {href:window.location.pathname + '/settings'}, h('a', {}, h(Primary, "Cohort Settings"))),
-                !inCohort && !isFacilitator ? null : h(Box, [
-                  h('a', {href: `${DISCOURSE_URL}/session/sso?return_path=/c/${cohort.category_id}`}
-                    , h(Secondary, 'The Forum')),
-                  !isFacilitator ? null : h(Link, {
-                    href: "/courses/[slug]/[id]/cohorts/[cohortId]/templates",
-                    as: `/courses/${cohort.courses.slug}/${cohort.courses.id}/cohorts/${cohort.id}/templates`
-                  }, h(Secondary, 'Forum Post from Template')),
-                  !cohort.completed && isFacilitator && isStarted ? h(MarkCohortComplete, {cohort, mutate}) : null,
-                ])
-              ]) :  null,
-            ])
-          ])
-        ])
-      ])
-    ])
-  ])
+              inCohort || isFacilitator || cohort.completed
+                ? h(Box, {}, [
+                    !isFacilitator
+                      ? null
+                      : h(
+                          Link,
+                          { href: window.location.pathname + "/settings" },
+                          h("a", {}, h(Primary, "Cohort Settings"))
+                        ),
+                    !inCohort && !isFacilitator
+                      ? null
+                      : h(Box, [
+                          h(
+                            "a",
+                            {
+                              href: `${DISCOURSE_URL}/session/sso?return_path=/c/${cohort.category_id}`,
+                            },
+                            h(Secondary, "The Forum")
+                          ),
+                          !isFacilitator
+                            ? null
+                            : h(
+                                Link,
+                                {
+                                  href:
+                                    "/courses/[slug]/[id]/cohorts/[cohortId]/templates",
+                                  as: `/courses/${cohort.courses.slug}/${cohort.courses.id}/cohorts/${cohort.id}/templates`,
+                                },
+                                h(Secondary, "Forum Post from Template")
+                              ),
+                          !cohort.completed && isFacilitator && isStarted
+                            ? h(MarkCohortComplete, { cohort, mutate })
+                            : null,
+                        ]),
+                  ])
+                : null,
+            ]),
+          ]),
+        ]),
+      ]),
+    ]),
+  ]);
 }
 
 

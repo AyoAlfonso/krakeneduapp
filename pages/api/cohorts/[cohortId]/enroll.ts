@@ -20,7 +20,8 @@ export default APIHandler({
 })
 
 let EnrollMsgValidator = rt.Record({
-  discount: rt.Union(rt.Undefined, rt.String)
+  discount: rt.Union(rt.Undefined, rt.String),
+  paystack: rt.Union(rt.Undefined, rt.Boolean)
 })
 
 let UnEnrollMsgValidator = rt.Record({
@@ -32,11 +33,10 @@ async function enroll (req: Request) {
   if(Number.isNaN(cohortId)) return {status: 400, result: "ERROR: Cohort id is not a number"} as const
   let user = getToken(req)
   if(!user) return {status: 401, result: "Error: no user logged in"} as const
-
   let msg
   try {msg = EnrollMsgValidator.check(req.body)}
   catch(e) {return {status:400, result:e.toString()} as const }
-
+  let {paystack} = msg
   let [cohort, person, discount] = await Promise.all([
     prisma.course_cohorts.findUnique({
       where: {id: cohortId},
@@ -135,36 +135,46 @@ async function enroll (req: Request) {
       result: {zeroCost: true} as const
     }
   }
+ //TO DO: get the price of naira per hour and save in separate mongo db
+     let metadata: StripePaymentMetaData = {
+      type: 'cohort',
+      cohortId: cohort.id.toString(),
+      userId: user.id,
+      discount: discount?.code || null
+    }
 
-  let metadata: StripePaymentMetaData = {
-    type: 'cohort',
-    cohortId: cohort.id.toString(),
-    userId: user.id,
-    discount: discount?.code || null
-  }
-  const session = await stripe.checkout.sessions.create({
-    payment_method_types: ['card'],
-    customer: person?.stripe_customer_id || undefined,
-    customer_email: person?.stripe_customer_id ? undefined : user.email,
-    payment_intent_data: {
-      transfer_group: cohort.id.toString()
-    },
-    line_items: [{
-      name: cohort.courses.name +
-        (discount ? `, ${discount?.type === 'absolute' ? '$'+discount?.amount : discount?.amount+"%"} Off` : ''),
-      amount: price * 100,
-      currency: 'usd',
-      quantity: 1,
-    }],
-    cancel_url: `${origin}/courses/${cohort.courses.slug}/${cohort.course}/cohorts/${cohort.id}`,
-    success_url: `${origin}/courses/${cohort.courses.slug}/${cohort.course}/cohorts/${cohort.id}?welcome`,
-    metadata
-  });
+    if(paystack)  {
+        return {
+        status: 200,
+        result: {amount: price * 400 * 100, email: user.email, metadata} as const
+      }
+    } 
 
-  return {
-    status: 200,
-    result: {sessionId: session.id}
-  } as const
+    const session = await stripe.checkout.sessions.create({
+      payment_method_types: ['card'],
+      customer: person?.stripe_customer_id || undefined,
+      customer_email: person?.stripe_customer_id ? undefined : user.email,
+      payment_intent_data: {
+        transfer_group: cohort.id.toString()
+      },
+      line_items: [{
+        name: cohort.courses.name +
+          (discount ? `, ${discount?.type === 'absolute' ? '$'+discount?.amount : discount?.amount+"%"} Off` : ''),
+        amount: price * 100,
+        currency: 'usd',
+        quantity: 1,
+        //TO DO: Add discount 
+      }],
+      cancel_url: `${origin}/courses/${cohort.courses.slug}/${cohort.course}/cohorts/${cohort.id}`,
+      success_url: `${origin}/courses/${cohort.courses.slug}/${cohort.course}/cohorts/${cohort.id}?welcome`,
+      metadata
+    });
+
+    return {
+      status: 200,
+      result: {sessionId: session.id}
+    } as const
+ 
 }
 async function unenroll (req: Request) {
   let cohortId = parseInt(req.query.cohortId as string)
@@ -202,13 +212,13 @@ async function unenroll (req: Request) {
   let person = cohort.people_in_cohorts.find(p=>p.person===msg.person)
   if(!person) return {status:404, result: "ERROR: User is not in cohort"} as const
   if(!person.payment_intent && person.amount_paid !== 0) return {status: 500, result: "ERROR: Amount paid is greater than zero but there is not payment information"} as const
-
+  // TO DO check what payment_intent is
 
   await Promise.all([
     sendUnenrollEmail(person.people.email, {
       name: person.people.display_name || person.people.username,
       course_name:  cohort.courses.name,
-      paid: person. amount_paid > 0 ? 'true' : ''
+      paid: person.amount_paid > 0 ? 'true' : ''
     }),
     prisma.people_in_cohorts.delete({where:{person_cohort:{
       person: msg.person,
