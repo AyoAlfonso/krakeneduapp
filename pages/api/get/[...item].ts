@@ -5,7 +5,7 @@ export type UserCohortsResult = ResultType<typeof getUserCohorts>
 export type UserCoursesResult = ResultType<typeof getUserCourses>
 export type WhoAmIResult = ResultType<typeof whoami>
 export type CheckUsernameResult = ResultType<typeof checkUsername>
-import prisma from "src/lib/prisma";
+import prisma from "lib/prisma";
 
 export default multiRouteHandler('item', {
   'user_cohorts': getUserCohorts,

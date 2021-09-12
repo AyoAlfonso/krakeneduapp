@@ -31,7 +31,7 @@ export const EnrollButton:React.FC<{
     if(user === false) await router.push('/login?redirect=' + encodeURIComponent(router.asPath))
     if(!props.id) return
     let discount = getDiscounts().find(d=>d.course === props.course)
-    let res = await callEnroll(`/api/cohorts/${props.id}/enroll`, {discount: discount?.code})
+    let res = await callEnroll(`/api/cohorts/${props.id}/enroll`, {discount: discount?.code as string | undefined, paystack: undefined})
     if(res.status === 403) {
       setError(true)
       setDiscounts(getDiscounts().filter(d=>res.status === 403 && d.code !== res.result.discount))

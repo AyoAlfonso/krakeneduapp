@@ -12,7 +12,6 @@ import { sortByDateAndName } from 'src/utils'
 export function CourseAndClubList(props:{initialData:Courses, type: "club" | "course"}) {
   let {data: allCourses} = useCourses({initialData:props.initialData, type: props.type})
 
-console.log(allCourses, "allCourses")
   let upcoming = allCourses && allCourses.courses
   .flatMap(course => course.course_cohorts
     .filter(c=> course.cohort_max_size === 0 || course.cohort_max_size !==c.people_in_cohorts.length)

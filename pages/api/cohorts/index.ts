@@ -1,7 +1,7 @@
 import {APIHandler, Request, ResultType} from 'src/apiHelpers'
 import { getToken } from 'src/token'
 import { createGroup, createCategory, updateTopic, createTopic, updateCategory } from 'src/discourse'
-import prisma from "src/lib/prisma";
+import prisma from "lib/prisma";
 
 export type CreateCohortMsg = {
   courseId: number,
@@ -75,7 +75,6 @@ async function handler (req: Request) {
     [course.maintainer_groupTodiscourse_groups.name]: 1,
     [course.course_groupTodiscourse_groups.name]: 1
   }
-  console.log(courseCategoryPermissions)
 
   await updateCategory(course.category_id, {name: course.name, permissions: courseCategoryPermissions})
   let category = await createCategory(groupName, {permissions: {[groupName]:1}, parent_category_id: course.category_id})

@@ -49,7 +49,6 @@ export function WatchCourseInline(props:{id:number}) {
   let watching = userCourses?.watching_courses.find(c=> c.course === props.id)
 
   useDebouncedEffect(async ()=>{
-    console.log('debounced?')
     await callApi<WatchCourseMsg, WatchCourseResult>(`/api/courses/${props.id}/watch`, {watching: !!watching})
   }, 500, [watching])
 

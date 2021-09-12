@@ -47,7 +47,6 @@ function LibraryCollections(props:Extract<Props, {notFound: false}>){
 
 export const getStaticProps = async (ctx:any) =>{
   let name = ctx.params.collection
-  console.log(name)
   let collection = collections[name as keyof typeof collections]
   if(!collection) return {props:{notFound: true}} as const
 

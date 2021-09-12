@@ -3,7 +3,7 @@ import { PrismaClient } from "@prisma/client";
 
 let prisma: PrismaClient;
 
-if (process.env.NODE_ENV === "production") {
+if (process.env.APP_ENV === "production") {
   prisma = new PrismaClient();
 } else {
   if (!globalAny.prisma) {

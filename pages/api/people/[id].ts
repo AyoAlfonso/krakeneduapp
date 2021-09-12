@@ -85,7 +85,7 @@ async function updatePassword(email: string, newPassword: string) {
   let password_hash= await bcrypt.hash(newPassword, await bcrypt.genSalt())
   await prisma.people.update({where:{email}, data:{password_hash}})
 }
-import prisma from "src/lib/prisma";
+import prisma from "lib/prisma";
 
 export const profileDataQuery = (username: string, loggedIn: boolean)=>{
   return prisma.people.findUnique({

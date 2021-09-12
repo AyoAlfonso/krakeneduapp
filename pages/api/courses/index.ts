@@ -13,7 +13,7 @@ import TemplateCohortPrompt from 'writing/TemplateCohortPrompt.txt'
 import TemplateCohortRetrospective from 'writing/TemplateCohortRetrospective.txt'
 import {slugify} from 'src/utils'
 
-import prisma from "src/lib/prisma";
+import prisma from "lib/prisma";
 
 export type CourseResult = ResultType<typeof getCourses>
 export type CreateCourseMsg = t.Static<typeof CreateCourseMsgValidator>
@@ -43,7 +43,6 @@ export const coursesQuery = (options?:Partial<{type:'course' | 'club'}>) => pris
 })
 
 async function getCourses(req:Request) {
-  console.log(req.query)
   let courses = await coursesQuery(req.query)
   return {status: 200, result: {courses}} as const
 }
@@ -51,7 +50,6 @@ async function getCourses(req:Request) {
 
 async function createCourse(req: Request) {
   let msg;
-  console.log(req.body, "reqcreateCourse")
   try {
     msg = CreateCourseMsgValidator.check(req.body);
   } catch (e) {
@@ -81,9 +79,6 @@ async function createCourse(req: Request) {
         "ERROR: No maintainers provided, or found with the emails provided",
     };
 
- console.log(slug, "slug")
- 
-
   let maintainerGroupName = slug + "-m";
   let [maintainerGroup, courseGroup] = await Promise.all([
     createGroup({
@@ -101,7 +96,6 @@ async function createCourse(req: Request) {
       mentionable_level: 3,
     }),
   ]);
-    console.log(maintainerGroup, "maintainerGroup")
   if (!maintainerGroup || !courseGroup)
     return {
       status: 500,

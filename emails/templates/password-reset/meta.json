@@ -3,7 +3,7 @@
   "Alias": "password-reset",
   "Subject": "Set up a new password for your KrakenEdu account",
   "TemplateType": "Standard",
-  "LayoutTemplate": "Hyperlink",
+  "LayoutTemplate": "KrakenEdu",
   "TestRenderModel": {
     "name": "name_Value",
     "action_url": "action_url_Value"

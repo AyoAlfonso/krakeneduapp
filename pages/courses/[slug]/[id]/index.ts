@@ -3,7 +3,7 @@ import { useState, ReactElement } from 'react'
 import Link from 'next/link'
 import { InferGetStaticPropsType } from 'next'
 import styled from '@emotion/styled'
-import prisma from "src/lib/prisma";
+import prisma from "lib/prisma";
 import { Box, Seperator, TwoColumn, Sidebar } from 'components/Layout'
 import {Tabs, StickyWrapper} from 'components/Tabs'
 import { colors } from 'components/Tokens'
@@ -304,7 +304,7 @@ function MarkCourseLive(props: {id:number, slug: string}) {
               h(
                 "a",
                 {
-                  href: `https://krakenedu.com/courses/${props.slug}/${props.id}/settings?tab=Details`,
+                  href: `https://app.krakenedu.com/courses/${props.slug}/${props.id}/settings?tab=Details`,
                 },
                 "course settings"
               ),
@@ -381,16 +381,16 @@ const TODOBanner = (props:{
             persistKey: "course-creation-todo",
             items: [
               h("span", [
-                "Edit important details, like description and price, in ", h('a', {href: `https://krakenedu.com/courses/${props.slug}/${props.id}/settings?tab=Details`}, "course settings"), "."
+                "Edit important details, like description and price, in ", h('a', {href: `https://app.krakenedu.com/courses/${props.slug}/${props.id}/settings?tab=Details`}, "course settings"), "."
               ]),
               h("span", [
                 "Write a comprehensive curriculum for your course, by editing the ", h('a', {href: `${DISCOURSE_URL}/session/sso?return_path=/t/${props.id}`}, "Curriculum topic"), " in the forum."
               ]),
               h("span", [
-                "Create or edit ", h('a', {href: `https://krakenedu.com/courses/${props.slug}/${props.id}/settings?tab=Templates`}, "templates"), " for reusable forum topics so you don't need to rewrite them for every cohort you run (or you can add these later)."
+                "Create or edit ", h('a', {href: `https://app.krakenedu.com/courses/${props.slug}/${props.id}/settings?tab=Templates`}, "templates"), " for reusable forum topics so you don't need to rewrite them for every cohort you run (or you can add these later)."
               ]),
               h("span", [
-                "Create your first cohort, in ", h('a', {href: `https://krakenedu.com/courses/${props.slug}/${props.id}/settings?tab=Cohorts`}, "course settings"), ". It will also be a draft that you need to edit before publishing. We'll guide you through it!"
+                "Create your first cohort, in ", h('a', {href: `https://app.krakenedu.com/courses/${props.slug}/${props.id}/settings?tab=Cohorts`}, "course settings"), ". It will also be a draft that you need to edit before publishing. We'll guide you through it!"
               ])
             ]
           })

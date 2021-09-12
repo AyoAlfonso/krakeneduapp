@@ -33,21 +33,26 @@ export function sendEmail<T extends EmailMetadata>(meta:T) {
   return async function(
     email: string,
     vars?: T["TestRenderModel"], data?: Partial<{Metadata?:Hash<string>, Attachments: Array<{Name: string, Content: string, ContentType: string, ContentID: string | null}>}>) {
-    if(process.env.NODE_ENV === 'production') return client.sendEmailWithTemplate({
-      From: `ayo@${window.location.origin}`,
-      To: email,
-      TemplateAlias: meta.Alias,
-      TemplateModel: vars,
-      ...data
-    })
-    console.log(email, vars, data)
+    if(process.env.NODE_ENVIRONMENT === 'production') {
+      try {
+          return client.sendEmailWithTemplate({
+                  From: `wecare@krakenedu.com`,
+                  To: email,
+                  TemplateAlias: meta.Alias,
+                  TemplateModel: vars,
+                  ...data
+          })
+      } catch (error) {
+        console.log(error)
+      }
+    }
   }
 }
 export function sendBatchEmail<T extends EmailMetadata>(meta:T) {
   return (msgs:Array<{email: string, vars: T["TestRenderModel"],data?: Partial<{Metadata?:Hash<string>, Attachments: Array<{Name: string, Content: string, ContentType: string, ContentID: string | null}>}>} | undefined>) => {
-    if(process.env.NODE_ENV === 'production') return client.sendEmailBatchWithTemplates(msgs.filter(x=>x!== undefined).map(msg=>{
+    if(process.env.NODE_ENVIRONMENT === 'production') return client.sendEmailBatchWithTemplates(msgs.filter(x=>x!== undefined).map(msg=>{
       return {
-        From: `ayo@${window.location.origin}`,
+         From: `wecare@krakenedu.com`,
         To: msg?.email || '',
         TemplateAlias: meta.Alias,
         TemplateModel: msg?.vars || {},
@@ -55,6 +60,5 @@ export function sendBatchEmail<T extends EmailMetadata>(meta:T) {
         ...msg?.data
       }
     }))
-    console.log(msgs)
   }
 }

@@ -10,7 +10,7 @@ export const createEventInvite = (props:{
 
   let calendar = new ICAL.Component(['vcalendar',[],[]])
   calendar.updatePropertyWithValue('version', '2.0');
-  calendar.updatePropertyWithValue('prodid', `${window.location.origin}`);
+  calendar.updatePropertyWithValue('prodid', 'app.krakenedu.com');
   calendar.updatePropertyWithValue('method', "REQUEST")
   calendar.updatePropertyWithValue('name', 'KrakenEdu Calendar')
   calendar.updatePropertyWithValue('x-wr-calname', 'KrakenEdu Calendar')

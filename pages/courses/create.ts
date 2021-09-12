@@ -23,8 +23,6 @@ const CreateCourse = ()=> {
     maintainers: [] as string[]
   })
 
-  console.log(formData, "formData")
-
   let [status, callCreateCourse] = useApi<CreateCourseMsg, CreateCourseResponse>([formData])
 
   if(user === false) router.push('/')

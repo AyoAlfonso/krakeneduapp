@@ -1,5 +1,5 @@
 import { APIHandler, Request, ResultType } from "src/apiHelpers";
-import prisma from "src/lib/prisma";
+import prisma from "lib/prisma";
 import { getToken } from "src/token";
 import * as t from 'runtypes'
 import produce from "immer";
@@ -171,7 +171,7 @@ async function updateEvent(req:Request) {
               vars: {
                 name: rsvp.name,
                 event_name: event?.name || "",
-                event_page_url: `https://krakenedu.com/events/${event?.id}`,
+                event_page_url: `https://app.krakenedu.com/events/${event?.id}`,
               },
               data: {
                 Attachments: [

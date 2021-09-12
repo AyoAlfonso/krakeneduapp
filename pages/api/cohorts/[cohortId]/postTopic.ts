@@ -1,7 +1,7 @@
 import { ResultType, APIHandler, Request } from "src/apiHelpers"
 import { getToken } from "src/token";
 import { createTopic } from "src/discourse";
-import prisma from "src/lib/prisma";
+import prisma from "lib/prisma";
 export type PostTopicMsg = {
   title: string,
   body: string,
@@ -31,7 +31,7 @@ async function postTopic(req:Request) {
   })
   if(!cohort) return {status:404, result: `ERROR: Cannot find cohort ${cohortId} in course ${courseId}`} as const
   if(!cohort.cohort_facilitators.find(f=>user&&f.facilitator===user.id)) return {status:401, result:`ERROR: User is not facilitator of cohort`} as const
- console.log("createTopic")
+
   let topic = await createTopic({
     title: msg.title,
     raw: msg.body,

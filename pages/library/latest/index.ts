@@ -53,7 +53,6 @@ export default Library
 
 // This defines the layout for a single library post (tags, title, author, publish date, description)
 const LibraryPost = (props:Library) => {
-  console.log(props, "propss")
   return h(Box, {gap: 16, style: {maxWidth: 640}} , [
     h(Box, {h:true}, props.tags && props.tags.map(tag => h(Tag, {tagType: tag}))),
     h(Box, {gap:8}, [

@@ -1,7 +1,7 @@
 import crypto from 'crypto'
 import querystring from 'querystring'
 import {DISCOURSE_URL} from 'src/constants'
-import prisma from "src/lib/prisma";
+import prisma from "lib/prisma";
 let headers = {
       "Api-Key": process.env.DISCOURSE_API_KEY || '',
       "Api-Username": process.env.DISCOURSE_API_USERNAME || '',
@@ -59,7 +59,6 @@ export async function createGroup(group:{
 }
 
 export async function updateTopic(topic:string, input: {category_id: number, title: string, raw: string, tags: string[]}, username?: string) {
-  // Update the title
   await fetch (`${DISCOURSE_URL}${topic}`, {
     method: "PUT",
     headers:{
@@ -217,6 +216,8 @@ export const addMember = async (groupId:number, username: string) => {
 }
 
 export const getTaggedPost = async (c: string | number, tag: string) => {
+
+
   let res = await fetchWithBackoff(`${DISCOURSE_URL}/c/${c}.json`, {
     method: 'GET',
     headers: {
@@ -227,6 +228,7 @@ export const getTaggedPost = async (c: string | number, tag: string) => {
 
   if(res.status !== 200) console.log(await res.text())
   let category = await res.json() as Category
+  console.log(category.topic_list.topics, tag , "category")
   let topicID = category.topic_list.topics.find((topic) => topic.tags && topic.tags.includes(tag))?.id
   if(!topicID) return {text: '', id: ''}
   let topicRequest = await fetchWithBackoff(`${DISCOURSE_URL}/raw/${topicID}`, {headers})

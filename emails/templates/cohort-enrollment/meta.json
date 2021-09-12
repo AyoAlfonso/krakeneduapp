@@ -1,9 +1,9 @@
 {
   "Name": "Cohort Enrollment",
   "Alias": "cohort-enrollment",
-  "Subject": "You're enrolled in {{course_name}} on Hyperlink!",
+  "Subject": "You're enrolled in {{course_name}} on Kraken!",
   "TemplateType": "Standard",
-  "LayoutTemplate": "Hyperlink",
+  "LayoutTemplate": "KrakenEdu",
   "TestRenderModel": {
     "name": "name_Value",
     "course_name": "course_name_Value",

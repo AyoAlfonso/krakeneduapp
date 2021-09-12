@@ -1,7 +1,7 @@
 import {APIHandler, ResultType, Request} from '../../src/apiHelpers'
 import {setTokenHeader} from '../../src/token'
 import bcrypt from 'bcryptjs'
-import prisma from "src/lib/prisma";
+import prisma from "lib/prisma";
 
 export type Msg = {
   emailOrUsername: string
@@ -48,7 +48,6 @@ export default APIHandler(handler)
 
 async function validateLogin(emailOrUsername: string, password: string){
   try {
-    console.log(emailOrUsername, "dykujy@mailinator.com")
     let person = await prisma.people.findFirst({
       where:{OR: [
         {email: {equals: emailOrUsername, mode: 'insensitive'}},

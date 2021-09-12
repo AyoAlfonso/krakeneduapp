@@ -51,7 +51,6 @@ const Settings = (props:{
       props.mutate(state)
     }
   }
-  console.log(props.profile)
 
   return h(Box, {gap:64}, [
     h(FormBox, {onSubmit, width: 400, gap: 32}, [

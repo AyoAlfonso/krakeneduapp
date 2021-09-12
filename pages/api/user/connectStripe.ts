@@ -2,7 +2,7 @@ import Stripe from 'stripe'
 import {APIHandler, ResultType, Request} from 'src/apiHelpers'
 import { getToken } from 'src/token'
 
-import prisma from "src/lib/prisma";
+import prisma from "lib/prisma";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET || '', {apiVersion:'2020-08-27'});
 
@@ -51,10 +51,11 @@ async function GETConnectStripe(req:Request){
     type: user_data.stripe_connected_accounts?.payouts_enabled
       ? "account_update"
       : "account_onboarding",
-    return_url: "https://krakenedu.com/dashboard?tab=Profile#connect-stripe",
-    refresh_url: "https://krakenedu.com/dashboard?tab=Profile#connect-stripe",
+    return_url:
+      "https://app.krakenedu.com/dashboard?tab=Profile#connect-stripe",
+    refresh_url:
+      "https://app.krakenedu.com/dashboard?tab=Profile#connect-stripe",
   });
-  console.log(link)
   return {status: 200, result: {url: link.url}} as const
 
 }

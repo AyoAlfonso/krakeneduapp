@@ -3,7 +3,7 @@
   "Alias": "welcome",
   "Subject": "Welcome to KrakenEdu - confirm your account and get started!",
   "TemplateType": "Standard",
-  "LayoutTemplate": "Hyperlink",
+  "LayoutTemplate": "KrakenEdu",
   "TestRenderModel": {
     "name": "name_Value",
     "activation_code": "activation_code_Value",

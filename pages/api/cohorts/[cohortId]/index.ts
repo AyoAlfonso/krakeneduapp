@@ -4,7 +4,7 @@ import { sendWatchingNotificationEmail } from "emails"
 import { prettyDate } from "src/utils"
 import produce from "immer"
 import { updateCategory, updateGroup } from "src/discourse"
-import prisma from "src/lib/prisma";
+import prisma from "lib/prisma";
 
 export type UpdateCohortMsg = {
   data: Partial<{
@@ -79,7 +79,7 @@ async function updateCohort(req:Request) {
         },
         vars: {
           course_name: cohort.courses.name,
-          cohort_page_url: `https://krakenedu.com/courses/${cohort.courses.slug}/${cohort.course}/cohorts/${cohortId}`,
+          cohort_page_url: `https://app.krakenedu.com/courses/${cohort.courses.slug}/${cohort.course}/cohorts/${cohortId}`,
           cohort_start_date: prettyDate(cohort.start_date),
           course_description: cohort.courses.description,
         },

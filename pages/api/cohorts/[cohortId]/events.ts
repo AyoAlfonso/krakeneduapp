@@ -1,5 +1,5 @@
 import { APIHandler, Request, ResultType } from "src/apiHelpers";
-import prisma from "src/lib/prisma";
+import prisma from "lib/prisma";
 
 export default APIHandler(getCohortEvents)
 

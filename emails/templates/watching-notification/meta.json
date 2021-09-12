@@ -3,7 +3,7 @@
   "Alias": "watching-notification",
   "Subject": "{{course_name}} - new cohort scheduled!",
   "TemplateType": "Standard",
-  "LayoutTemplate": "Hyperlink",
+  "LayoutTemplate": "KrakenEdu",
   "TestRenderModel": {
     "course_name": "course_name_Value",
     "course_description": "course_description_Value",
