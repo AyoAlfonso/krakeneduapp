@@ -1,0 +1,2 @@
+_N_E=(window.webpackJsonp_N_E=window.webpackJsonp_N_E||[]).push([[22],{"F/Iu":function(n,u,t){(window.__NEXT_P=window.__NEXT_P||[]).push(["/courses",function(){return t("XbpC")}])},XbpC:function(n,u,t){"use strict";t.r(u),t.d(u,"__N_SSG",(function(){return r})),t.d(u,"default",(function(){return c}));var _=t("j+1P"),i=t.n(_),o=t("Zdta"),r=!0;function c(n){return i()(o.b,{initialData:n,type:"course"})}}},[["F/Iu",0,2,1,3,4,8,10,13]]]);
+//# sourceMappingURL=courses-d389d3a620a5e4151c6e.js.map
