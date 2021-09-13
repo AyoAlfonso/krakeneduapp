@@ -1,2 +1,0 @@
-_N_E=(window.webpackJsonp_N_E=window.webpackJsonp_N_E||[]).push([[23],{Zq7u:function(_,n,w){(window.__NEXT_P=window.__NEXT_P||[]).push(["/courses/[slug]/[id]",function(){return w("ptY8")}])}},[["Zq7u",0,2,1,3,4,5,7,8,10,11,12,15]]]);
-//# sourceMappingURL=[id]-bca510e4122d28a5583a.js.map

@@ -1,1 +1,0 @@
-{"ast":null,"code":"export let DISCOURSE_URL = 'https://forum.krakenedu.com';","map":{"version":3,"sources":["/Users/ayooluwaalfonso/code/krakeneduapp/src/constants.ts"],"names":["DISCOURSE_URL"],"mappings":"AAAA,OAAO,IAAIA,aAAa,GAAG,6BAApB","sourcesContent":["export let DISCOURSE_URL = 'https://forum.krakenedu.com'\n"]},"metadata":{},"sourceType":"module"}

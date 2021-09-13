@@ -38,7 +38,7 @@ export function CourseAndClubList(props: {
   //Club cohort card will soon change to job cohort card
   let CohortCardComponent =
     props.type === "club" ? ClubCohortCard : CourseCohortCard;
-  console.log(upcoming, "upcomingupcoming-");
+
   return h(Box, { gap: 64 }, [
     // Header for Clubs
     props.type === "club"
