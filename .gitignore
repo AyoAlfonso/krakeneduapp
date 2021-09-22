@@ -3,3 +3,4 @@ node_modules
 .now
 public/atom.xml
 public/rss.xml
+.next
