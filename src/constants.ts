@@ -1,1 +1,2 @@
-export let DISCOURSE_URL = 'https://forum.krakenedu.com'
+export let DISCOURSE_URL = "https://classroom.krakenedu.com";
+
