@@ -8,20 +8,11 @@ import { getDiscounts, setDiscounts } from "src/clientData";
 import { Box } from "components/Layout";
 import { Modal } from "components/Modal";
 import { Primary } from "components/Button";
-import compress from "src/paystack/compress-data"
+import compress from "src/paystack/compress-data";
 import toast from "react-hot-toast";
+import { errorNotify, successNotify } from "src/utils";
 // import {PaystackProps} from 'src/paystack/types';
 // import Toast from 'light-toast';
-
-const errorNotify = (msg: string) =>
-  toast.error(msg, {
-    icon: "😟",
-  });
-
-const successNotify = (msg: string) =>
-  toast.success(msg, {
-    icon: "👏",
-  });
 
 const defaultConfig = {
   publicKey: process.env.NEXT_PUBLIC_PAYSTACK_KEY,
@@ -35,9 +26,9 @@ const onClose = () => {
   errorNotify("Your payment failed, try again?");
 };
 
-const paystackHook = (config:{}) => {
+const paystackHook = (config: {}) => {
   try {
-    let initializePayment = compress(config, defaultConfig)
+    let initializePayment = compress(config, defaultConfig);
     // @ts-ignore
     initializePayment(onSuccess, onClose)();
   } catch (error) {
@@ -58,7 +49,6 @@ export const SubEnrollButton: React.FC<{
   let [status, callEnroll] = useApi<EnrollMsg, EnrollResponse>(
     [],
     async (res) => {
-    
       if (res.zeroCost)
         await router.push(
           "/courses/[slug]/[id]/cohorts/[cohortId]",
