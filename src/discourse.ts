@@ -2,7 +2,7 @@ import crypto from "crypto";
 import querystring from "querystring";
 import { DISCOURSE_URL } from "src/constants";
 import prisma from "lib/prisma";
-import { errorNotify, successNotify } from "src/utils";
+import { errorNotify } from "src/utils";
 
 let headers = {
   "Api-Key": process.env.DISCOURSE_API_KEY || "",

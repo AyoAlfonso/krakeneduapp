@@ -9,10 +9,7 @@ import { Box } from "components/Layout";
 import { Modal } from "components/Modal";
 import { Primary } from "components/Button";
 import compress from "src/paystack/compress-data";
-import toast from "react-hot-toast";
 import { errorNotify, successNotify } from "src/utils";
-// import {PaystackProps} from 'src/paystack/types';
-// import Toast from 'light-toast';
 
 const defaultConfig = {
   publicKey: process.env.NEXT_PUBLIC_PAYSTACK_KEY,
