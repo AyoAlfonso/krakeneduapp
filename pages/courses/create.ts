@@ -2,7 +2,7 @@ import h from "react-hyperscript";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import Link from "next/link";
-import { Input, Error, Info, Textarea, CheckBox } from "components/Form";
+import { Input, Error, Textarea, CheckBox } from "components/Form";
 import { Primary } from "components/Button";
 import { LabelBox, FormBox } from "components/Layout";
 

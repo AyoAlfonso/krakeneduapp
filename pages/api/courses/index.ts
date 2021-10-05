@@ -110,7 +110,7 @@ async function createCourse(req: Request) {
   ]);
 
   console.log(courseGroup, maintainerGroup);
-  if (!courseGroup.basic_group || !maintainerGroup.basic_group) {
+  if (!courseGroup.basic_group.id || !maintainerGroup.basic_group.id) {
     if (maintainerGroup.status !== 200 || courseGroup.status !== 200)
       return {
         status: 500,
@@ -135,7 +135,8 @@ async function createCourse(req: Request) {
     return {
       status: 500,
       result: "Couldn't create course category",
-    } as const;
+    };
+
   await updateTopic(
     category.topic_url,
     {
