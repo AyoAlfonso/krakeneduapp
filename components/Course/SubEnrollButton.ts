@@ -15,11 +15,11 @@ const defaultConfig = {
   publicKey: process.env.NEXT_PUBLIC_PAYSTACK_KEY,
 };
 
-const onSuccess = () => {
+ const onSuccess = () => {
   successNotify("Your payment was successful!");
 };
 
-const onClose = () => {
+ const onClose = () => {
   errorNotify("Your payment failed, try again?");
 };
 
