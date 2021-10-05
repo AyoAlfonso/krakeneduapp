@@ -141,7 +141,7 @@ const VerifyEmail = (props: {email?:string, resendEmail: any}) =>  {
   let [key, setKey] = useState('')
   let [status, callSignupVerify] = useApi<VerifyEmailMsg, VerifyEmailResponse>([key], ()=>{
     setTimeout(()=>{
-      router.push('/dashboard')
+      // router.push('/dashboard')
     }, 3000)
   })
 

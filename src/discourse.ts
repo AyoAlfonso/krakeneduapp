@@ -3,6 +3,7 @@ import querystring from "querystring";
 import { DISCOURSE_URL } from "src/constants";
 import prisma from "lib/prisma";
 import { errorNotify } from "src/utils";
+// import toast from "react-hot-toast";
 
 let headers = {
   "Api-Key": process.env.DISCOURSE_API_KEY || "",
@@ -44,7 +45,6 @@ export async function createGroup(group: {
   mentionable_level?: number;
   messageable_level?: number;
 }) {
-  console.log(group, "grouphere");
   if (typeof group.owner_usernames !== "string")
     group.owner_usernames = group.owner_usernames.join(",");
   let result = await fetchWithBackoff(`${DISCOURSE_URL}/admin/groups`, {
@@ -56,11 +56,13 @@ export async function createGroup(group: {
     body: JSON.stringify({ group }),
   });
 
-  console.log(result, "grouphereafter");
-
   if (result.status !== 200) {
     const resultText = await result.text();
-    errorNotify(resultText);
+    console.log(resultText);
+    return {
+      status: 500,
+      result: JSON.parse(resultText).errors[0],
+    } as const;
   }
   return (await result.json()) as { basic_group: { id: number } };
 }
@@ -133,7 +135,11 @@ export async function createTopic(
   });
   if (result.status !== 200) {
     const resultText = await result.text();
-    errorNotify(resultText);
+    console.log(resultText);
+    return {
+      status: 500,
+      result: JSON.parse(resultText).errors[0],
+    } as const;
   }
   if (result.status === 200)
     return (await result.json()) as { id: string; topic_id: number };
@@ -167,8 +173,10 @@ export const createCategory = async (
     return (await result.json()).category as { id: number; topic_url: string };
   } else {
     const resultText = await result.text();
-    errorNotify(resultText);
-    return false as const;
+    return {
+      status: 500,
+      result: JSON.parse(resultText).errors[0],
+    } as const;
   }
 };
 
@@ -183,7 +191,10 @@ export async function updateGroup(id: number, name: string) {
   });
   if (result.status !== 200) {
     const resultText = await result.text();
-    errorNotify(resultText);
+    return {
+      status: 500,
+      result: JSON.parse(resultText).errors[0],
+    } as const;
   } else {
     await prisma.discourse_groups.update({ where: { id }, data: { name } });
     return true;
@@ -206,8 +217,14 @@ export async function updateCategory(
     },
     body: JSON.stringify({ ...options, color: "0088CC", text_color: "FFFFFF" }),
   });
-  if (result.status !== 200) console.log(await result.text());
-  else return true;
+  if (result.status !== 200) {
+    const resultText = await result.text();
+    console.log(resultText);
+    return {
+      status: 500,
+      result: JSON.parse(resultText).errors[0],
+    } as const;
+  } else return true;
 }
 export async function getCategory(path: string | number) {
   let res = await fetchWithBackoff(`${DISCOURSE_URL}/c/${path}.json`, {
@@ -220,7 +237,13 @@ export async function getCategory(path: string | number) {
   if (res.status === 200) {
     let category = (await res.json()) as Category;
     return category;
-  } else console.log(await res.text());
+  } else {
+    const resultText = await res.text();
+    return {
+      status: 500,
+      result: JSON.parse(resultText).errors[0],
+    } as const;
+  }
 }
 
 export const getUsername = async (
