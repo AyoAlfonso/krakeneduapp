@@ -49,7 +49,7 @@ const CreateCourse = () => {
   };
 
   return h("div", [
-    h("h1", "Create a New Course"),
+    h("h1", "Create a New Course -"),
     status === "error" ? h(Error, "An error occured") : null,
     status === "success"
       ? h(
