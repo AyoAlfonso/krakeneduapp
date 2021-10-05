@@ -1,52 +1,67 @@
 import * as t from "runtypes";
-import { getUsername, createGroup, createCategory, updateTopic } from '../../../src/discourse'
-import TemplateCourseDescription from '../../../writing/TemplateCourseDescription.txt'
-import TemplateClubDescription from '../../../writing/TemplateClubDescription.txt'
-import {getToken} from '../../../src/token'
-import { ResultType, Request, APIHandler} from '../../../src/apiHelpers'
-import TemplateCohortGettingStarted from 'writing/TemplateCohortGettingStarted.txt'
-import TemplateCohortNotes from 'writing/TemplateCohortNotes.txt'
-import TemplateCohortArtifact from 'writing/TemplateCohortArtifact.txt'
-import TemplateCohortAssignment from 'writing/TemplateCohortAssignment.txt'
-import TemplateCohortEvent from 'writing/TemplateCohortEvent.txt'
-import TemplateCohortPrompt from 'writing/TemplateCohortPrompt.txt'
-import TemplateCohortRetrospective from 'writing/TemplateCohortRetrospective.txt'
-import {slugify} from 'src/utils'
+import {
+  getUsername,
+  createGroup,
+  createCategory,
+  updateTopic,
+} from "../../../src/discourse";
+import TemplateCourseDescription from "../../../writing/TemplateCourseDescription.txt";
+import TemplateClubDescription from "../../../writing/TemplateClubDescription.txt";
+import { getToken } from "../../../src/token";
+import { ResultType, Request, APIHandler } from "../../../src/apiHelpers";
+import TemplateCohortGettingStarted from "writing/TemplateCohortGettingStarted.txt";
+import TemplateCohortNotes from "writing/TemplateCohortNotes.txt";
+import TemplateCohortArtifact from "writing/TemplateCohortArtifact.txt";
+import TemplateCohortAssignment from "writing/TemplateCohortAssignment.txt";
+import TemplateCohortEvent from "writing/TemplateCohortEvent.txt";
+import TemplateCohortPrompt from "writing/TemplateCohortPrompt.txt";
+import TemplateCohortRetrospective from "writing/TemplateCohortRetrospective.txt";
+import { slugify } from "src/utils";
 
 import prisma from "lib/prisma";
 
-export type CourseResult = ResultType<typeof getCourses>
-export type CreateCourseMsg = t.Static<typeof CreateCourseMsgValidator>
+export type CourseResult = ResultType<typeof getCourses>;
+export type CreateCourseMsg = t.Static<typeof CreateCourseMsgValidator>;
 const CreateCourseMsgValidator = t.Record({
-  type: t.Union(t.Literal('club'), t.Literal('course'), t.Undefined),
+  type: t.Union(t.Literal("club"), t.Literal("course"), t.Undefined),
   description: t.String,
   name: t.String,
   cost: t.Number,
   duration: t.String,
   prerequisites: t.String,
-  maintainers: t.Array(t.String)
-})
+  maintainers: t.Array(t.String),
+});
 
-export type CreateCourseResponse = ResultType<typeof createCourse>
+export type CreateCourseResponse = ResultType<typeof createCourse>;
 
-export default APIHandler({POST: createCourse, GET: getCourses})
+export default APIHandler({ POST: createCourse, GET: getCourses });
 
-export const coursesQuery = (options?:Partial<{type:'course' | 'club'}>) => prisma.courses.findMany({
-  where: {status: "live", type: options?.type || undefined},
-  include: {
-    course_cohorts: {
-      where: {AND: [{live:true}, {start_date: {gt: (new Date()).toISOString()}}]},
-      select: {name: true, start_date: true, id: true, people_in_cohorts: {select:{cohort: true}}},
-      orderBy: {start_date: "desc"},
-    }
-  }
-})
+export const coursesQuery = (options?: Partial<{ type: "course" | "club" }>) =>
+  prisma.courses.findMany({
+    where: { status: "live", type: options?.type || undefined },
+    include: {
+      course_cohorts: {
+        where: {
+          AND: [
+            { live: true },
+            { start_date: { gt: new Date().toISOString() } },
+          ],
+        },
+        select: {
+          name: true,
+          start_date: true,
+          id: true,
+          people_in_cohorts: { select: { cohort: true } },
+        },
+        orderBy: { start_date: "desc" },
+      },
+    },
+  });
 
-async function getCourses(req:Request) {
-  let courses = await coursesQuery(req.query)
-  return {status: 200, result: {courses}} as const
+async function getCourses(req: Request) {
+  let courses = await coursesQuery(req.query);
+  return { status: 200, result: { courses } } as const;
 }
-
 
 async function createCourse(req: Request) {
   let msg;
@@ -55,32 +70,29 @@ async function createCourse(req: Request) {
   } catch (e) {
     return { status: 400, result: e.toString() } as const;
   }
-  
 
   let user = getToken(req);
-  if (!user)
-    return { status: 403, result: "ERROR: no user logged in" } as const;
+  if (!user) return { status: 403, result: "No user logged in" } as const;
 
   let isAdmin = await prisma.admins.findUnique({ where: { person: user.id } });
-  if (!isAdmin)
-    return { status: 403, result: "ERROR: user is not an admin" } as const;
+  if (!isAdmin) return { status: 403, result: "User is not an admin" } as const;
 
   let maintainers = await prisma.people.findMany({
     where: { email: { in: msg.maintainers, mode: "insensitive" } },
     select: { username: true, id: true },
   });
 
-
   let slug = slugify(msg.name);
   if (maintainers.length === 0)
     return {
       status: 400,
-      result:
-        "ERROR: No maintainers provided, or found with the emails provided",
-    };
+      result: "No maintainers provided, or found with the emails provided",
+    } as const;
 
   let maintainerGroupName = slug + "-m";
-  let [maintainerGroup, courseGroup] = await Promise.all([
+  let maintainerGroup;
+  let courseGroup;
+  [maintainerGroup, courseGroup] = await Promise.all([
     createGroup({
       name: maintainerGroupName,
       visibility_level: 2,
@@ -96,11 +108,21 @@ async function createCourse(req: Request) {
       mentionable_level: 3,
     }),
   ]);
-  if (!maintainerGroup || !courseGroup)
-    return {
-      status: 500,
-      result: "ERROR: couldn't create course maintainers group",
-    } as const;
+
+  console.log(courseGroup, maintainerGroup);
+  if (!courseGroup.basic_group || !maintainerGroup.basic_group) {
+    if (maintainerGroup.status !== 200 || courseGroup.status !== 200)
+      return {
+        status: 500,
+        result: maintainerGroup.result || courseGroup.result,
+      } as const;
+
+    // if (!maintainerGroup || !courseGroup)
+    //   return {
+    //     status: 500,
+    //     result: "Couldn't create course maintainers group",
+    //   } as const;
+  }
 
   let category = await createCategory(msg.name, {
     slug,
@@ -112,7 +134,7 @@ async function createCourse(req: Request) {
   if (!category)
     return {
       status: 500,
-      result: "ERROR: couldn't create course category",
+      result: "Couldn't create course category",
     } as const;
   await updateTopic(
     category.topic_url,

@@ -1,48 +1,58 @@
-import * as rt from 'runtypes'
-import { ResultType, APIHandler, Request } from "src/apiHelpers"
-import {StripePaymentMetaData, stripe} from 'src/stripe'
-import { sendCohortEnrollmentEmail, sendEnrollNotificationEmaill, sendUnenrollEmail } from 'emails'
+import * as rt from "runtypes";
+import { ResultType, APIHandler, Request } from "src/apiHelpers";
+import { StripePaymentMetaData, stripe } from "src/stripe";
+import {
+  sendCohortEnrollmentEmail,
+  sendEnrollNotificationEmaill,
+  sendUnenrollEmail,
+} from "emails";
 import { getToken } from "src/token";
 import { addMember, getTaggedPost } from "src/discourse";
-import {DISCOURSE_URL} from 'src/constants'
-import { prettyDate } from "src/utils"
+import { DISCOURSE_URL } from "src/constants";
+import { prettyDate } from "src/utils";
 import prisma from "lib/prisma";
 
-
-export type EnrollResponse= ResultType<typeof enroll>
-export type EnrollMsg  = rt.Static<typeof EnrollMsgValidator>
-export type UnEnrollMsg = rt.Static<typeof UnEnrollMsgValidator>
-export type UnEnrollResponse=ResultType<typeof unenroll>
+export type EnrollResponse = ResultType<typeof enroll>;
+export type EnrollMsg = rt.Static<typeof EnrollMsgValidator>;
+export type UnEnrollMsg = rt.Static<typeof UnEnrollMsgValidator>;
+export type UnEnrollResponse = ResultType<typeof unenroll>;
 
 export default APIHandler({
   POST: enroll,
-  DELETE: unenroll
-})
+  DELETE: unenroll,
+});
 
 let EnrollMsgValidator = rt.Record({
   discount: rt.Union(rt.Undefined, rt.String),
-  paystack: rt.Union(rt.Undefined, rt.Boolean)
-})
+  paystack: rt.Union(rt.Undefined, rt.Boolean),
+});
 
 let UnEnrollMsgValidator = rt.Record({
   person: rt.String,
-})
+});
 
-async function enroll (req: Request) {
-  let cohortId = parseInt(req.query.cohortId as string)
-  if(Number.isNaN(cohortId)) return {status: 400, result: "ERROR: Cohort id is not a number"} as const
-  let user = getToken(req)
-  if(!user) return {status: 401, result: "Error: no user logged in"} as const
-  let msg
-  try {msg = EnrollMsgValidator.check(req.body)}
-  catch(e) {return {status:400, result:e.toString()} as const }
-  let {paystack} = msg
+async function enroll(req: Request) {
+  let cohortId = parseInt(req.query.cohortId as string);
+  if (Number.isNaN(cohortId))
+    return { status: 400, result: "ERROR: Cohort id is not a number" } as const;
+  let user = getToken(req);
+  if (!user)
+    return { status: 401, result: "Error: no user logged in" } as const;
+  let msg;
+  try {
+    msg = EnrollMsgValidator.check(req.body);
+  } catch (e) {
+    return { status: 400, result: e.toString() } as const;
+  }
+  let { paystack } = msg;
   let [cohort, person, discount] = await Promise.all([
     prisma.course_cohorts.findUnique({
-      where: {id: cohortId},
+      where: { id: cohortId },
       include: {
         discourse_groups: true,
-        cohort_facilitators:{select:{people:{select:{email: true}}}},
+        cohort_facilitators: {
+          select: { people: { select: { email: true } } },
+        },
         courses: {
           select: {
             course_groupTodiscourse_groups: true,
@@ -51,41 +61,62 @@ async function enroll (req: Request) {
             cost: true,
             slug: true,
             name: true,
-            course_invites:{
+            course_invites: {
               where: {
-                email: user.email
-              }
-            }
-          }
-        }
-      }
+                email: user.email,
+              },
+            },
+          },
+        },
+      },
     }),
-    prisma.people.findUnique({where:{id:user.id}}),
-    msg.discount ? prisma.course_discounts.findUnique({where: {code: msg.discount}}) : null
-  ])
+    prisma.people.findUnique({ where: { id: user.id } }),
+    msg.discount
+      ? prisma.course_discounts.findUnique({ where: { code: msg.discount } })
+      : null,
+  ]);
 
-  if(!cohort || cohort.courses.cost === undefined) return {status: 400, result: "Error: no cohort with id " + cohortId + " found"}  as const
-  if(msg.discount && (!discount || discount.deleted)) return {status: 404, result: {discount: msg.discount}} as const
-  if(discount && discount.max_redeems !== 0 &&discount.max_redeems <= discount.redeems) return {
-    status: 403,
-    result: {
-      message: "ERROR: Discount code has no uses left",
-      discount: msg.discount
-    }
-  } as const
+  if (!cohort || cohort.courses.cost === undefined)
+    return {
+      status: 400,
+      result: "Error: no cohort with id " + cohortId + " found",
+    } as const;
+  if (msg.discount && (!discount || discount.deleted))
+    return { status: 404, result: { discount: msg.discount } } as const;
+  if (
+    discount &&
+    discount.max_redeems !== 0 &&
+    discount.max_redeems <= discount.redeems
+  )
+    return {
+      status: 403,
+      result: {
+        message: "ERROR: Discount code has no uses left",
+        discount: msg.discount,
+      },
+    } as const;
 
-  if(cohort.courses.invite_only && cohort.courses.course_invites.length === 0){
-    return {status: 401, result: "ERROR: Course is invite_only and user is not invited"} as const
+  if (
+    cohort.courses.invite_only &&
+    cohort.courses.course_invites.length === 0
+  ) {
+    return {
+      status: 401,
+      result: "ERROR: Course is invite_only and user is not invited",
+    } as const;
   }
 
-  let origin = (new URL(req.headers.referer || '')).origin
-  let price = cohort.courses.cost
-  if(discount) {
-    if(discount.type === 'absolute') price = price - discount.amount
-    else price = price - (Math.floor((discount.amount/100)*price))
+  let origin = new URL(req.headers.referer || "").origin;
+  let price = cohort.courses.cost;
+  if (discount) {
+    if (discount.type === "absolute") price = price - discount.amount;
+    else price = price - Math.floor((discount.amount / 100) * price);
   }
-  if(price === 0) {
-    let gettingStarted = await getTaggedPost(cohort.category_id, 'getting-started')
+  if (price === 0) {
+    let gettingStarted = await getTaggedPost(
+      cohort.category_id,
+      "getting-started"
+    );
     await Promise.all([
       discount
         ? prisma.course_discounts.update({
@@ -132,119 +163,169 @@ async function enroll (req: Request) {
     ]);
     return {
       status: 200,
-      result: {zeroCost: true} as const
-    }
+      result: { zeroCost: true } as const,
+    };
   }
- //TO DO: get the price of naira per hour and save in separate mongo db
-     let metadata: StripePaymentMetaData = {
-      type: 'cohort',
-      cohortId: cohort.id.toString(),
-      userId: user.id,
-      discount: discount?.code || null
-    }
+  //TO DO: get the price of naira per hour and save in separate mongo db
+  let metadata: StripePaymentMetaData = {
+    type: "cohort",
+    cohortId: cohort.id.toString(),
+    userId: user.id,
+    discount: discount?.code || null,
+  };
 
-    if(paystack)  {
-        return {
-        status: 200,
-        result: {amount: price * 400 * 100, email: user.email, metadata} as const
-      }
-    } 
-
-    const session = await stripe.checkout.sessions.create({
-      payment_method_types: ['card'],
-      customer: person?.stripe_customer_id || undefined,
-      customer_email: person?.stripe_customer_id ? undefined : user.email,
-      payment_intent_data: {
-        transfer_group: cohort.id.toString()
-      },
-      line_items: [{
-        name: cohort.courses.name +
-          (discount ? `, ${discount?.type === 'absolute' ? '$'+discount?.amount : discount?.amount+"%"} Off` : ''),
-        amount: price * 100,
-        currency: 'usd',
-        quantity: 1,
-        //TO DO: Add discount 
-      }],
-      cancel_url: `${origin}/courses/${cohort.courses.slug}/${cohort.course}/cohorts/${cohort.id}`,
-      success_url: `${origin}/courses/${cohort.courses.slug}/${cohort.course}/cohorts/${cohort.id}?welcome`,
-      metadata
-    });
-
+  if (paystack) {
     return {
       status: 200,
-      result: {sessionId: session.id}
-    } as const
- 
-}
-async function unenroll (req: Request) {
-  let cohortId = parseInt(req.query.cohortId as string)
-  if(Number.isNaN(cohortId)) return {status: 400, result: "ERROR: Cohort id is not a number"} as const
-  let user = getToken(req)
-  if(!user) return {status: 401, result: "Error: no user logged in"} as const
+      result: {
+        amount: price * 400 * 100,
+        email: user.email,
+        metadata,
+      } as const,
+    };
+  }
 
-  let msg:UnEnrollMsg
-  try {msg = UnEnrollMsgValidator.check(req.body)}
-  catch(e) {return {status:400, result:e.toString()} as const }
+  const session = await stripe.checkout.sessions.create({
+    payment_method_types: ["card"],
+    customer: person?.stripe_customer_id || undefined,
+    customer_email: person?.stripe_customer_id ? undefined : user.email,
+    payment_intent_data: {
+      transfer_group: cohort.id.toString(),
+    },
+    line_items: [
+      {
+        name:
+          cohort.courses.name +
+          (discount
+            ? `, ${
+                discount?.type === "absolute"
+                  ? "$" + discount?.amount
+                  : discount?.amount + "%"
+              } Off`
+            : ""),
+        amount: price * 100,
+        currency: "usd",
+        quantity: 1,
+        //TO DO: Add discount
+      },
+    ],
+    cancel_url: `${origin}/courses/${cohort.courses.slug}/${cohort.course}/cohorts/${cohort.id}`,
+    success_url: `${origin}/courses/${cohort.courses.slug}/${cohort.course}/cohorts/${cohort.id}?welcome`,
+    metadata,
+  });
+
+  return {
+    status: 200,
+    result: { sessionId: session.id },
+  } as const;
+}
+async function unenroll(req: Request) {
+  let cohortId = parseInt(req.query.cohortId as string);
+  if (Number.isNaN(cohortId))
+    return { status: 400, result: "ERROR: Cohort id is not a number" } as const;
+  let user = getToken(req);
+  if (!user)
+    return { status: 401, result: "Error: no user logged in" } as const;
+
+  let msg: UnEnrollMsg;
+  try {
+    msg = UnEnrollMsgValidator.check(req.body);
+  } catch (e) {
+    return { status: 400, result: e.toString() } as const;
+  }
 
   let [cohort] = await Promise.all([
     prisma.course_cohorts.findUnique({
-      where: {id: cohortId},
+      where: { id: cohortId },
       select: {
         cohort_facilitators: true,
-        courses:{
-          select:{
-            name: true
-          }
+        courses: {
+          select: {
+            name: true,
+          },
         },
         discourse_groups: true,
         people: {
-          select:{email: true}
+          select: { email: true },
         },
         people_in_cohorts: {
-          select: {person: true, payment_intent: true, amount_paid: true, people:{select:{display_name: true, email: true, username: true}}}
-        }
-      }
+          select: {
+            person: true,
+            payment_intent: true,
+            amount_paid: true,
+            people: {
+              select: { display_name: true, email: true, username: true },
+            },
+          },
+        },
+      },
     }),
-  ])
-  if(!cohort) return {status:404, result:"ERROR: no cohort found with id: "+cohortId} as const
-  if(!cohort.cohort_facilitators.find(f=>user&&f.facilitator===user.id)) return {status:401, result:`ERROR: User is not facilitator of cohort`} as const
+  ]);
+  if (!cohort)
+    return {
+      status: 404,
+      result: "ERROR: no cohort found with id: " + cohortId,
+    } as const;
+  if (
+    !cohort.cohort_facilitators.find((f) => user && f.facilitator === user.id)
+  )
+    return {
+      status: 401,
+      result: `ERROR: User is not facilitator of cohort`,
+    } as const;
 
-  let person = cohort.people_in_cohorts.find(p=>p.person===msg.person)
-  if(!person) return {status:404, result: "ERROR: User is not in cohort"} as const
-  if(!person.payment_intent && person.amount_paid !== 0) return {status: 500, result: "ERROR: Amount paid is greater than zero but there is not payment information"} as const
+  let person = cohort.people_in_cohorts.find((p) => p.person === msg.person);
+  if (!person)
+    return { status: 404, result: "ERROR: User is not in cohort" } as const;
+  if (!person.payment_intent && person.amount_paid !== 0)
+    return {
+      status: 500,
+      result:
+        "ERROR: Amount paid is greater than zero but there is not payment information",
+    } as const;
   // TO DO check what payment_intent is
 
   await Promise.all([
     sendUnenrollEmail(person.people.email, {
       name: person.people.display_name || person.people.username,
-      course_name:  cohort.courses.name,
-      paid: person.amount_paid > 0 ? 'true' : ''
+      course_name: cohort.courses.name,
+      paid: person.amount_paid > 0 ? "true" : "",
     }),
-    prisma.people_in_cohorts.delete({where:{person_cohort:{
-      person: msg.person,
-      cohort: cohortId
-    }}}),
-    !person.payment_intent ? undefined : prisma.refunds.create({
-      data:{
-        payment_intent: person.payment_intent,
-        amount: person.amount_paid,
-        cohort_refunds: {
-          create:{
-            course_cohorts: {
-              connect:{
-                id: cohortId
-              }
+    prisma.people_in_cohorts.delete({
+      where: {
+        person_cohort: {
+          person: msg.person,
+          cohort: cohortId,
+        },
+      },
+    }),
+    !person.payment_intent
+      ? undefined
+      : prisma.refunds.create({
+          data: {
+            payment_intent: person.payment_intent,
+            amount: person.amount_paid,
+            cohort_refunds: {
+              create: {
+                course_cohorts: {
+                  connect: {
+                    id: cohortId,
+                  },
+                },
+                people: {
+                  connect: { id: person.person },
+                },
+              },
             },
-            people:{
-              connect: {id: person.person}
-            }
-          }
-        }
-      }
-    }),
-   !person.payment_intent ? undefined : stripe.refunds.create({payment_intent: person.payment_intent})
-  ])
+          },
+        }),
+    !person.payment_intent
+      ? undefined
+      : stripe.refunds.create({ payment_intent: person.payment_intent }),
+  ]);
 
-  return {status: 200, result: {payment_intent: person.payment_intent, person: person.person}} as const
-
+  return {
+    status: 200,
+    result: { payment_intent: person.payment_intent, person: person.person },
+  } as const;
 }
