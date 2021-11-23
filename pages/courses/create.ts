@@ -19,7 +19,7 @@ const CreateCourse = () => {
     description: "",
     prerequisites: "",
     duration: "",
-    cost: 5,
+    cost: 0,
     type: "course" as "course" | "club",
     maintainers: [] as string[],
   });
@@ -49,7 +49,7 @@ const CreateCourse = () => {
   };
 
   return h("div", [
-    h("h1", "Create a New Course -"),
+    h("h1", "Create a New Course"),
     status === "error" ? h(Error, "An error occured") : null,
     status === "success"
       ? h(
@@ -116,7 +116,7 @@ const CreateCourse = () => {
         h(Input, {
           required: true,
           type: "number",
-          min: "5",
+          min: "0",
           max: "1000",
           value: formData.cost,
           onChange: (e) =>

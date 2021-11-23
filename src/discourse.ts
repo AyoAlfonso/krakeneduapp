@@ -14,6 +14,7 @@ let fetchWithBackoff = async (
   exponent: number = 1
 ): ReturnType<typeof fetch> => {
   let result = await fetch(url, options);
+  console.log(result, "fetchWithBackoff");
   if (result.status === 429) {
     let value = 1000 * 2 ** exponent;
     await new Promise<void>((resolve) => {
@@ -62,7 +63,7 @@ export async function createGroup(group: {
       result: JSON.parse(resultText).errors[0],
     } as const;
   }
-  return (await result.json());
+  return await result.json();
 }
 
 export async function updateTopic(
@@ -139,8 +140,7 @@ export async function createTopic(
       result: JSON.parse(resultText).errors[0],
     } as const;
   }
-  if (result.status === 200)
-    return (await result.json());
+  if (result.status === 200) return await result.json();
 }
 
 export const createCategory = async (
@@ -338,7 +338,8 @@ export const syncSSO = async (params: { [key: string]: string }) => {
     headers: {
       "Api-Key": process.env.DISCOURSE_API_KEY || "",
       "Api-Username": "system",
-      "Content-Type": "application/json; charset=utf-8",
+      "Content-Type": "application/x-www-form-urlencoded",
+      // "application/json; charset=utf-8",
     },
     body: JSON.stringify({
       sso: payload,
