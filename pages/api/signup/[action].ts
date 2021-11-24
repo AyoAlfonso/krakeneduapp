@@ -11,8 +11,6 @@ import { syncSSO } from "../../../src/discourse";
 import { sendVerificationEmail } from "../../../emails";
 import { usernameValidate } from "src/utils";
 import prisma from "lib/prisma";
-// import * as axios from "axios";
-import querystring from "querystring";
 
 export type SignupMsg = {
   email: string;
@@ -23,6 +21,12 @@ export type SignupMsg = {
 
 export type VerifyEmailMsg = {
   key: string;
+};
+
+export type URLSearchParamsProps = {
+  list: string;
+  api_key: string;
+  email: string;
 };
 
 export type NewsletterSignupMsg = { email: string };
@@ -112,55 +116,21 @@ async function VerifyEmail(req: Request) {
 
   // We used token.newsletter before
   if (id) {
-    // let sendyHeaders = new Headers();
-    // sendyHeaders.append("Content-Type", "application/x-www-form-urlencoded");
-
-    // console.log(
-    //   "SENDY_LIST_DEVS_REL_ID",
-    //   process.env.NEXT_PUBLIC_SENDY_LIST_DEVS_REL_ID
-    // );
-    // let urlencoded = new URLSearchParams();
-    // urlencoded.append("list", process.env.NEXT_PUBLIC_SENDY_LIST_DEVS_REL_ID);
-    // urlencoded.append("api_key", process.env.NEXT_PUBLIC_SENDY_API_KEY);
-    // urlencoded.append("email", token.email);
-    // urlencoded.append("silent", true);
-
-    // let requestOptions = {
-    //   method: "POST",
-    //   headers: sendyHeaders,
-    //   body: urlencoded,
-    //   redirect: "follow",
-    // };
-
-    // fetchWithBackoff("sendy.krakenedu.com/subscribe", requestOptions)
-    //   .then((response) => response.text())
-    //   .then((result) => console.log(result))
-    //   .catch((error) => console.log("error", error));
-
-    var data = querystring.stringify({
+    // @ts-ignore
+    let data = new URLSearchParams({
       list: process.env.NEXT_PUBLIC_SENDY_LIST_DEVS_REL_ID,
       api_key: process.env.NEXT_PUBLIC_SENDY_API_KEY,
-      email: token.email,
+      email: token?.email,
     });
-    var config = {
-      method: "post",
-      url: "http://sendy.krakenedu.com/subscribe",
+    let config = {
+      method: "POST",
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
       },
-      data: data,
+      body: data,
     };
 
-  let result = await fetch("http://sendy.krakenedu.com/subscribe", config);
-  console.log(result, "result")
-    // axios(config)
-    //   .then(function (response) {
-    //     console.log(JSON.stringify(response.data));
-    //   })
-    //   .catch(function (error) {
-    //     console.log("hereee")
-    //     console.log(error);
-    //   });
+    await fetch("http://sendy.krakenedu.com/subscribe", config);
   }
 
   if (!id)

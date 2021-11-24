@@ -4,8 +4,8 @@ import { DISCOURSE_URL } from "src/constants";
 import prisma from "lib/prisma";
 
 let headers = {
-  "Api-Key": process.env.DISCOURSE_API_KEY || "",
-  "Api-Username": process.env.DISCOURSE_API_USERNAME || "",
+  "Api-Key": process.env.NEXT_PUBLIC_DISCOURSE_API_KEY || "",
+  "Api-Username": process.env.NEXT_PUBLIC_DISCOURSE_API_USERNAME || "",
 };
 
 let fetchWithBackoff = async (
@@ -307,7 +307,7 @@ export const getTaggedPost = async (c: string | number, tag: string) => {
   let category = (await res.json()) as Category;
   console.log(category.topic_list.topics, tag, "category");
   let topicID = category.topic_list.topics.find(
-    (topic) => topic.tags && topic.tags.includes(tag)
+    (topic) => topic.tags && topic?.tags?.includes(tag)
   )?.id;
   if (!topicID) return { text: "", id: "" };
   let topicRequest = await fetchWithBackoff(`${DISCOURSE_URL}/raw/${topicID}`, {
