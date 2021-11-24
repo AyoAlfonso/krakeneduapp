@@ -109,8 +109,9 @@ async function createCourse(req: Request) {
     }),
   ]);
 
-  console.log(courseGroup, maintainerGroup);
-  if (!courseGroup.basic_group.id || !maintainerGroup.basic_group.id) {
+  console.log(courseGroup, maintainerGroup, "khk");
+  if (!courseGroup?.basic_group?.id || !maintainerGroup?.basic_group?.id) {
+     console.log(maintainerGroup.result, courseGroup.result, "yyuy")
     if (maintainerGroup.status !== 200 || courseGroup.status !== 200)
       return {
         status: 500,

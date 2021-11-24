@@ -70,7 +70,7 @@ const Library = (props:Props) => {
     ]),
     ...Object.keys(collections).flatMap(slug=>{
       let collection = collections[slug as keyof typeof collections]
-      let posts = props.posts.filter(p=>p.tags && p.tags.includes(slug)).sort((a, b)=>{
+      let posts = props.posts.filter(p=>p.tags && p?.tags?.includes(slug)).sort((a, b)=>{
         return new Date(a.date) < new Date(b.date) ? 1 : -1
       })
       return [
