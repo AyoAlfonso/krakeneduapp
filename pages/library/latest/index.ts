@@ -26,7 +26,7 @@ type Props = InferGetStaticPropsType<typeof getStaticProps>
 const Library = (props:Props) => {
   return h(Box, { gap: 64 }, [
     h(Box, { gap: 8 }, [
-      h(BackButton, { href: "/blog" }, "Collections"),
+      h(BackButton, { href: "/library" }, "Collections"),
       h("h1", "Latest Posts"),
     ]),
     ...props.posts
@@ -41,11 +41,11 @@ const Library = (props:Props) => {
 }
 
 export const getStaticProps = async () =>{
-    let posts = fs.readdirSync('./pages/blog').map((file)=>{
-      if (fs.lstatSync(path.join("./pages/blog/", file)).isDirectory()) return;
-      let content = fs.readFileSync("./pages/blog/" + file);
+    let posts = fs.readdirSync('./pages/library').map((file)=>{
+      if (fs.lstatSync(path.join("./pages/library/", file)).isDirectory()) return;
+      let content = fs.readFileSync("./pages/library/" + file);
       let {data} = matter(content)
-      return { ...data, path: "/blog/" + file.slice(0, -4) } as Library;
+      return { ...data, path: "/library/" + file.slice(0, -4) } as Library;
     }).filter(x=>x!==undefined)
   
     return {props: {posts:posts as Library[]}} as const

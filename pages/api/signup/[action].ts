@@ -11,8 +11,8 @@ import { syncSSO } from "../../../src/discourse";
 import { sendVerificationEmail } from "../../../emails";
 import { usernameValidate } from "src/utils";
 import prisma from "lib/prisma";
-import * as axios from "axios";
-import qs from "qs";
+// import * as axios from "axios";
+import querystring from "querystring";
 
 export type SignupMsg = {
   email: string;
@@ -77,7 +77,6 @@ async function Signup(req: Request) {
 
   let origin = new URL(req.headers.referer || "").origin;
   let activation_url = `${origin}/signup?verifyEmail=${key}`;
-  console.log(key);
   // TODO:
   await sendVerificationEmail(msg.email, {
     activation_code: key,
@@ -138,7 +137,7 @@ async function VerifyEmail(req: Request) {
     //   .then((result) => console.log(result))
     //   .catch((error) => console.log("error", error));
 
-    var data = qs.stringify({
+    var data = querystring.stringify({
       list: process.env.NEXT_PUBLIC_SENDY_LIST_DEVS_REL_ID,
       api_key: process.env.NEXT_PUBLIC_SENDY_API_KEY,
       email: token.email,
@@ -152,14 +151,16 @@ async function VerifyEmail(req: Request) {
       data: data,
     };
 
-    axios(config)
-      .then(function (response) {
-        console.log(JSON.stringify(response.data));
-      })
-      .catch(function (error) {
-        console.log("hereee")
-        console.log(error);
-      });
+  let result = await fetch("http://sendy.krakenedu.com/subscribe", config);
+  console.log(result, "result")
+    // axios(config)
+    //   .then(function (response) {
+    //     console.log(JSON.stringify(response.data));
+    //   })
+    //   .catch(function (error) {
+    //     console.log("hereee")
+    //     console.log(error);
+    //   });
   }
 
   if (!id)

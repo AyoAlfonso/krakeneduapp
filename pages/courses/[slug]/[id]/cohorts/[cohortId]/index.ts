@@ -1,117 +1,204 @@
-import h from 'react-hyperscript'
+import h from "react-hyperscript";
 
-import styled from '@emotion/styled'
-import { useRouter } from 'next/router'
-import Link from 'next/link'
-import {useState, useEffect, Fragment} from 'react'
-import { InferGetStaticPropsType } from 'next'
+import styled from "@emotion/styled";
+import { useRouter } from "next/router";
+import Link from "next/link";
+import { useState, useEffect, Fragment } from "react";
+import { InferGetStaticPropsType } from "next";
 
-import CourseDetails from 'components/Course/Enroll'
-import { EnrollButton } from 'components/Course/EnrollButton';
-import { SubEnrollButton } from 'components/Course/SubEnrollButton';
+import CourseDetails from "components/Course/Enroll";
+import { EnrollButton } from "components/Course/EnrollButton";
+import { SubEnrollButton } from "components/Course/SubEnrollButton";
 
-import { TwoColumn, Box, LabelBox, Seperator, Sidebar, WhiteContainer} from 'components/Layout'
-import { VerticalTabs, StickyWrapper } from 'components/Tabs'
-import { Primary, Destructive, DestructiveSmallButton, Secondary, LinkButton } from 'components/Button'
-import Loader, { PageLoader } from 'components/Loader'
-import { CheckBox, Info, Input } from 'components/Form'
-import { Modal } from 'components/Modal'
-import {TwoColumnBanner} from 'components/Banner'
-import Text from 'components/Text'
-import {WelcomeModal} from 'components/pages/cohorts/WelcomeModal'
+import {
+  TwoColumn,
+  Box,
+  LabelBox,
+  Seperator,
+  Sidebar,
+  WhiteContainer,
+} from "components/Layout";
+import { VerticalTabs, StickyWrapper } from "components/Tabs";
+import {
+  Primary,
+  Destructive,
+  DestructiveSmallButton,
+  Secondary,
+  LinkButton,
+} from "components/Button";
+import Loader, { PageLoader } from "components/Loader";
+import { CheckBox, Info, Input } from "components/Form";
+import { Modal } from "components/Modal";
+import { TwoColumnBanner } from "components/Banner";
+import Text from "components/Text";
+import { WelcomeModal } from "components/pages/cohorts/WelcomeModal";
 
-import { cohortName, prettyDate} from 'src/utils'
-import {  getTaggedPost } from 'src/discourse'
-import {DISCOURSE_URL} from 'src/constants'
-import { callApi, useApi } from 'src/apiHelpers'
-import { useCohortData, useUserCohorts, useUserData, useCourseData, Cohort, useProfileData } from 'src/data'
-import ErrorPage from 'pages/404'
-import { cohortDataQuery, UpdateCohortMsg, UpdateCohortResponse } from 'pages/api/cohorts/[cohortId]'
-import { courseDataQuery } from 'pages/api/courses/[id]'
-import Head from 'next/head'
-import { CohortEvents } from 'components/pages/cohorts/Events'
-import { CreateEvent } from 'components/pages/cohorts/CreateEvent'
-import { AccentImg } from 'components/Images'
-import { TodoList } from 'components/TodoList'
-import { UnEnrollMsg, UnEnrollResponse } from 'pages/api/cohorts/[cohortId]/enroll'
+import { cohortName, prettyDate } from "src/utils";
+import { getTaggedPost } from "src/discourse";
+import { DISCOURSE_URL } from "src/constants";
+import { callApi, useApi } from "src/apiHelpers";
+import {
+  useCohortData,
+  useUserCohorts,
+  useUserData,
+  useCourseData,
+  Cohort,
+  useProfileData,
+} from "src/data";
+import ErrorPage from "pages/404";
+import {
+  cohortDataQuery,
+  UpdateCohortMsg,
+  UpdateCohortResponse,
+} from "pages/api/cohorts/[cohortId]";
+import { courseDataQuery } from "pages/api/courses/[id]";
+import Head from "next/head";
+import { CohortEvents } from "components/pages/cohorts/Events";
+import { CreateEvent } from "components/pages/cohorts/CreateEvent";
+import { AccentImg } from "components/Images";
+import { TodoList } from "components/TodoList";
+import {
+  UnEnrollMsg,
+  UnEnrollResponse,
+} from "pages/api/cohorts/[cohortId]/enroll";
 
-type Props = InferGetStaticPropsType<typeof getStaticProps>
-const WrappedCohortPage = (props: Props)=>  props.notFound ? h(ErrorPage) : h(CohortPage, props)
-export default WrappedCohortPage
-const CohortPage = (props: Extract<Props, {notFound:false}>) => {
-  let router = useRouter()
-  let {data: user} = useUserData()
-  let {data: userCohorts} = useUserCohorts()
-  let {data:profile} = useProfileData(user ? user.username : undefined)
-  let {data: cohort, mutate} = useCohortData(props.cohortId, props.cohort)
-  let {data: course} = useCourseData(props.courseId, props.course)
-  let selectedTab = router.query.tab as string | undefined
+type Props = InferGetStaticPropsType<typeof getStaticProps>;
+const WrappedCohortPage = (props: Props) =>
+  props.notFound ? h(ErrorPage) : h(CohortPage, props);
+export default WrappedCohortPage;
+const CohortPage = (props: Extract<Props, { notFound: false }>) => {
+  let router = useRouter();
+  let { data: user } = useUserData();
+  let { data: userCohorts } = useUserCohorts();
+  let { data: profile } = useProfileData(user ? user.username : undefined);
+  let { data: cohort, mutate } = useCohortData(props.cohortId, props.cohort);
+  let { data: course } = useCourseData(props.courseId, props.course);
+  let selectedTab = router.query.tab as string | undefined;
 
-  useEffect(()=>{
-    mutate(undefined, true)
-  }, [!!cohort])
+  useEffect(() => {
+    mutate(undefined, true);
+  }, [!!cohort]);
 
+  if (!cohort || !course) return h(PageLoader);
 
-  if(!cohort || !course) return h(PageLoader)
-
-  let invited = !!userCohorts?.invited_courses.find(course=>course.id === props.course.id )
-  let inCohort = cohort.people_in_cohorts.find(p => p.person === (user ? user.id : undefined))
-  let isFacilitator = !!user && !!cohort.cohort_facilitators.find(f=>user &&f.people.username === user.username)
-  let isStarted = cohort && new Date() > new Date(cohort.start_date)
+  let invited = !!userCohorts?.invited_courses.find(
+    (course) => course.id === props.course.id
+  );
+  let inCohort = cohort.people_in_cohorts.find(
+    (p) => p.person === (user ? user.id : undefined)
+  );
+  let isFacilitator =
+    !!user &&
+    !!cohort.cohort_facilitators.find(
+      (f) => user && f.people.username === user.username
+    );
+  let isStarted = cohort && new Date() > new Date(cohort.start_date);
 
   let Tabs = {
-    Artifacts: props.artifacts.text === '' ? null : h(Box, {gap: 64}, [
-      h(Box, {gap: 32},[
-        h(Box, [
-          h(Text, {source: props.artifacts?.text})
-        ]),
-      ])
+    Artifacts:
+      props.artifacts.text === ""
+        ? null
+        : h(Box, { gap: 64 }, [
+            h(Box, { gap: 32 }, [
+              h(Box, [h(Text, { source: props.artifacts?.text })]),
+            ]),
+          ]),
+    Schedule:
+      cohort.cohort_events.length === 0 && !isFacilitator
+        ? null
+        : h(Box, { gap: 32 }, [
+            isFacilitator || inCohort
+              ? h(CreateEvent, {
+                  cohort: cohort.id,
+                  people: [
+                    ...cohort.people_in_cohorts.map((p) => p.people.username),
+                    ...cohort.cohort_facilitators.map((f) => f.people.username),
+                  ],
+                  mutate: (c) => {
+                    if (!cohort) return;
+                    mutate({
+                      ...cohort,
+                      cohort_events: [...cohort.cohort_events, c],
+                    });
+                  },
+                })
+              : null,
+            h(Box, [
+              cohort.cohort_events.length === 0
+                ? h(WhiteContainer, [
+                    h(
+                      Box,
+                      {
+                        gap: 16,
+                        style: {
+                          maxWidth: 400,
+                          textAlign: "center",
+                          margin: "auto",
+                        },
+                      },
+                      [
+                        h(EmptyImg, { src: "/img/empty.png" }),
+                        h(
+                          "small.textSecondary",
+                          "Events are great for scheduling live calls or other important cohort dates. Learners can add these to their calendars. Looks like you haven't created any events yet. Hit the button above to schedule one!!"
+                        ),
+                      ]
+                    ),
+                  ])
+                : h(CohortEvents, {
+                    facilitating: isFacilitator,
+                    inCohort: !!inCohort,
+                    people: cohort.people_in_cohorts.map(
+                      (p) => p.people.username
+                    ),
+                    cohort: cohort.id,
+                    events: cohort.cohort_events.filter((c) => {
+                      if (!user || !cohort) return c.everyone;
+                      if (isFacilitator) return true;
+                      return (
+                        c.everyone ||
+                        c.events.people_in_events.find(
+                          (p) => user && p.people.username === user.username
+                        )
+                      );
+                    }),
+                    mutate: (events) => {
+                      if (!cohort) return;
+                      mutate({
+                        ...cohort,
+                        cohort_events: events,
+                      });
+                    },
+                    showCal:
+                      (inCohort || isFacilitator) &&
+                      cohort.cohort_events.length > 0,
+                  }),
+            ]),
+          ]),
+    [course.type === "club" ? "Details" : "Curriculum"]: h(Box, [
+      !isFacilitator
+        ? null
+        : h(Info, [
+            `💡 You can make changes to this page by editing `,
+            h(
+              "a",
+              {
+                href: `${DISCOURSE_URL}/session/sso?return_path=/t/${props.curriculum?.id}`,
+              },
+              `this topic`
+            ),
+            ` in the forum`,
+          ]),
+      h(Text, { source: props.curriculum?.text }),
     ]),
-    Schedule: cohort.cohort_events.length === 0 && !isFacilitator ? null : h(Box, {gap: 32}, [
-      isFacilitator || inCohort ? h(CreateEvent, {
-        cohort: cohort.id,
-        people: [...cohort.people_in_cohorts.map(p=>p.people.username), ...cohort.cohort_facilitators.map(f=>f.people.username)],
-        mutate: (c)=>{
-          if(!cohort) return
-          mutate({...cohort, cohort_events: [...cohort.cohort_events, c]})
-        }}) : null,
-      h(Box, [
-        cohort.cohort_events.length === 0
-          ? h(WhiteContainer, [
-            h(Box, {gap:16, style: {maxWidth: 400, textAlign: 'center', margin: 'auto'}}, [
-              h( EmptyImg, {src: '/img/empty.png'}),
-              h('small.textSecondary', "Events are great for scheduling live calls or other important cohort dates. Learners can add these to their calendars. Looks like you haven't created any events yet. Hit the button above to schedule one!!" ),
-            ])])
-          : h(CohortEvents, {
-            facilitating: isFacilitator,
-            inCohort:!!inCohort,
-            people: cohort.people_in_cohorts.map(p=>p.people.username),
-            cohort: cohort.id,
-            events: cohort.cohort_events.filter(c=>{
-              if(!user || !cohort) return c.everyone
-              if(isFacilitator) return true
-              return c.everyone || c.events.people_in_events.find(p=>user&&p.people.username===user.username)
-            }),
-            mutate: (events)=>{
-              if(!cohort) return
-              mutate({
-                ...cohort, cohort_events: events})
-            },
-            showCal: (inCohort || isFacilitator) && cohort.cohort_events.length > 0
-          })
-      ])
-    ]),
-    [course.type === 'club' ? "Details" : "Curriculum"]: h(Box, [
-      !isFacilitator ? null : h(Info, [
-        `💡 You can make changes to this page by editing `,
-        h('a', {href: `${DISCOURSE_URL}/session/sso?return_path=/t/${props.curriculum?.id}`}, `this topic`),
-        ` in the forum`
-      ]),
-      h(Text, {source:props.curriculum?.text})
-    ]),
-    Members: h(CohortMembers, {cohort: cohort, isFacilitator, mutate, user: user ? user.id : undefined})
-      } as {[k:string]:React.ReactElement}
-  let tabKeys = Object.keys(Tabs).filter(t=>!!Tabs[t])
+    Members: h(CohortMembers, {
+      cohort: cohort,
+      isFacilitator,
+      mutate,
+      user: user ? user.id : undefined,
+    }),
+  } as { [k: string]: React.ReactElement };
+  let tabKeys = Object.keys(Tabs).filter((t) => !!Tabs[t]);
 
   return h("div", {}, [
     h(Head, {
@@ -182,27 +269,35 @@ const CohortPage = (props: Extract<Props, {notFound:false}>) => {
                 : h(CourseDetails, { course }),
               inCohort || isStarted || isFacilitator
                 ? null
-                : 
-            h(Box, [
-               h(LabelBox,{style:{fontSize: '2rem'}} ,"Join this cohort"),
-                h(SubEnrollButton, {
-                      id: cohort.id,
-                      course: course.id,
-                      max_size: course.cohort_max_size,
-                      learners: cohort.people_in_cohorts.length,
-                      invited: !course.invite_only || invited,
-                    },  "via Paystack"),
-                h(EnrollButton,
-                    {
-                      id: cohort.id,
-                      course: course.id,
-                      max_size: course.cohort_max_size,
-                      learners: cohort.people_in_cohorts.length,
-                      invited: !course.invite_only || invited,
-                    },
-                    "via Stripe"
-                  ),
-                   ]),
+                : h(Box, [
+                    h(
+                      LabelBox,
+                      { style: { fontSize: "2rem" } },
+                      "Join this cohort"
+                    ),
+                    h(
+                      SubEnrollButton,
+                      {
+                        id: cohort.id,
+                        course: course.id,
+                        max_size: course.cohort_max_size,
+                        learners: cohort.people_in_cohorts.length,
+                        invited: !course.invite_only || invited,
+                      },
+                      "via Paystack"
+                    ),
+                    h(
+                      EnrollButton,
+                      {
+                        id: cohort.id,
+                        course: course.id,
+                        max_size: course.cohort_max_size,
+                        learners: cohort.people_in_cohorts.length,
+                        invited: !course.invite_only || invited,
+                      },
+                      "via Stripe"
+                    ),
+                  ]),
               h(Box, [
                 h("h3", "Information"),
                 h(VerticalTabs, {
@@ -240,8 +335,7 @@ const CohortPage = (props: Extract<Props, {notFound:false}>) => {
                             : h(
                                 Link,
                                 {
-                                  href:
-                                    "/courses/[slug]/[id]/cohorts/[cohortId]/templates",
+                                  href: "/courses/[slug]/[id]/cohorts/[cohortId]/templates",
                                   as: `/courses/${cohort.courses.slug}/${cohort.courses.id}/cohorts/${cohort.id}/templates`,
                                 },
                                 h(Secondary, "Forum Post from Template")
@@ -258,22 +352,33 @@ const CohortPage = (props: Extract<Props, {notFound:false}>) => {
       ]),
     ]),
   ]);
-}
+};
 
+export let EmptyImg = styled("img")`
+  image-rendering: pixelated;
+  image-rendering: -moz-crisp-edges;
+  image-rendering: crisp-edges;
+  display: block;
+  margin: auto auto;
+  border: none;
+  height: 200px;
+  width: 200px;
+`;
 
-export let EmptyImg = styled ('img') `
-image-rendering: pixelated;
-image-rendering: -moz-crisp-edges;
-image-rendering: crisp-edges;
-display: block;
-margin: auto auto;
-border: none;
-height: 200px;
-width: 200px;
-`
-
-export const CohortMembers = (props:{cohort:Cohort, isFacilitator: boolean, user?: string, mutate: (c:Cohort)=>void}) => {
-  let [unenrollState, setUnenrollState] = useState<{personID:string, username: string, cohortID:number, display_name?:string, removeMember:()=>void}>()
+export const CohortMembers = (props: {
+  cohort: Cohort;
+  isFacilitator: boolean;
+  user?: string;
+  mutate: (c: Cohort) => void;
+}) => {
+  let [unenrollState, setUnenrollState] =
+    useState<{
+      personID: string;
+      username: string;
+      cohortID: number;
+      display_name?: string;
+      removeMember: () => void;
+    }>();
   return h(Fragment, [
     !unenrollState
       ? null
@@ -293,7 +398,7 @@ export const CohortMembers = (props:{cohort:Cohort, isFacilitator: boolean, user
             h(
               "a",
               {
-                href: `https://forum.krakenedu.com/new-message?groupname=${props.cohort.courses.slug}-m`,
+                href: `https://classroom.krakenedu.com/new-message?groupname=${props.cohort.courses.slug}-m`,
                 target: `_blank`,
               },
               `Message the facilitator`
@@ -405,9 +510,10 @@ export const CohortMembers = (props:{cohort:Cohort, isFacilitator: boolean, user
                           removeMember: () => {
                             props.mutate({
                               ...props.cohort,
-                              people_in_cohorts: props.cohort.people_in_cohorts.filter(
-                                (p) => p.person !== person.person
-                              ),
+                              people_in_cohorts:
+                                props.cohort.people_in_cohorts.filter(
+                                  (p) => p.person !== person.person
+                                ),
                             });
                           },
                         });
@@ -421,76 +527,148 @@ export const CohortMembers = (props:{cohort:Cohort, isFacilitator: boolean, user
       }),
     ]),
   ]);
-}
+};
 
-const UnenrollModal = (props:{
-  personID: string,
-  username: string,
-  cohortID:number,
-  display_name?: string,
-  removeMember: ()=>void
-  display: boolean,
-  onExit: ()=>void
-})=>{
-  let [status, callUnenroll] = useApi<UnEnrollMsg, UnEnrollResponse>([])
-  return h(Modal, {display: props.display, onExit:props.onExit, hideCloseButton: true} ,[
-    status === 'success'
-      ? h(Box, {style:{textAlign:'center', justifyItems:'center'}}, [
-        h('h2', "Unenrolled!"),
-        h('p', [`You've unenrolled `, h('b', props.display_name || props.username), ` from this cohort`]),
-        h('p', [`They'll be refunded within 5 business days`]),
-        h(Secondary, {onClick:props.onExit, style:{width:"250px"}}, "exit")
-      ])
-      : h(Box, {gap:32, style:{textAlign:'center', justifyItems:'center'}}, [
-        h(Box,[
-          h('h2', "Un-Enroll and Issue Refund"),
-          h('p', [
-            `You are about to un-enroll `, h('b', props.display_name || props.username), ` from this cohort`
-          ]),
-        ]),
-        h(Box, {gap:8}, [
-          h(Destructive, {status, onClick:async ()=>{
-            let result = await  callUnenroll(`/api/cohorts/${props.cohortID}/enroll`, {
-              person: props.personID
-            }, "DELETE")
-            if(result.status===200){
-              props.removeMember()
-            }
-          }, style:{width:"250px"}}, 'Un-enroll'),
-          h(Secondary, {onClick:props.onExit, style:{width:"250px"}}, "Cancel")
-        ])
-      ])
-  ])
-}
+const UnenrollModal = (props: {
+  personID: string;
+  username: string;
+  cohortID: number;
+  display_name?: string;
+  removeMember: () => void;
+  display: boolean;
+  onExit: () => void;
+}) => {
+  let [status, callUnenroll] = useApi<UnEnrollMsg, UnEnrollResponse>([]);
+  return h(
+    Modal,
+    { display: props.display, onExit: props.onExit, hideCloseButton: true },
+    [
+      status === "success"
+        ? h(Box, { style: { textAlign: "center", justifyItems: "center" } }, [
+            h("h2", "Unenrolled!"),
+            h("p", [
+              `You've unenrolled `,
+              h("b", props.display_name || props.username),
+              ` from this cohort`,
+            ]),
+            h("p", [`They'll be refunded within 5 business days`]),
+            h(
+              Secondary,
+              { onClick: props.onExit, style: { width: "250px" } },
+              "exit"
+            ),
+          ])
+        : h(
+            Box,
+            { gap: 32, style: { textAlign: "center", justifyItems: "center" } },
+            [
+              h(Box, [
+                h("h2", "Un-Enroll and Issue Refund"),
+                h("p", [
+                  `You are about to un-enroll `,
+                  h("b", props.display_name || props.username),
+                  ` from this cohort`,
+                ]),
+              ]),
+              h(Box, { gap: 8 }, [
+                h(
+                  Destructive,
+                  {
+                    status,
+                    onClick: async () => {
+                      let result = await callUnenroll(
+                        `/api/cohorts/${props.cohortID}/enroll`,
+                        {
+                          person: props.personID,
+                        },
+                        "DELETE"
+                      );
+                      if (result.status === 200) {
+                        props.removeMember();
+                      }
+                    },
+                    style: { width: "250px" },
+                  },
+                  "Un-enroll"
+                ),
+                h(
+                  Secondary,
+                  { onClick: props.onExit, style: { width: "250px" } },
+                  "Cancel"
+                ),
+              ]),
+            ]
+          ),
+    ]
+  );
+};
 
 // Button to Publish Draft Cohort
-const MarkCohortLive = (props:{cohort:Cohort, mutate:(c:Cohort)=>void})=> {
-  let [state, setState] = useState<'normal' | 'confirm' | 'loading'| 'complete' >('normal')
-  if(state === 'confirm' || state === 'loading') return h(Modal, {display: true, closeText:"nevermind", onExit: ()=> setState('normal')}, [
-    h(Box, {gap: 32}, [
-      h('h2', "Are you sure?"),
-      h(Box, {gap: 16, style: {textAlign: 'right'}}, [
-        h(Primary, {onClick: async e => {
-          e.preventDefault()
-          setState('loading')
-          let res = await callApi<UpdateCohortMsg, UpdateCohortResponse>(`/api/cohorts/${props.cohort.id}`, {data: {live: true}})
-          if(res.status === 200) props.mutate({...props.cohort, live: res.result.live})
-          setState('complete')
-        }}, state === 'loading' ? h(Loader) : 'Publish!'),
-      ])
-    ])
-  ])
+const MarkCohortLive = (props: {
+  cohort: Cohort;
+  mutate: (c: Cohort) => void;
+}) => {
+  let [state, setState] = useState<
+    "normal" | "confirm" | "loading" | "complete"
+  >("normal");
+  if (state === "confirm" || state === "loading")
+    return h(
+      Modal,
+      {
+        display: true,
+        closeText: "nevermind",
+        onExit: () => setState("normal"),
+      },
+      [
+        h(Box, { gap: 32 }, [
+          h("h2", "Are you sure?"),
+          h(Box, { gap: 16, style: { textAlign: "right" } }, [
+            h(
+              Primary,
+              {
+                onClick: async (e) => {
+                  e.preventDefault();
+                  setState("loading");
+                  let res = await callApi<
+                    UpdateCohortMsg,
+                    UpdateCohortResponse
+                  >(`/api/cohorts/${props.cohort.id}`, {
+                    data: { live: true },
+                  });
+                  if (res.status === 200)
+                    props.mutate({ ...props.cohort, live: res.result.live });
+                  setState("complete");
+                },
+              },
+              state === "loading" ? h(Loader) : "Publish!"
+            ),
+          ]),
+        ]),
+      ]
+    );
 
-  return h(Primary, {style: {justifySelf:"center"}, onClick: async e => {
-    e.preventDefault()
-    setState('confirm')
-  }}, 'Publish!')
-}
+  return h(
+    Primary,
+    {
+      style: { justifySelf: "center" },
+      onClick: async (e) => {
+        e.preventDefault();
+        setState("confirm");
+      },
+    },
+    "Publish!"
+  );
+};
 //End Button to publish cohort
 
 //Modal to complete cohort
-const MarkCohortComplete = (props:{cohort:Cohort, mutate:(c:Cohort)=>void})=> {
-  let [state, setState] = useState<'normal' | 'confirm' | 'loading'| 'complete' >('normal')
+const MarkCohortComplete = (props: {
+  cohort: Cohort;
+  mutate: (c: Cohort) => void;
+}) => {
+  let [state, setState] = useState<
+    "normal" | "confirm" | "loading" | "complete"
+  >("normal");
 
   if (state === "confirm" || state === "loading")
     return h(
@@ -577,73 +755,95 @@ const MarkCohortComplete = (props:{cohort:Cohort, mutate:(c:Cohort)=>void})=> {
       ]
     );
 
-  return h(Destructive, {onClick: async e => {
-    e.preventDefault()
-    setState('confirm')
-  }}, 'Mark as complete')
-}
+  return h(
+    Destructive,
+    {
+      onClick: async (e) => {
+        e.preventDefault();
+        setState("confirm");
+      },
+    },
+    "Mark as complete"
+  );
+};
 //end modal to complete cohorts
 
-
 // Defining Banners (upcoming-facilitator, upcoming-learner, draft)
-const Banners = (props:{
-  cohort: Cohort
-  mutate: (c:Cohort)=>void
-  facilitating?: boolean,
-  enrolled?: boolean,
-})=>{
-  let isStarted = (new Date(props.cohort.start_date)).getTime() - (new Date()).getTime()
-  let forum = `${DISCOURSE_URL}/session/sso?return_path=/c/${props.cohort.category_id}`
+const Banners = (props: {
+  cohort: Cohort;
+  mutate: (c: Cohort) => void;
+  facilitating?: boolean;
+  enrolled?: boolean;
+}) => {
+  let isStarted =
+    new Date(props.cohort.start_date).getTime() - new Date().getTime();
+  let forum = `${DISCOURSE_URL}/session/sso?return_path=/c/${props.cohort.category_id}`;
 
-  if(props.facilitating && !props.cohort.live) return h(TODOBanner, props)
+  if (props.facilitating && !props.cohort.live) return h(TODOBanner, props);
 
-  if(props.cohort.completed && (props.enrolled || props.facilitating))  return h(TwoColumnBanner, [
-    h(Box, {gap: 8, className: "textSecondary"}, [
-      h('h4', `You completed this course on ${prettyDate(props.cohort.completed || '')}!`),
-      h('p', [`This cohort's `, h('a', {href: forum}, 'private forum'), ` will always be open! Feel free to come back whenever`])
-    ])
-  ])
+  if (props.cohort.completed && (props.enrolled || props.facilitating))
+    return h(TwoColumnBanner, [
+      h(Box, { gap: 8, className: "textSecondary" }, [
+        h(
+          "h4",
+          `You completed this course on ${prettyDate(
+            props.cohort.completed || ""
+          )}!`
+        ),
+        h("p", [
+          `This cohort's `,
+          h("a", { href: forum }, "private forum"),
+          ` will always be open! Feel free to come back whenever`,
+        ]),
+      ]),
+    ]);
 
-  if(isStarted > 0 && (props.enrolled || props.facilitating)) {
-    if(props.facilitating) {
+  if (isStarted > 0 && (props.enrolled || props.facilitating)) {
+    if (props.facilitating) {
       return h(TwoColumnBanner, [
-          h(Box, {gap: 8, className: "textSecondary"}, [
-            h('h4', `You're facilitating in ${Math.round(isStarted / (1000 * 60 * 60 * 24))} days `),
-            h('p', [
-              `Check out the `,
-              h('a', {href: forum}, 'forum'),
-              ` and meet the learners. You can also read our `, h('a', {href: "/manual/facilitators"}, 'facilitator guide'), ` in the Krakenedu Manual`
-            ])
-          ])
-      ])
+        h(Box, { gap: 8, className: "textSecondary" }, [
+          h(
+            "h4",
+            `You're facilitating in ${Math.round(
+              isStarted / (1000 * 60 * 60 * 24)
+            )} days `
+          ),
+          h("p", [
+            `Check out the `,
+            h("a", { href: forum }, "forum"),
+            ` and meet the learners. You can also read our `,
+            h("a", { href: "/manual/facilitators" }, "facilitator guide"),
+            ` in the Krakenedu Manual`,
+          ]),
+        ]),
+      ]);
     }
     return h(TwoColumnBanner, [
-        h(Box, {gap: 8, className: "textSecondary"}, [
-          h('h4', `You start in ${Math.round(isStarted / (1000 * 60 * 60 * 24))} days `),
-          h('p', [
-            `Check out the `,
-            h('a', {href: forum}, 'forum'),
-            ` while you're waiting. You can introduce yourself and learn more about what you'll be doing when your cohort starts!`
-          ])
-        ])
-    ])
+      h(Box, { gap: 8, className: "textSecondary" }, [
+        h(
+          "h4",
+          `You start in ${Math.round(isStarted / (1000 * 60 * 60 * 24))} days `
+        ),
+        h("p", [
+          `Check out the `,
+          h("a", { href: forum }, "forum"),
+          ` while you're waiting. You can introduce yourself and learn more about what you'll be doing when your cohort starts!`,
+        ]),
+      ]),
+    ]);
   }
-  return null
-}
+  return null;
+};
 
-const TODOBanner = (props:{
-  cohort:Cohort, 
-  mutate:(c:Cohort)=>void
-}) => {
-  let [expanded, setExpanded] = useState(false)
+const TODOBanner = (props: { cohort: Cohort; mutate: (c: Cohort) => void }) => {
+  let [expanded, setExpanded] = useState(false);
 
   return h(TwoColumnBanner, { red: true }, [
     h(BannerContent, [
       h(AccentImg, {
         height: 32,
         width: 36,
-        src:
-          "https://hyperlink-data.nyc3.cdn.digitaloceanspaces.com/icons/Seedling.png",
+        src: "https://hyperlink-data.nyc3.cdn.digitaloceanspaces.com/icons/Seedling.png",
       }),
       h(Box, { gap: 8 }, [
         h("h4", "This cohort is still a draft"),
@@ -659,8 +859,7 @@ const TODOBanner = (props:{
             h(AccentImg, {
               height: 32,
               width: 36,
-              src:
-                "https://hyperlink-data.nyc3.cdn.digitaloceanspaces.com/icons/Bud.png",
+              src: "https://hyperlink-data.nyc3.cdn.digitaloceanspaces.com/icons/Bud.png",
             }),
             h(Box, { gap: 16 }, [
               h(
@@ -700,8 +899,7 @@ const TODOBanner = (props:{
             h(AccentImg, {
               height: 32,
               width: 36,
-              src:
-                "https://hyperlink-data.nyc3.cdn.digitaloceanspaces.com/icons/Flower.png",
+              src: "https://hyperlink-data.nyc3.cdn.digitaloceanspaces.com/icons/Flower.png",
             }),
             h(Box, { gap: 16 }, [
               h(
@@ -722,20 +920,18 @@ const TODOBanner = (props:{
       expanded ? "hide checklist" : "show checklist"
     ),
   ]);
-}
+};
 
-
-const BannerContent = styled('div') `
-display: grid; 
-grid-template-columns: min-content auto;
-grid-column-gap: 16px;
-grid-row-gap: 32px;
-
-`
+const BannerContent = styled("div")`
+  display: grid;
+  grid-template-columns: min-content auto;
+  grid-column-gap: 16px;
+  grid-row-gap: 32px;
+`;
 
 //End Bannera
 
-export const getStaticProps = async (ctx:any)=>{
+export const getStaticProps = async (ctx: any) => {
   let courseId = parseInt((ctx.params?.id as string) || "");
   if (Number.isNaN(courseId)) return { props: { notFound: true } } as const;
 
@@ -765,8 +961,8 @@ export const getStaticProps = async (ctx:any)=>{
     },
     revalidate: 1,
   } as const;
-}
+};
 
 export const getStaticPaths = () => {
-  return {paths:[], fallback: true}
-}
+  return { paths: [], fallback: true };
+};
