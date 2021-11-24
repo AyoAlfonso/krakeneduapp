@@ -24,26 +24,28 @@ export type  Library = {
 
 type Props = InferGetStaticPropsType<typeof getStaticProps>
 const Library = (props:Props) => {
-  return h(Box, {gap: 64}, [
-    h(Box, {gap: 8},[
-        h(BackButton, {href: "/library"}, 'Collections'),
-        h('h1', 'Latest Posts'),
-      ]),
-    ...props.posts.sort((a, b) => {
-      if (new Date(a.date) < new Date(b.date)) return 1
-      return -1
-    }).map(post=>{
-      return props && h(LibraryPost, post)
-    })
-  ])
+  return h(Box, { gap: 64 }, [
+    h(Box, { gap: 8 }, [
+      h(BackButton, { href: "/library" }, "Collections"),
+      h("h1", "Latest Posts"),
+    ]),
+    ...props.posts
+      .sort((a, b) => {
+        if (new Date(a.date) < new Date(b.date)) return 1;
+        return -1;
+      })
+      .map((post) => {
+        return props && h(LibraryPost, post);
+      }),
+  ]);
 }
 
 export const getStaticProps = async () =>{
     let posts = fs.readdirSync('./pages/library').map((file)=>{
-      if(fs.lstatSync(path.join('./pages/library/', file)).isDirectory()) return
-      let content = fs.readFileSync('./pages/library/'+file)
+      if (fs.lstatSync(path.join("./pages/library/", file)).isDirectory()) return;
+      let content = fs.readFileSync("./pages/library/" + file);
       let {data} = matter(content)
-      return {...data, path: '/library/'+file.slice(0, -4)} as Library
+      return { ...data, path: "/library/" + file.slice(0, -4) } as Library;
     }).filter(x=>x!==undefined)
   
     return {props: {posts:posts as Library[]}} as const

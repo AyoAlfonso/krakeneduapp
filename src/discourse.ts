@@ -2,8 +2,6 @@ import crypto from "crypto";
 import querystring from "querystring";
 import { DISCOURSE_URL } from "src/constants";
 import prisma from "lib/prisma";
-import { errorNotify } from "src/utils";
-// import toast from "react-hot-toast";
 
 let headers = {
   "Api-Key": process.env.DISCOURSE_API_KEY || "",
@@ -16,6 +14,7 @@ let fetchWithBackoff = async (
   exponent: number = 1
 ): ReturnType<typeof fetch> => {
   let result = await fetch(url, options);
+  console.log(result, "fetchWithBackoff");
   if (result.status === 429) {
     let value = 1000 * 2 ** exponent;
     await new Promise<void>((resolve) => {
@@ -64,7 +63,7 @@ export async function createGroup(group: {
       result: JSON.parse(resultText).errors[0],
     } as const;
   }
-  return (await result.json()) as { basic_group: { id: number } };
+  return await result.json();
 }
 
 export async function updateTopic(
@@ -112,6 +111,7 @@ export async function updateTopic(
       },
       body: JSON.stringify({ post_ids: [postID], username }),
     });
+  return;
 }
 
 export async function createTopic(
@@ -135,14 +135,12 @@ export async function createTopic(
   });
   if (result.status !== 200) {
     const resultText = await result.text();
-    console.log(resultText);
     return {
       status: 500,
       result: JSON.parse(resultText).errors[0],
     } as const;
   }
-  if (result.status === 200)
-    return (await result.json()) as { id: string; topic_id: number };
+  if (result.status === 200) return await result.json();
 }
 
 export const createCategory = async (
@@ -170,13 +168,18 @@ export const createCategory = async (
     }),
   });
   if (result.status === 200) {
-    return (await result.json()).category as { id: number; topic_url: string };
+    //
+    return (await result.json()).category;
   } else {
     const resultText = await result.text();
     return {
       status: 500,
+      // topic_url: "",
+      // id: "",
       result: JSON.parse(resultText).errors[0],
     } as const;
+    // const resultText = await result.text();
+    // return false as const;
   }
 };
 
@@ -335,7 +338,8 @@ export const syncSSO = async (params: { [key: string]: string }) => {
     headers: {
       "Api-Key": process.env.DISCOURSE_API_KEY || "",
       "Api-Username": "system",
-      "Content-Type": "application/json; charset=utf-8",
+      "Content-Type": "application/x-www-form-urlencoded",
+      // "application/json; charset=utf-8",
     },
     body: JSON.stringify({
       sso: payload,

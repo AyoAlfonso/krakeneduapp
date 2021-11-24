@@ -1,16 +1,16 @@
-import h from 'react-hyperscript'
-import { Cohort } from 'src/data'
-import { Modal } from 'components/Modal'
-import { Box } from 'components/Layout'
-import { Info} from 'components/Form'
-import { prettyDate } from 'src/utils'
-import { Primary, Secondary } from 'components/Button'
-import { useRouter } from 'next/router'
-import Link from 'next/link'
-import { DISCOURSE_URL } from 'src/constants'
+import h from "react-hyperscript";
+import { Cohort } from "src/data";
+import { Modal } from "components/Modal";
+import { Box } from "components/Layout";
+import { Info } from "components/Form";
+import { prettyDate } from "src/utils";
+import { Primary, Secondary } from "components/Button";
+import { useRouter } from "next/router";
+import Link from "next/link";
+import { DISCOURSE_URL } from "src/constants";
 
-export const WelcomeModal = (props: {display:boolean, cohort:Cohort} ) => {
-  let router = useRouter()
+export const WelcomeModal = (props: { display: boolean; cohort: Cohort }) => {
+  let router = useRouter();
   return h(
     Modal,
     {
@@ -73,4 +73,4 @@ export const WelcomeModal = (props: {display:boolean, cohort:Cohort} ) => {
       ]),
     ])
   );
-}
+};

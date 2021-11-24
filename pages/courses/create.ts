@@ -2,7 +2,7 @@ import h from "react-hyperscript";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import Link from "next/link";
-import { Input, Error, Info, Textarea, CheckBox } from "components/Form";
+import { Input, Error, Textarea, CheckBox } from "components/Form";
 import { Primary } from "components/Button";
 import { LabelBox, FormBox } from "components/Layout";
 
@@ -19,7 +19,7 @@ const CreateCourse = () => {
     description: "",
     prerequisites: "",
     duration: "",
-    cost: 5,
+    cost: 0,
     type: "course" as "course" | "club",
     maintainers: [] as string[],
   });
@@ -116,7 +116,7 @@ const CreateCourse = () => {
         h(Input, {
           required: true,
           type: "number",
-          min: "5",
+          min: "0",
           max: "1000",
           value: formData.cost,
           onChange: (e) =>

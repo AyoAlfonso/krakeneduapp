@@ -5,24 +5,24 @@ let path  = require("path")
 
 function generate () {
   let feed = new Feed({
-    title: 'KrakenEdu Library',
-    link: 'https://KrakenEdu.academy',
-    id: 'https://KrakenEdu.academy',
+    title: "KrakenEdu Blog",
+    link: "https://KrakenEdu.com",
+    id: "https://KrakenEdu.com",
     feedLinks: {
-      rss: 'https://KrakenEdu.academy/rss.xml'
+      rss: "https://KrakenEdu.com/rss.xml",
     },
-    copyright: 'CC0'
-  })
+    copyright: "CC0",
+  });
 
   let pages = fs.readdirSync(path.join(__dirname, '../pages/library'))
 
   pages.map(file => {
-    if(fs.lstatSync(path.join('./pages/library/', file)).isDirectory()) return
+    if (fs.lstatSync(path.join("./pages/blog/", file)).isDirectory()) return;
     let content =  fs.readFileSync(path.join(__dirname, '../pages/library', file))
     let {data} = matter(content)
     feed.addItem({
       title: data.title,
-      link: 'https://KrakenEdu.academy/library/' + file.slice(0, -4),
+      link: 'https://KrakenEdu.com/blog/' + file.slice(0, -4),
       author: data.author,
       date: new Date(data.date),
       description: data.description
