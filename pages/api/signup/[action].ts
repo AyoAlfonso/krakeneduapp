@@ -7,7 +7,6 @@ import {
   ResultType,
   Request,
 } from "../../../src/apiHelpers";
-import { syncSSO } from "../../../src/discourse";
 import { sendVerificationEmail } from "../../../emails";
 import { usernameValidate } from "src/utils";
 import prisma from "lib/prisma";
@@ -17,6 +16,7 @@ export type SignupMsg = {
   username: string;
   password: string;
   newsletter: boolean;
+  classroom_onboarding: boolean;
 };
 
 export type VerifyEmailMsg = {
@@ -77,6 +77,7 @@ async function Signup(req: Request) {
     username: msg.username,
     password_hash,
     newsletter: msg.newsletter,
+    // classroom_onboarding: false,
   });
 
   let origin = new URL(req.headers.referer || "").origin;
@@ -103,7 +104,6 @@ async function VerifyEmail(req: Request) {
   if (!token) return { status: 403, result: "Error: invalid activation_key" };
 
   let date = new Date(token.created_time);
-
   if ((Date.now() - date.getTime()) / (1000 * 60) > 30) {
     return { status: 403, result: "Error: activation_key is out of date" };
   }
@@ -114,7 +114,6 @@ async function VerifyEmail(req: Request) {
     password_hash: token.password_hash,
   });
 
-  // We used token.newsletter before
   if (id) {
     // @ts-ignore
     let data = new URLSearchParams({
@@ -139,22 +138,16 @@ async function VerifyEmail(req: Request) {
       result: "Error: Couldn't create user. May already exist",
     };
 
-  const newDiscourseUser = await syncSSO({
-    external_id: id,
-    username: token.username,
+  const headers = setTokenHeader({
+    id,
     email: token.email,
+    username: token.username,
+    classroom_onboarding: false,
   });
-
-  console.log(newDiscourseUser, "newDiscourseUser");
-
   return {
     status: 200,
     result: "",
-    headers: setTokenHeader({
-      id,
-      email: token.email,
-      username: token.username,
-    }),
+    headers,
   } as const;
 }
 
@@ -163,6 +156,7 @@ const createActivationKey = async (person: {
   password_hash: string;
   username: string;
   newsletter: boolean;
+  // classroom_onboarding?: boolean;
 }) => {
   let key = uuidv4();
   await prisma.activation_keys.create({

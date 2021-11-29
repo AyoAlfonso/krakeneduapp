@@ -371,14 +371,13 @@ export const CohortMembers = (props: {
   user?: string;
   mutate: (c: Cohort) => void;
 }) => {
-  let [unenrollState, setUnenrollState] =
-    useState<{
-      personID: string;
-      username: string;
-      cohortID: number;
-      display_name?: string;
-      removeMember: () => void;
-    }>();
+  let [unenrollState, setUnenrollState] = useState<{
+    personID: string;
+    username: string;
+    cohortID: number;
+    display_name?: string;
+    removeMember: () => void;
+  }>();
   return h(Fragment, [
     !unenrollState
       ? null
