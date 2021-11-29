@@ -14,7 +14,6 @@ let fetchWithBackoff = async (
   exponent: number = 1
 ): ReturnType<typeof fetch> => {
   let result = await fetch(url, options);
-  console.log(result, "fetchWithBackoff");
   if (result.status === 429) {
     let value = 1000 * 2 ** exponent;
     await new Promise<void>((resolve) => {
@@ -57,7 +56,6 @@ export async function createGroup(group: {
 
   if (result.status !== 200) {
     const resultText = await result.text();
-    console.log(resultText);
     return {
       status: 500,
       result: JSON.parse(resultText).errors[0],
@@ -123,7 +121,7 @@ export async function createTopic(
   },
   asUser?: string
 ) {
-  console.log(asUser, "asUser");
+  console.log(asUser);
   let result = await fetchWithBackoff(`${DISCOURSE_URL}/posts.json`, {
     method: "POST",
     headers: {
@@ -168,7 +166,6 @@ export const createCategory = async (
     }),
   });
   if (result.status === 200) {
-    //
     return (await result.json()).category;
   } else {
     const resultText = await result.text();
@@ -222,7 +219,6 @@ export async function updateCategory(
   });
   if (result.status !== 200) {
     const resultText = await result.text();
-    console.log(resultText);
     return {
       status: 500,
       result: JSON.parse(resultText).errors[0],
@@ -277,6 +273,10 @@ export const getGroupId = async (groupName: string) => {
   return undefined;
 };
 
+// addBasicUser =
+
+//  users.json;
+
 export const addMember = async (groupId: number, username: string) => {
   let result = await fetchWithBackoff(
     `${DISCOURSE_URL}/groups/${groupId}/members.json`,
@@ -305,7 +305,6 @@ export const getTaggedPost = async (c: string | number, tag: string) => {
 
   if (res.status !== 200) console.log(await res.text());
   let category = (await res.json()) as Category;
-  console.log(category.topic_list.topics, tag, "category");
   let topicID = category.topic_list.topics.find(
     (topic) => topic.tags && topic?.tags?.includes(tag)
   )?.id;
@@ -318,7 +317,10 @@ export const getTaggedPost = async (c: string | number, tag: string) => {
 
 export const makeSSOPayload = (params: { [key: string]: string }) => {
   let payload = Buffer.from(querystring.stringify(params)).toString("base64");
-  const sig = crypto.createHmac("sha256", process.env.DISCOURSE_SECRET || "");
+  const sig = crypto.createHmac(
+    "sha256",
+    process.env.NEXT_PUBLIC_DISCOURSE_SECRET || ""
+  );
   sig.update(payload);
 
   let result = querystring.stringify({
@@ -330,20 +332,24 @@ export const makeSSOPayload = (params: { [key: string]: string }) => {
 
 export const syncSSO = async (params: { [key: string]: string }) => {
   let payload = Buffer.from(querystring.stringify(params)).toString("base64");
-  const sig = crypto.createHmac("sha256", process.env.DISCOURSE_SECRET || "");
+  const sig = crypto.createHmac(
+    "sha256",
+    process.env.NEXT_PUBLIC_DISCOURSE_SECRET || ""
+  );
 
   sig.update(payload);
+
+  const sigDigest = sig.digest("hex");
   return fetchWithBackoff(`${DISCOURSE_URL}/admin/users/sync_sso`, {
     method: "POST",
     headers: {
-      "Api-Key": process.env.DISCOURSE_API_KEY || "",
-      "Api-Username": "system",
+      ...headers,
       "Content-Type": "application/x-www-form-urlencoded",
-      // "application/json; charset=utf-8",
     },
     body: JSON.stringify({
       sso: payload,
-      sig: sig.digest("hex"),
+      sig: sigDigest,
+      require_activation: false,
     }),
   });
 };

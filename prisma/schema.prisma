@@ -142,6 +142,7 @@ model people {
   people_in_events          people_in_events[]
   people_watching_courses   people_watching_courses[]
   stripe_connected_accounts stripe_connected_accounts?
+  classroom_onboarding      Boolean                   @default(false)
 }
 
 model people_in_cohorts {

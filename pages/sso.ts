@@ -3,8 +3,8 @@ import querystring from "querystring";
 import crypto from "crypto";
 import { useRouter } from "next/router";
 import { GetServerSideProps } from "next";
-
-import { getToken } from "src/token";
+import prisma from "lib/prisma";
+import { getToken, setTokenHeader } from "src/token";
 import { makeSSOPayload } from "src/discourse";
 import { DISCOURSE_URL } from "src/constants";
 
@@ -39,9 +39,11 @@ export const getServerSideProps: GetServerSideProps = async ({
   let { sso, sig } = query;
   if (typeof sso !== "string") return { props: { error: true } };
 
-  const hmac1 = crypto.createHmac("sha256", process.env.DISCOURSE_SECRET || "");
+  const hmac1 = crypto.createHmac(
+    "sha256",
+    process.env.NEXT_PUBLIC_DISCOURSE_SECRET || ""
+  );
   hmac1.update(Buffer.from(sso));
-
   let verifySig = hmac1.digest("hex");
   if (verifySig !== sig) return { props: { error: true } };
 
@@ -56,7 +58,18 @@ export const getServerSideProps: GetServerSideProps = async ({
         nonce: nonce as string,
         email: token.email,
         external_id: token.id,
+        username: token.username,
       }),
+  });
+  await prisma.people.update({
+    where: { id: token.id },
+    data: {
+      classroom_onboarding: true,
+    },
+  });
+  setTokenHeader({
+    ...token,
+    classroom_onboarding: true
   });
   res.end();
   return { props: {} };
