@@ -43,6 +43,7 @@ export const getServerSideProps: GetServerSideProps = async ({
       "sha256",
       process.env.NEXT_PUBLIC_DISCOURSE_SECRET || ""
     );
+
     hmac1.update(Buffer.from(sso));
     let verifySig = hmac1.digest("hex");
     if (verifySig !== sig) return { props: { error: true } };
@@ -51,29 +52,30 @@ export const getServerSideProps: GetServerSideProps = async ({
       Buffer.from(sso as string, "base64").toString()
     );
 
-    res.redirect(
-      301,
-      `${DISCOURSE_URL}/session/sso_login?` +
+    res.writeHead(301, {
+      Location:
+        `${DISCOURSE_URL}/session/sso_login?` +
         makeSSOPayload({
           nonce: nonce as string,
           email: token.email,
           external_id: token.id,
           username: token.username,
-        })
-    );
-    await prisma.people.update({
-      where: { id: token.id },
-      data: {
-        classroom_onboarding: true,
-      },
-    });
-    setTokenHeader({
-      ...token,
-      classroom_onboarding: true,
+        }),
     });
     res.end();
-    return { props: {} };
   } catch (error) {
     console.log(error, "here");
   }
+  await prisma.people.update({
+    where: { id: token.id },
+    data: {
+      classroom_onboarding: true,
+    },
+  });
+  setTokenHeader({
+    ...token,
+    classroom_onboarding: true,
+  });
+
+  return { props: {} };
 };
