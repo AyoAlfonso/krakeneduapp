@@ -69,7 +69,7 @@ export const getServerSideProps: GetServerSideProps = async ({
   });
   setTokenHeader({
     ...token,
-    classroom_onboarding: true
+    classroom_onboarding: true,
   });
   res.end();
   return { props: {} };
