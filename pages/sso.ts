@@ -38,34 +38,29 @@ export const getServerSideProps: GetServerSideProps = async ({
   }
   let { sso, sig } = query;
   if (typeof sso !== "string") return { props: { error: true } };
-  try {
-    const hmac1 = crypto.createHmac(
-      "sha256",
-      process.env.NEXT_PUBLIC_DISCOURSE_SECRET || ""
-    );
 
-    hmac1.update(Buffer.from(sso));
-    let verifySig = hmac1.digest("hex");
-    if (verifySig !== sig) return { props: { error: true } };
+  const hmac1 = crypto.createHmac(
+    "sha256",
+    process.env.NEXT_PUBLIC_DISCOURSE_SECRET || ""
+  );
+  hmac1.update(Buffer.from(sso));
+  let verifySig = hmac1.digest("hex");
+  if (verifySig !== sig) return { props: { error: true } };
 
-    let { nonce } = querystring.parse(
-      Buffer.from(sso as string, "base64").toString()
-    );
+  let { nonce } = querystring.parse(
+    Buffer.from(sso as string, "base64").toString()
+  );
 
-    res.writeHead(301, {
-      Location:
-        `${DISCOURSE_URL}/session/sso_login?` +
-        makeSSOPayload({
-          nonce: nonce as string,
-          email: token.email,
-          external_id: token.id,
-          username: token.username,
-        }),
-    });
-    res.end();
-  } catch (error) {
-    console.log(error, "here");
-  }
+  res.writeHead(301, {
+    Location:
+      `${DISCOURSE_URL}/session/sso_login?` +
+      makeSSOPayload({
+        nonce: nonce as string,
+        email: token.email,
+        external_id: token.id,
+        username: token.username,
+      }),
+  });
   await prisma.people.update({
     where: { id: token.id },
     data: {
@@ -76,6 +71,6 @@ export const getServerSideProps: GetServerSideProps = async ({
     ...token,
     classroom_onboarding: true,
   });
-
+  res.end();
   return { props: {} };
 };
