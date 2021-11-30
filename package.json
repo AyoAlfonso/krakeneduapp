@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "next -p 8080",
+    "dev-inspect": "NODE_OPTIONS='--inspect' next dev -p 8081",
     "build": "npm run build:rss && next build",
     "build:rss": "node ./src/generateRSS.js",
     "typecheck": "tsc",

@@ -158,7 +158,7 @@ export const EventForm = (props:{onChange: (e: Event)=>void, state: Event, peopl
       }}, [
         h('option', {value:''}, props.state.people.length === 0 ? 'Everyone' : 'Select another attendee'),
         ...props.people
-          .filter(p=>!props.state.people.includes(p))
+          .filter(p=>!props.state?.people?.includes(p))
           .map(p=>h('option', {value: p}, p))
       ]),
       h(AttendeeList, props.state.people.map(p=> h('div', {style:{display:'grid', gridTemplateColumns: 'auto min-content', maxWidth: '400px'}}, [

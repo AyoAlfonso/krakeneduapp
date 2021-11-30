@@ -24,16 +24,17 @@ const COPY = {
 }
 
 type Profile = {
-  bio: string,
-  display_name: string,
-  pronouns: string,
-  link: string,
-  stripe_connected_accounts:{
-    stripe_account: string,
-    payouts_enabled: boolean,
-    connected: boolean
-  } | null
-}
+  bio: string;
+  display_name: string;
+  pronouns: string;
+  link: string;
+  classroom_onboarding: boolean;
+  stripe_connected_accounts: {
+    stripe_account: string;
+    payouts_enabled: boolean;
+    connected: boolean;
+  } | null;
+};
 const Settings = (props:{
   user: {email: string, username: string}
   facilitator: boolean,

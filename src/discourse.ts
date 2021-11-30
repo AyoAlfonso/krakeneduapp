@@ -4,8 +4,8 @@ import { DISCOURSE_URL } from "src/constants";
 import prisma from "lib/prisma";
 
 let headers = {
-  "Api-Key": process.env.DISCOURSE_API_KEY || "",
-  "Api-Username": process.env.DISCOURSE_API_USERNAME || "",
+  "Api-Key": process.env.NEXT_PUBLIC_DISCOURSE_API_KEY || "",
+  "Api-Username": process.env.NEXT_PUBLIC_DISCOURSE_API_USERNAME || "",
 };
 
 let fetchWithBackoff = async (
@@ -56,13 +56,12 @@ export async function createGroup(group: {
 
   if (result.status !== 200) {
     const resultText = await result.text();
-    console.log(resultText);
     return {
       status: 500,
       result: JSON.parse(resultText).errors[0],
     } as const;
   }
-  return (await result.json());
+  return await result.json();
 }
 
 export async function updateTopic(
@@ -122,7 +121,7 @@ export async function createTopic(
   },
   asUser?: string
 ) {
-  console.log(asUser, "asUser");
+  console.log(asUser);
   let result = await fetchWithBackoff(`${DISCOURSE_URL}/posts.json`, {
     method: "POST",
     headers: {
@@ -139,8 +138,7 @@ export async function createTopic(
       result: JSON.parse(resultText).errors[0],
     } as const;
   }
-  if (result.status === 200)
-    return (await result.json());
+  if (result.status === 200) return await result.json();
 }
 
 export const createCategory = async (
@@ -168,7 +166,6 @@ export const createCategory = async (
     }),
   });
   if (result.status === 200) {
-    //
     return (await result.json()).category;
   } else {
     const resultText = await result.text();
@@ -222,7 +219,6 @@ export async function updateCategory(
   });
   if (result.status !== 200) {
     const resultText = await result.text();
-    console.log(resultText);
     return {
       status: 500,
       result: JSON.parse(resultText).errors[0],
@@ -277,6 +273,10 @@ export const getGroupId = async (groupName: string) => {
   return undefined;
 };
 
+// addBasicUser =
+
+//  users.json;
+
 export const addMember = async (groupId: number, username: string) => {
   let result = await fetchWithBackoff(
     `${DISCOURSE_URL}/groups/${groupId}/members.json`,
@@ -305,9 +305,8 @@ export const getTaggedPost = async (c: string | number, tag: string) => {
 
   if (res.status !== 200) console.log(await res.text());
   let category = (await res.json()) as Category;
-  console.log(category.topic_list.topics, tag, "category");
   let topicID = category.topic_list.topics.find(
-    (topic) => topic.tags && topic.tags.includes(tag)
+    (topic) => topic.tags && topic?.tags?.includes(tag)
   )?.id;
   if (!topicID) return { text: "", id: "" };
   let topicRequest = await fetchWithBackoff(`${DISCOURSE_URL}/raw/${topicID}`, {
@@ -318,7 +317,10 @@ export const getTaggedPost = async (c: string | number, tag: string) => {
 
 export const makeSSOPayload = (params: { [key: string]: string }) => {
   let payload = Buffer.from(querystring.stringify(params)).toString("base64");
-  const sig = crypto.createHmac("sha256", process.env.DISCOURSE_SECRET || "");
+  const sig = crypto.createHmac(
+    "sha256",
+    process.env.NEXT_PUBLIC_DISCOURSE_SECRET || ""
+  );
   sig.update(payload);
 
   let result = querystring.stringify({
@@ -330,19 +332,24 @@ export const makeSSOPayload = (params: { [key: string]: string }) => {
 
 export const syncSSO = async (params: { [key: string]: string }) => {
   let payload = Buffer.from(querystring.stringify(params)).toString("base64");
-  const sig = crypto.createHmac("sha256", process.env.DISCOURSE_SECRET || "");
+  const sig = crypto.createHmac(
+    "sha256",
+    process.env.NEXT_PUBLIC_DISCOURSE_SECRET || ""
+  );
 
   sig.update(payload);
+
+  const sigDigest = sig.digest("hex");
   return fetchWithBackoff(`${DISCOURSE_URL}/admin/users/sync_sso`, {
     method: "POST",
     headers: {
-      "Api-Key": process.env.DISCOURSE_API_KEY || "",
-      "Api-Username": "system",
-      "Content-Type": "application/json; charset=utf-8",
+      ...headers,
+      "Content-Type": "application/x-www-form-urlencoded",
     },
     body: JSON.stringify({
       sso: payload,
-      sig: sig.digest("hex"),
+      sig: sigDigest,
+      require_activation: false,
     }),
   });
 };

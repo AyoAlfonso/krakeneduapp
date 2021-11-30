@@ -118,6 +118,7 @@ CREATE TABLE "password_reset_keys" (
 
     PRIMARY KEY ("key_hash")
 );
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
 -- CreateTable
 CREATE TABLE "people" (
