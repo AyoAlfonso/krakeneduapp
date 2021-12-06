@@ -6,6 +6,7 @@ import {
   updateTopic,
   createTopic,
   updateCategory,
+  createOwners,
 } from "src/discourse";
 import prisma from "lib/prisma";
 
@@ -89,12 +90,18 @@ async function handler(req: Request) {
   let group = await createGroup({
     name: groupName,
     visibility_level: 2,
-    owner_usernames: facilitators.map((f) => f?.username).join(","),
+    owner_usernames: facilitators.map((f) => f?.username.trim() as string),
     mentionable_level: 3,
     messageable_level: 3,
   });
+
   if (!group)
     return { status: 500, result: "ERROR: unable to create group" } as const;
+
+  await createOwners({
+    id: group.basic_group.id,
+    usernames: facilitators.map((m) => m?.username.trim() as string),
+  });
 
   let courseCategoryPermissions = {
     // Make sure to keep any existing cohorts as well

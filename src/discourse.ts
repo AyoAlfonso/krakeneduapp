@@ -64,6 +64,38 @@ export async function createGroup(group: {
   return await result.json();
 }
 
+export async function createOwners(group: {
+  id: string | number;
+  usernames: string | string[];
+}) {
+  if (typeof group.usernames !== "string")
+    group.usernames = group.usernames.join(",");
+  let result = await fetchWithBackoff(
+    `${DISCOURSE_URL}/admin/groups/${group.id}/owners.json`,
+    {
+      method: "PUT",
+      headers: {
+        ...headers,
+        "Content-Type": "application/json; charset=utf-8",
+      },
+      body: JSON.stringify({
+        group: {
+          usernames: group.usernames,
+        },
+      }),
+    }
+  );
+
+  if (result.status !== 200) {
+    const resultText = await result.text();
+    return {
+      status: 500,
+      result: JSON.parse(resultText).errors[0],
+    } as const;
+  }
+  return await result.json();
+}
+
 export async function updateTopic(
   topic: string,
   input: { category_id: number; title: string; raw: string; tags: string[] },
@@ -279,7 +311,7 @@ export const getGroupId = async (groupName: string) => {
 
 export const addMember = async (groupId: number, username: string) => {
   let result = await fetchWithBackoff(
-    `${DISCOURSE_URL}/groups/${groupId}/members.json`,
+    `${DISCOURSE_URL}/admin/groups/${groupId}/members.json`,
     {
       method: "PUT",
       headers: {
