@@ -240,8 +240,10 @@ const Dashboard = () => {
           h(Box, [
             h(
               "b",
-              `Follow the button below, click the LOGIN button on the classroom site, come back to reload this page and we are all good`
+              `1. Follow the button below`
             ),
+            h("b", `2. Click the LOGIN button on the classroom site`),
+            h("b", `3. Come back to this page and we are all good`),
             h(
               "a",
               {
