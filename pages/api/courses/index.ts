@@ -68,7 +68,6 @@ async function createCourse(req: Request) {
   let msg;
   try {
     msg = CreateCourseMsgValidator.check(req.body);
-    console.log(msg, "maintainers.msg");
   } catch (e) {
     return { status: 400, result: e.toString() } as const;
   }
@@ -84,6 +83,7 @@ async function createCourse(req: Request) {
     select: { username: true, id: true },
   });
 
+
   let slug = slugify(msg.name);
   if (maintainers.length === 0)
     return {
@@ -94,6 +94,7 @@ async function createCourse(req: Request) {
   let maintainerGroupName = slug + "-m";
   let maintainerGroup;
   let courseGroup;
+
   //to do update this API TO JSON IT HAS CHANGED
   //  https://meta.discourse.org/t/api-adding-group-members-vs-adding-owners-data-format-is-different/144477
   [maintainerGroup, courseGroup] = await Promise.all([
@@ -120,7 +121,11 @@ async function createCourse(req: Request) {
     id: courseGroup.basic_group.id,
     usernames: maintainers.map((m) => m.username?.trim()),
   });
-  
+
+  await createOwners({
+    id: maintainerGroup.basic_group.id,
+    usernames: maintainers.map((m) => m.username?.trim()),
+  });
   if (!courseGroup?.basic_group?.id || !maintainerGroup?.basic_group?.id) {
     if (maintainerGroup.status !== 200 || courseGroup.status !== 200)
       return {
