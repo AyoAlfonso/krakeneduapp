@@ -26,6 +26,7 @@ const COPY = {
 export default function Header() {
   const { data: user, mutate: mutateUser } = useUserData();
   let mobile = useMediaQuery("(max-width:768px)");
+  const onboardedUser = user && user?.classroom_onboarding;
   return h(HeaderContainer, [
     h(
       Link,
@@ -36,19 +37,24 @@ export default function Header() {
       ? h(MobileMenu, { user, mutateUser })
       : h(Container, {}, [
           h(LoginButtons, { user, mutateUser }),
-          !user || !user.classroom_onboarding ? null : h(FeedbackModal),
+          !user || !user?.classroom_onboarding ? null : h(FeedbackModal),
           h(Seperator, { style: { height: "100%" } }),
-          !user || !user.classroom_onboarding
-            ? null
-            : h(NavLink, { href: TWITTER_URL }, "Twitter"),
-          !user || !user.classroom_onboarding
-            ? null
-            : h(
+          onboardedUser ? h(NavLink, { href: TWITTER_URL }, "Twitter") : null,
+          onboardedUser
+            ? h(
                 Link,
                 { href: "/courses", passHref: true },
                 h(NavLink, "Courses")
-              ),
-          !user || !user.classroom_onboarding ? null : h(LearnMenu),
+              )
+            : null,
+          onboardedUser
+            ? h(
+                Link,
+                { href: "/courses", passHref: true },
+                h(NavLink, "Leaderboard")
+              )
+            : null,
+          onboardedUser ? h(LearnMenu) : null,
         ]),
   ]);
 }

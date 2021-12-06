@@ -4,6 +4,7 @@ import {
   createGroup,
   createCategory,
   updateTopic,
+  createOwners,
 } from "../../../src/discourse";
 import TemplateCourseDescription from "../../../writing/TemplateCourseDescription.txt";
 import TemplateClubDescription from "../../../writing/TemplateClubDescription.txt";
@@ -67,6 +68,7 @@ async function createCourse(req: Request) {
   let msg;
   try {
     msg = CreateCourseMsgValidator.check(req.body);
+    console.log(msg, "maintainers.msg");
   } catch (e) {
     return { status: 400, result: e.toString() } as const;
   }
@@ -92,7 +94,10 @@ async function createCourse(req: Request) {
   let maintainerGroupName = slug + "-m";
   let maintainerGroup;
   let courseGroup;
+  //to do update this API TO JSON IT HAS CHANGED
+  //  https://meta.discourse.org/t/api-adding-group-members-vs-adding-owners-data-format-is-different/144477
   [maintainerGroup, courseGroup] = await Promise.all([
+    /** We are creating a group for maintainers -m not usually used until messging the maintainar group*/
     createGroup({
       name: maintainerGroupName,
       visibility_level: 2,
@@ -100,6 +105,8 @@ async function createCourse(req: Request) {
       messageable_level: 3,
       mentionable_level: 99,
     }),
+
+    /** We are creaating a group for owners, and members, we  */
     createGroup({
       name: slug,
       visibility_level: 2,
@@ -109,6 +116,11 @@ async function createCourse(req: Request) {
     }),
   ]);
 
+  await createOwners({
+    id: courseGroup.basic_group.id,
+    usernames: maintainers.map((m) => m.username?.trim()),
+  });
+  
   if (!courseGroup?.basic_group?.id || !maintainerGroup?.basic_group?.id) {
     if (maintainerGroup.status !== 200 || courseGroup.status !== 200)
       return {
@@ -149,7 +161,7 @@ async function createCourse(req: Request) {
     },
     await getUsername(maintainers[0].id)
   );
-
+  //TODO: PUT THIS IN QUERY FOR MAINTAINERS mode: 'insensitive' or make the maintainers a search and select input
   await prisma.courses.create({
     data: {
       maintainer_groupTodiscourse_groups: {
@@ -178,13 +190,15 @@ async function createCourse(req: Request) {
       cost: msg.cost,
       type: msg.type,
       course_maintainers: {
-        create: msg.maintainers.map((email) => {
-          return {
-            people: {
-              connect: { email },
-            },
-          };
-        }),
+        create: msg.maintainers
+          .map((email) => email?.toLowerCase())
+          .map((email) => {
+            return {
+              people: {
+                connect: { email },
+              },
+            };
+          }),
       },
       course_templates: {
         create: [
