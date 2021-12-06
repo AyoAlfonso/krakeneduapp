@@ -44,7 +44,9 @@ export async function createGroup(group: {
   messageable_level?: number;
 }) {
   if (typeof group.owner_usernames !== "string")
-    group.owner_usernames = group.owner_usernames.join(",");
+    group.owner_usernames = group.owner_usernames
+      .map((usernames) => usernames.toLowerCase())
+      .join(",");
   let result = await fetchWithBackoff(`${DISCOURSE_URL}/admin/groups`, {
     method: "POST",
     headers: {
@@ -69,7 +71,9 @@ export async function createOwners(group: {
   usernames: string | string[];
 }) {
   if (typeof group.usernames !== "string")
-    group.usernames = group.usernames.join(",");
+    group.usernames = group.usernames
+      .map((usernames) => usernames.toLowerCase())
+      .join(",");
   let result = await fetchWithBackoff(
     `${DISCOURSE_URL}/admin/groups/${group.id}/owners.json`,
     {
