@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import Stripe from "stripe";
-import { getUsername, createOwners, getTaggedPost } from "src/discourse";
+import { getUsername, addMember, getTaggedPost } from "src/discourse";
 import { DISCOURSE_URL } from "src/constants";
 import {
   sendCohortEnrollmentEmail,
@@ -113,9 +113,9 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
         if (cohort.people_in_cohorts.length > 0)
           return { status: 200, result: "User is already enrolled" };
 
-        let username = await getUsername(metadata.userId);
+        let userId = await getUsername(metadata.userId);
 
-        if (!username)
+        if (!userId)
           return res
             .status(400)
             .send("ERROR: Cannot find user in classroom: " + metadata.userId);
@@ -154,14 +154,11 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
             },
           }),
 
-          createOwners({
-            id: cohort.discourse_groups.id,
-            usernames: person.username,
-          }),
-          createOwners({
-            id: cohort.courses.course_groupTodiscourse_groups.id,
-            usernames: person.username,
-          }),
+          addMember(cohort.discourse_groups.id, [person.username]),
+          addMember(cohort.courses.course_groupTodiscourse_groups.id, [
+            person.username,
+          ]),
+
           sendCohortEnrollmentEmail(person.email, {
             name: person.display_name || person.username,
             course_start_date: prettyDate(cohort.start_date),

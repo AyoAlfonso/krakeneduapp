@@ -15,11 +15,11 @@ const defaultConfig = {
   publicKey: process.env.NEXT_PUBLIC_PAYSTACK_KEY,
 };
 
- const onSuccess = () => {
+const onSuccess = () => {
   successNotify("Your payment was successful!");
 };
 
- const onClose = () => {
+const onClose = () => {
   errorNotify("Your payment failed, try again?");
 };
 
@@ -46,12 +46,14 @@ export const SubEnrollButton: React.FC<{
   let [status, callEnroll] = useApi<EnrollMsg, EnrollResponse>(
     [],
     async (res) => {
-      if (res.zeroCost)
+      if (res.zeroCost) {
         await router.push(
-          "/courses/[slug]/[id]/cohorts/[cohortId]",
+          "/courses/[slug]/[id]/cohorts/[cohortId]?welcome",
           `/courses/${router.query.slug}/${props.course}/cohorts/${props.id}?welcome`
         );
-      paystackHook(res);
+      } else {
+        paystackHook(res);
+      }
     }
   );
 

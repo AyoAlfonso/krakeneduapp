@@ -83,7 +83,6 @@ async function createCourse(req: Request) {
     select: { username: true, id: true },
   });
 
-
   let slug = slugify(msg.name);
   if (maintainers.length === 0)
     return {
@@ -126,6 +125,7 @@ async function createCourse(req: Request) {
     id: maintainerGroup.basic_group.id,
     usernames: maintainers.map((m) => m.username?.trim()),
   });
+
   if (!courseGroup?.basic_group?.id || !maintainerGroup?.basic_group?.id) {
     if (maintainerGroup.status !== 200 || courseGroup.status !== 200)
       return {

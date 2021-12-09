@@ -7,7 +7,7 @@ import {
   sendUnenrollEmail,
 } from "emails";
 import { getToken } from "src/token";
-import { getTaggedPost, createOwners } from "src/discourse";
+import { getTaggedPost, addMember } from "src/discourse";
 import { DISCOURSE_URL } from "src/constants";
 import { prettyDate } from "src/utils";
 import prisma from "lib/prisma";
@@ -135,14 +135,11 @@ async function enroll(req: Request) {
         },
       }),
 
-      createOwners({
-        id: cohort.discourse_groups.id,
-        usernames: user.username,
-      }),
-      createOwners({
-        id: cohort.courses.course_groupTodiscourse_groups.id,
-        usernames: user.username,
-      }),
+      addMember(cohort.discourse_groups.id, [user.username]),
+      addMember(
+        cohort.courses.course_groupTodiscourse_groups.id,
+        [user.username]
+      ),
       await sendCohortEnrollmentEmail(user.email, {
         name: user.display_name || user.username,
         course_start_date: prettyDate(cohort.start_date),
