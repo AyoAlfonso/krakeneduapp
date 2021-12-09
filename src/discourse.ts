@@ -70,6 +70,7 @@ export async function createOwners(group: {
   id: string | number;
   usernames: string | string[];
 }) {
+  console.log(group, "group--");
   if (typeof group.usernames !== "string")
     group.usernames = group.usernames
       .map((usernames) => usernames.toLowerCase())
@@ -89,7 +90,7 @@ export async function createOwners(group: {
       }),
     }
   );
-
+  console.log(result, "result=-");
   if (result.status !== 200) {
     const resultText = await result.text();
     return {
@@ -313,9 +314,22 @@ export const getGroupId = async (groupName: string) => {
 
 //  users.json;
 
-export const addMember = async (groupId: number, username: string) => {
+export const addMember = async (
+  groupId: number,
+  incoming_usernames: string[]
+) => {
+  let usernames = "";
+  if (typeof incoming_usernames !== "string") {
+    usernames = incoming_usernames
+      .map((username) => username.toLowerCase())
+      .join(",");
+  } else {
+    usernames = incoming_usernames;
+  }
+
+  console.log(usernames);
   let result = await fetchWithBackoff(
-    `${DISCOURSE_URL}/admin/groups/${groupId}/members.json`,
+    `${DISCOURSE_URL}/groups/${groupId}/members.json`,
     {
       method: "PUT",
       headers: {
@@ -323,7 +337,7 @@ export const addMember = async (groupId: number, username: string) => {
         "Content-Type": "application/json; charset=utf-8",
       },
       body: JSON.stringify({
-        usernames: username,
+        usernames,
       }),
     }
   );
