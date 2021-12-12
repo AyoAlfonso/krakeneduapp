@@ -70,7 +70,6 @@ export async function createOwners(group: {
   id: string | number;
   usernames: string | string[];
 }) {
-  console.log(group, "group--");
   if (typeof group.usernames !== "string")
     group.usernames = group.usernames
       .map((usernames) => usernames.toLowerCase())
@@ -90,7 +89,6 @@ export async function createOwners(group: {
       }),
     }
   );
-  console.log(result, "result=-");
   if (result.status !== 200) {
     const resultText = await result.text();
     return {
@@ -270,16 +268,19 @@ export async function getCategory(path: string | number) {
       "Content-Type": "application/json; charset=utf-8",
     },
   });
-  if (res.status === 200) {
-    let category = (await res.json()) as Category;
-    return category;
-  } else {
-    const resultText = await res.text();
-    return {
-      status: 500,
-      result: JSON.parse(resultText).errors[0],
-    } as const;
-  }
+
+  try {
+    if (res.status === 200) {
+      let category = (await res.json()) as Category;
+      return category;
+    } else {
+      const resultText = await res.text();
+      return {
+        status: 500,
+        result: JSON.parse(resultText).errors[0],
+      } as const;
+    }
+  } catch (error) {}
 }
 
 export const getUsername = async (
@@ -326,8 +327,6 @@ export const addMember = async (
   } else {
     usernames = incoming_usernames;
   }
-
-  console.log(usernames);
   let result = await fetchWithBackoff(
     `${DISCOURSE_URL}/groups/${groupId}/members.json`,
     {
@@ -359,10 +358,15 @@ export const getTaggedPost = async (c: string | number, tag: string) => {
     (topic) => topic.tags && topic?.tags?.includes(tag)
   )?.id;
   if (!topicID) return { text: "", id: "" };
-  let topicRequest = await fetchWithBackoff(`${DISCOURSE_URL}/raw/${topicID}`, {
-    headers,
-  });
-  return { text: await topicRequest.text(), id: topicID };
+  // try {
+    let topicRequest = await fetchWithBackoff(
+      `${DISCOURSE_URL}/raw/${topicID}`,
+      {
+        headers,
+      }
+    );
+    return { text: await topicRequest.text(), id: topicID };
+  // } catch (error) {}
 };
 
 export const makeSSOPayload = (params: { [key: string]: string }) => {
