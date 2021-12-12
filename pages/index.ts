@@ -110,7 +110,7 @@ const Landing = (props: Props) => {
           ),
           h(
             Link,
-            { href: "/clubs" },
+            { href: "/" },
             h(
               "a",
               { style: { justifySelf: "right" } },
