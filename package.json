@@ -39,6 +39,7 @@
     "raw-loader": "^4.0.2",
     "react": "^16.14.0",
     "react-dom": "^16.14.0",
+    "react-facebook-pixel": "^1.0.4",
     "react-hot-toast": "^1.0.2",
     "react-hotjar": "^2.2.1",
     "react-hyperscript": "^3.2.0",
