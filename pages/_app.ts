@@ -1,27 +1,25 @@
-import h from 'react-hyperscript'
-import Head from 'next/head'
-import Layout from '../components/Layout';
-import * as Sentry from '@sentry/node'
-import { Fragment, useEffect } from 'react';
+import h from "react-hyperscript";
+import Head from "next/head";
+import Layout from "../components/Layout";
+import * as Sentry from "@sentry/node";
+import { Fragment, useEffect } from "react";
 import ProgressBar from "@badrap/bar-of-progress";
 import Router from "next/router";
-import {ProgressBarZindex} from  '../components/Tokens'
+import { ProgressBarZindex } from "../components/Tokens";
 import { Toaster } from "react-hot-toast";
 import { hotjar } from "react-hotjar";
 
-
-
 if (process.env.NEXT_PUBLIC_SENTRY_DSN) {
   Sentry.init({
-    enabled: process.env.NODE_ENVIRONMENT === 'production',
+    enabled: process.env.NODE_ENVIRONMENT === "production",
     dsn: process.env.NEXT_PUBLIC_SENTRY_DSN,
-  })
+  });
 }
 
 type Props = {
-  Component: any,
-  pageProps: any
-}
+  Component: any;
+  pageProps: any;
+};
 
 const progress = new ProgressBar({
   size: 2,
@@ -34,14 +32,26 @@ Router.events.on("routeChangeStart", progress.start);
 Router.events.on("routeChangeComplete", progress.finish);
 Router.events.on("routeChangeError", progress.finish);
 
-const App = ({ Component, pageProps}:Props) => {
-  
- useEffect(() => {
-   hotjar.initialize(
-  parseInt(process.env.NEXT_PUBLIC_HOTJAR_ID || '0', 10),
-  parseInt(process.env.NEXT_PUBLIC_HOTJAR_SOFTWARE_VERSION || '0', 10)
-      );
-}, []);
+const App = ({ Component, pageProps }: Props) => {
+  useEffect(() => {
+    hotjar.initialize(
+      parseInt(process.env.NEXT_PUBLIC_HOTJAR_ID || "0", 10),
+      parseInt(process.env.NEXT_PUBLIC_HOTJAR_SOFTWARE_VERSION || "0", 10)
+    );
+  }, []);
+
+  useEffect(() => {
+    import("react-facebook-pixel")
+      .then((x) => x.default)
+      .then((ReactPixel) => {
+        ReactPixel.init(process.env.NEXT_PUBLIC_FB_PIXELID|| "");
+        ReactPixel.pageView();
+
+        Router.events.on("routeChangeComplete", () => {
+          ReactPixel.pageView();
+        });
+      });
+  });
 
   return h(Fragment, [
     h(Head as React.StatelessComponent, [
@@ -64,8 +74,10 @@ const App = ({ Component, pageProps}:Props) => {
       }),
     ]),
     h(Layout, {}, [h(Component, { ...pageProps })]),
-    h(Toaster,   {}),,,
+    h(Toaster, {}),
+    ,
+    ,
   ]);
-}
+};
 
-export default App
+export default App;

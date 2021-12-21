@@ -8,12 +8,11 @@ import { InferGetStaticPropsType } from "next";
 
 import CourseDetails from "components/Course/Enroll";
 import { EnrollButton } from "components/Course/EnrollButton";
-import { SubEnrollButton } from "components/Course/SubEnrollButton";
+// import { SubEnrollButton } from "components/Course/SubEnrollButton";
 
 import {
   TwoColumn,
   Box,
-  LabelBox,
   Seperator,
   Sidebar,
   WhiteContainer,
@@ -270,22 +269,22 @@ const CohortPage = (props: Extract<Props, { notFound: false }>) => {
               inCohort || isStarted || isFacilitator
                 ? null
                 : h(Box, [
-                    h(
-                      LabelBox,
-                      { style: { fontSize: "2rem" } },
-                      "Join this cohort"
-                    ),
-                    h(
-                      SubEnrollButton,
-                      {
-                        id: cohort.id,
-                        course: course.id,
-                        max_size: course.cohort_max_size,
-                        learners: cohort.people_in_cohorts.length,
-                        invited: !course.invite_only || invited,
-                      },
-                      "via Paystack"
-                    ),
+                    // h(
+                    //   LabelBox,
+                    //   { style: { fontSize: "2rem" } },
+                    //  `Join this ${course.type}`
+                    // ),
+                    // h(
+                    //   SubEnrollButton,
+                    //   {
+                    //     id: cohort.id,
+                    //     course: course.id,
+                    //     max_size: course.cohort_max_size,
+                    //     learners: cohort.people_in_cohorts.length,
+                    //     invited: !course.invite_only || invited,
+                    //   },
+                    //   "via Paystack"
+                    // ),
                     h(
                       EnrollButton,
                       {
@@ -295,7 +294,8 @@ const CohortPage = (props: Extract<Props, { notFound: false }>) => {
                         learners: cohort.people_in_cohorts.length,
                         invited: !course.invite_only || invited,
                       },
-                      "via Stripe"
+                      // "via Stripe"
+                      `Join this ${course.type}`
                     ),
                   ]),
               h(Box, [

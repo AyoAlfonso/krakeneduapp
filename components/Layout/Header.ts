@@ -16,7 +16,7 @@ import { useApi } from "../../src/apiHelpers";
 import { FeedbackMsg, FeedbackResult } from "../../pages/api/feedback";
 
 // import {DISCOURSE_URL} from 'src/constants'
-let TWITTER_URL = "https://twitter.com/BojaleLabs";
+const TWITTER_URL = "https://twitter.com/BojaleLabs";
 
 const COPY = {
   feedbackTitle: "Tell us what's on your mind!",
